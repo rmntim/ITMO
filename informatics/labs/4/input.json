@@ -1,0 +1,28 @@
+{
+    "even_week": false,
+    "day_id": 3,
+    "group_name": "P3131",
+    "date": "Thursday, 26 Oct 2023 UTC +03:00",
+    "schedule": [
+        {
+            "id": 251337,
+            "title": "Реформы и реформаторы в истории России",
+            "class_format": "Очно-дистанционный",
+            "type": "Лекция",
+            "campus_id": 0,
+            "start_time": "13:30",
+            "auditory_id": 1229,
+            "teacher": "Вычеров Дмитрий Александрович"
+        },
+        {
+            "id": 251338,
+            "title": "Реформы и реформаторы в истории России",
+            "class_format": "Очно-дистанционный",
+            "type": "Практика",
+            "campus_id": 0,
+            "start_time": "15:20",
+            "auditory_id": 1229,
+            "teacher": "Вычеров Дмитрий Александрович"
+        }
+    ]
+}

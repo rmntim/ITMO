@@ -1,0 +1,58 @@
+[
+    {
+        "even_week": false,
+        "day_id": 3,
+        "group_name": "P3131",
+        "date": "Thursday, 26 Oct 2023 UTC +03:00",
+        "schedule": [
+            {
+                "id": 251337,
+                "title": "Реформы и реформаторы в истории России",
+                "class_format": "Очно-дистанционный",
+                "type": "Лекция",
+                "campus_id": 0,
+                "start_time": "13:30",
+                "auditory_id": 1229,
+                "teacher": "Вычеров Дмитрий Александрович"
+            },
+            {
+                "id": 251338,
+                "title": "Реформы и реформаторы в истории России",
+                "class_format": "Очно-дистанционный",
+                "type": "Практика",
+                "campus_id": 0,
+                "start_time": "15:20",
+                "auditory_id": 1229,
+                "teacher": "Вычеров Дмитрий Александрович"
+            }
+        ]
+    },
+    {
+        "even_week": false,
+        "day_id": 4,
+        "group_name": "P3131",
+        "date": "Friday, 27 Oct 2023 UTC +03:00",
+        "schedule": [
+            {
+                "id": 251339,
+                "title": "Линейная алгебра",
+                "class_format": "Очно-дистанционный",
+                "type": "Лекция",
+                "campus_id": 0,
+                "start_time": "17:00",
+                "auditory_id": 1419,
+                "teacher": "Блэйхер Оксана Владимировна"
+            },
+            {
+                "id": 251340,
+                "title": "Линейная алгебра",
+                "class_format": "Очно-дистанционный",
+                "type": "Практика",
+                "campus_id": 0,
+                "start_time": "18:40",
+                "auditory_id": 1419,
+                "teacher": "Блэйхер Оксана Владимировна"
+            }
+        ]
+    }
+]

@@ -1,0 +1,51 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class Aggron
+class Amnesia
+class Charizard
+class DamageMove
+class DoubleKick
+class Electabuzz
+class IceBeam
+class Joltik
+class Koffing
+class LightScreen
+class Main
+class MegaPunch
+class Move
+class PhysicalMove
+class Pokemon
+class ShadowPunch
+class Sneasel
+class SpecialMove
+class StatusMove
+class ThunderShock
+class ThunderWave
+class TripleKick
+class WingAttack
+
+Aggron        -[#000082,plain]-^  Pokemon      
+Amnesia       -[#000082,plain]-^  StatusMove   
+Charizard     -[#000082,plain]-^  Pokemon      
+DamageMove    -[#000082,plain]-^  Move         
+DoubleKick    -[#000082,plain]-^  PhysicalMove 
+Electabuzz    -[#000082,plain]-^  Pokemon      
+IceBeam       -[#000082,plain]-^  SpecialMove  
+Joltik        -[#000082,plain]-^  Pokemon      
+Koffing       -[#000082,plain]-^  Pokemon      
+LightScreen   -[#000082,plain]-^  StatusMove   
+MegaPunch     -[#000082,plain]-^  PhysicalMove 
+PhysicalMove  -[#000082,plain]-^  DamageMove   
+ShadowPunch   -[#000082,plain]-^  PhysicalMove 
+Sneasel       -[#000082,plain]-^  Pokemon      
+SpecialMove   -[#000082,plain]-^  DamageMove   
+StatusMove    -[#000082,plain]-^  Move         
+ThunderShock  -[#000082,plain]-^  SpecialMove  
+ThunderWave   -[#000082,plain]-^  StatusMove   
+TripleKick    -[#000082,plain]-^  PhysicalMove 
+WingAttack    -[#000082,plain]-^  PhysicalMove 
+@enduml
