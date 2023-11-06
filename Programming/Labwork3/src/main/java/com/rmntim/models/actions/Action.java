@@ -5,12 +5,8 @@ import java.util.Objects;
 public abstract class Action {
     private final String description;
 
-    public Action(String description) {
+    protected Action(String description) {
         this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     @Override
