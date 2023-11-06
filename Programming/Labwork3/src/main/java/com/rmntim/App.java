@@ -4,10 +4,7 @@ import com.rmntim.models.actions.GoAction;
 import com.rmntim.models.actions.TakeAction;
 import com.rmntim.models.common.Communicator;
 import com.rmntim.models.common.Order;
-import com.rmntim.models.people.Engineer;
-import com.rmntim.models.people.Group;
-import com.rmntim.models.people.Person;
-import com.rmntim.models.people.Sex;
+import com.rmntim.models.people.*;
 import com.rmntim.models.story.Sentence;
 import com.rmntim.models.story.Story;
 
@@ -17,18 +14,18 @@ public class App {
     public static void main(String[] args) {
         var story = new Story();
 
-        story.addCharacter(new Person("Знайка", Sex.MALE));
+        var smarty = new Captain("Знайка", Sex.MALE);
+
+        story.addCharacter(smarty);
 
         story.addCharacterGroup(new Group<>(
-                List.of(new Person("Кубик", Sex.MALE),
-                        new Person("Тюбик", Sex.MALE),
-                        new Person("Звездочкин", Sex.MALE),
-                        new Person("Стекляшкин", Sex.MALE),
+                List.of(new Shorty("Кубик", Sex.MALE),
+                        new Shorty("Тюбик", Sex.MALE),
+                        new Shorty("Звездочкин", Sex.MALE),
+                        new Shorty("Стекляшкин", Sex.MALE),
                         new Engineer("Клепка", Sex.MALE)
                 )
         ));
-
-        var smarty = story.getCharacter("Знайка");
 
         story.addSentence(new Sentence(smarty.think(
                 "Если они и отправились куда-нибудь, то, безусловно, пошли по этой дорожке"
