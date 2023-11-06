@@ -1,11 +1,10 @@
 package com.rmntim.models.people;
 
-import com.rmntim.interfaces.HasCase;
 import com.rmntim.interfaces.Thinker;
 
 import java.util.Objects;
 
-public abstract class Person implements Thinker, HasCase {
+public abstract class Person implements Thinker {
     protected final String name;
     protected final Sex sex;
 
@@ -25,14 +24,6 @@ public abstract class Person implements Thinker, HasCase {
     @Override
     public String think(String thought) {
         return '"' + thought + '"' + ", --" + (isMale() ? " подумал " : " подумала ") + getName();
-    }
-
-    public String dativeCase() {
-        if (getName().matches(".*(?i)[аеёоуиэя]")) {
-            return getName().substring(0, getName().length() - 1) + "е";
-        }
-
-        return getName() + "у";
     }
 
     @Override

@@ -1,19 +1,8 @@
 package com.rmntim.models.common;
 
-import com.rmntim.interfaces.HasCase;
-
 import java.util.Objects;
 
-public record Communicator(String name) implements HasCase {
-
-    @Override
-    public String dativeCase() {
-        if (name().matches(".*(?i)[аеёоуиэя]")) {
-            return name().substring(0, name().length() - 1) + "е";
-        }
-
-        return name() + "у";
-    }
+public record Communicator(String name) {
 
     @Override
     public String toString() {

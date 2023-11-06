@@ -1,6 +1,7 @@
 package com.rmntim.models.people;
 
 import com.rmntim.interfaces.CanOrder;
+import com.rmntim.models.common.CaseConverter;
 import com.rmntim.models.common.Order;
 
 import java.util.StringJoiner;
@@ -17,9 +18,9 @@ public class Captain extends Person implements CanOrder {
         joiner.add(order.getMoment());
         joiner.add(isMale() ? "отдал" : "отдала");
         if (order.hasCommunicator())
-            joiner.add("по " + order.getCommunicator().dativeCase());
+            joiner.add("по " + CaseConverter.toDative(order.getCommunicator().name()));
         joiner.add("приказ");
-        joiner.add(group.dativeCase());
+        joiner.add(CaseConverter.toDative(group));
         joiner.add(order.getActions());
         return joiner.toString();
     }
@@ -31,9 +32,9 @@ public class Captain extends Person implements CanOrder {
         joiner.add(order.getMoment());
         joiner.add(isMale() ? "отдал" : "отдала");
         if (order.hasCommunicator())
-            joiner.add("по " + order.getCommunicator().dativeCase());
+            joiner.add("по " + CaseConverter.toDative(order.getCommunicator().name()));
         joiner.add("приказ");
-        joiner.add(person.dativeCase());
+        joiner.add(CaseConverter.toDative(person.getName()));
         joiner.add(order.getActions());
         return joiner + ".";
     }
