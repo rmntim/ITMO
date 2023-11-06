@@ -66,10 +66,10 @@ public class Story implements Tellable {
 
     @Override
     public String toString() {
-        var builder = new StringJoiner("\n");
+        var joiner = new StringJoiner("\n");
         for (Sentence sentence : sentences) {
-            builder.add(sentence.toString());
+            joiner.add(sentence.toString());
         }
-        return builder.toString();
+        return joiner.toString();
     }
 }
