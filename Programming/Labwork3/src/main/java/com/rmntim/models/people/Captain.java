@@ -18,7 +18,7 @@ public class Captain extends Person implements CanOrder {
         joiner.add(order.getMoment());
         joiner.add(isMale() ? "отдал" : "отдала");
         if (order.hasCommunicator())
-            joiner.add("по " + CaseConverter.toDative(order.getCommunicator().name()));
+            joiner.add("по " + CaseConverter.toDative(order.getCommunicator().getName()));
         joiner.add("приказ");
         joiner.add(CaseConverter.toDative(group));
         joiner.add(order.getActions());
@@ -32,7 +32,7 @@ public class Captain extends Person implements CanOrder {
         joiner.add(order.getMoment());
         joiner.add(isMale() ? "отдал" : "отдала");
         if (order.hasCommunicator())
-            joiner.add("по " + CaseConverter.toDative(order.getCommunicator().name()));
+            joiner.add("по " + CaseConverter.toDative(order.getCommunicator().getName()));
         joiner.add("приказ");
         joiner.add(CaseConverter.toDative(person.getName()));
         joiner.add(order.getActions());
