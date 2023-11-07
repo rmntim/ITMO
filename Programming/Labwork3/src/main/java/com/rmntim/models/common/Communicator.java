@@ -2,34 +2,26 @@ package com.rmntim.models.common;
 
 import com.rmntim.interfaces.HasCase;
 
-import java.util.Objects;
+public enum Communicator implements HasCase {
+    RADIOPHONE("радиотелефон"),
+    PAGER("пейджер"),
+    IPHONE_15_PRO("телефон");
 
-public record Communicator(String name) implements HasCase {
+    private final String name;
 
-    @Override
+    Communicator(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public String dativeCase() {
-        if (name().matches(".*(?i)[аеёоуиэя]")) {
-            return name().substring(0, name().length() - 1) + "е";
+        if (getName().matches(".*(?i)[аеёоуиэя]")) {
+            return getName().substring(0, getName().length() - 1) + "е";
         }
 
-        return name() + "у";
-    }
-
-    @Override
-    public String toString() {
-        return name();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Communicator that = (Communicator) o;
-        return Objects.equals(name, that.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name);
+        return getName() + "у";
     }
 }

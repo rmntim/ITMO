@@ -38,7 +38,7 @@ public class App {
 
         var actions = List.of(takeAction, goAction);
 
-        var order = new Order("тотчас", new Communicator("радиотелефон"), actions);
+        var order = new Order("тотчас", Communicator.IPHONE_15_PRO, actions);
 
         story.addSentence(new Sentence("Придя к такому умозаключению")
                 .then(smarty.giveOrder(group, order)));
