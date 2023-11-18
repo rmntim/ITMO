@@ -1,8 +1,8 @@
 ; упаси боже писать это руками
 ORG 0x214
 
-WORD 0xE220
-WORD 0x0100
+WORD -7000 ; B
+WORD 3213 ; A
 
 LD 0x215
 ADD 0x214
@@ -13,6 +13,4 @@ OR 0x220
 ST 0x21F
 HLT
 
-WORD 0x321E
-WORD 0xA215
-WORD 0x3220
+WORD 64 ; C
