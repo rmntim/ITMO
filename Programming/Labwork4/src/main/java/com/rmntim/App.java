@@ -1,5 +1,6 @@
 package com.rmntim;
 
+import com.rmntim.exceptions.EmptyStoryException;
 import com.rmntim.interfaces.Wearable;
 import com.rmntim.models.common.Action;
 import com.rmntim.models.common.Communicator;
@@ -64,7 +65,7 @@ public class App {
                 new Action.Take("альпеншток"),
                 new Action.Attach("ледоруб и моток прочного капронового шнура", "пояс")
         );
-        
+
         var glassy = group.getMemberByName("Стекляшкин");
 
         story.addSentence(story.new Sentence(group.performActions(actions))
@@ -72,6 +73,10 @@ public class App {
                 .withWhich("обычно не расставался")
         );
 
-        story.tell();
+        try {
+            story.tell();
+        } catch (EmptyStoryException ese) {
+            System.out.println("The story you provided is empty!");
+        }
     }
 }

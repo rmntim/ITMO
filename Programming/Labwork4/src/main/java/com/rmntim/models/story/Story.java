@@ -1,6 +1,6 @@
 package com.rmntim.models.story;
 
-import com.rmntim.interfaces.Tellable;
+import com.rmntim.exceptions.EmptyStoryException;
 import com.rmntim.models.people.Group;
 import com.rmntim.models.people.Person;
 
@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-public class Story implements Tellable {
+public class Story {
     private final ArrayList<Sentence> sentences;
     private final HashMap<String, Person> characters;
     private final ArrayList<Group<Person>> groups;
@@ -35,7 +35,11 @@ public class Story implements Tellable {
         return this.groups.get(index);
     }
 
-    public void tell() {
+    public void tell() throws EmptyStoryException {
+        if (sentences.isEmpty()) {
+            throw new EmptyStoryException();
+        }
+
         for (Sentence sentence : sentences) {
             sentence.print();
         }
