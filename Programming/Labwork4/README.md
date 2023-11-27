@@ -18,4 +18,4 @@
 
 **UML-диаграмма**
 
-[[docs/Diagram.png]]
+![diagram](docs/Diagram.png)
