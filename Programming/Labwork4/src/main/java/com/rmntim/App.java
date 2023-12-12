@@ -29,7 +29,7 @@ public class App {
                         new Shorty("Тюбик", Sex.MALE),
                         new Shorty("Звездочкин", Sex.MALE),
                         new Shorty("Стекляшкин", Sex.MALE),
-                        new Engineer("Клепка", Sex.MALE)
+                        new Shorty("Клепка", Sex.MALE)
                 )
         ));
 
