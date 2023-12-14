@@ -1,8 +1,8 @@
 package com.rmntim.models.people;
 
 import com.rmntim.exceptions.NoSuchMemberException;
-import com.rmntim.interfaces.Wearable;
 import com.rmntim.models.common.Action;
+import com.rmntim.models.common.Wearable;
 
 import java.util.List;
 import java.util.Objects;
@@ -41,7 +41,7 @@ public class Group<T extends Person> {
         }
         builder.append(" и ").append(members.get(members.size() - 1));
 
-        builder.append(" надели ").append(item.plural());
+        builder.append(" надели ").append(item.toPlural());
 
         return builder.toString();
     }
@@ -64,7 +64,7 @@ public class Group<T extends Person> {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Group<?> group = (Group<?>) obj;
-        return Objects.equals(members, ((Group<?>) obj).members);
+        return Objects.equals(members, group.members);
     }
 
     @Override

@@ -1,10 +1,10 @@
 package com.rmntim;
 
 import com.rmntim.exceptions.EmptyStoryException;
-import com.rmntim.interfaces.Wearable;
 import com.rmntim.models.common.Action;
 import com.rmntim.models.common.Communicator;
 import com.rmntim.models.common.Order;
+import com.rmntim.models.common.Wearable;
 import com.rmntim.models.people.*;
 import com.rmntim.models.story.Story;
 
@@ -50,11 +50,8 @@ public class App {
                 .then(smarty.giveOrder(group, order)));
 
         var spacesuit = new Wearable() {
-            public String singular() {
-                return "скафандр";
-            }
-
-            public String plural() {
+            @Override
+            public String toPlural() {
                 return "скафандры";
             }
         };
