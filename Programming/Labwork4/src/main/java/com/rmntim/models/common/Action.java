@@ -1,11 +1,17 @@
 package com.rmntim.models.common;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 public abstract class Action {
-    private final String description;
+    private String description;
 
     Action(String description) {
+        this.description = description;
+    }
+
+    public void setDescription(String description) {
         this.description = description;
     }
 
@@ -34,8 +40,20 @@ public abstract class Action {
     }
 
     public static class Take extends Action {
-        public Take(String subject) {
-            super(subject);
+        private final List<Item> items;
+
+        public List<Item> getItems() {
+            return items;
+        }
+
+        public Take(String item) {
+            super(item);
+            this.items = List.of(new Item(item, 0));
+        }
+
+        public Take(Item item) {
+            super(item.name());
+            this.items = List.of(item);
         }
 
         @Override
@@ -50,8 +68,28 @@ public abstract class Action {
     }
 
     public static class Attach extends Action {
-        public Attach(String subject, String destination) {
-            super("к " + CaseConverter.toDative(destination) + " " + subject);
+        private final List<Item> items;
+
+        public List<Item> getItems() {
+            return items;
+        }
+
+        public Attach(Item item, String destination) {
+            super("к " + CaseConverter.toDative(destination) + " " + item.name());
+            this.items = List.of(item);
+        }
+
+        public Attach(List<Item> items, String destination) {
+            super("к" + CaseConverter.toDative(destination) + " ");
+
+            var joiner = new StringJoiner(", ");
+
+            for (var item : items)
+                joiner.add(item.name());
+
+            setDescription(joiner.toString());
+
+            this.items = items;
         }
 
         @Override
@@ -66,8 +104,15 @@ public abstract class Action {
     }
 
     public static class Hang extends Action {
-        public Hang(String subject, String destination) {
-            super("на " + CaseConverter.toAccusative(destination) + " " + subject);
+        private final List<Item> items;
+
+        public Hang(Item item, String destination) {
+            super("на " + CaseConverter.toAccusative(destination) + " " + item.name());
+            this.items = List.of(item);
+        }
+
+        public List<Item> getItems() {
+            return items;
         }
 
         @Override
@@ -88,8 +133,10 @@ public abstract class Action {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Action action = (Action) o;
         return Objects.equals(description, action.description);
     }

@@ -14,7 +14,7 @@ public class Captain extends Person implements CanOrder {
     @Override
     public String giveOrder(Group<?> group, Order order) {
         StringJoiner joiner = new StringJoiner(" ");
-        joiner.add(sex.getPronoun());
+        joiner.add(getSex().getPronoun());
         joiner.add(order.getMoment());
         joiner.add(isMale() ? "отдал" : "отдала");
         joiner.add("по " + CaseConverter.toDative(order.getCommunicator().getName()));
