@@ -3,3 +3,6 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 .idea/
+.project
+.classpath
+.settings
