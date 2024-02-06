@@ -1,4 +1,4 @@
-package ru.rmntim.server.models;
+package ru.rmntim.common.models;
 
 /**
  * @param x non-null, max: 633

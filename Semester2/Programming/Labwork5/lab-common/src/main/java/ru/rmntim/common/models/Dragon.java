@@ -1,4 +1,4 @@
-package ru.rmntim.server.models;
+package ru.rmntim.common.models;
 
 import java.time.ZonedDateTime;
 
@@ -14,5 +14,10 @@ import java.time.ZonedDateTime;
  * @param head
  */
 public record Dragon(Integer id, String name, Coordinates coordinates, ZonedDateTime creationDate, Long age,
-                     Color color, DragonType type, DragonCharacter character, DragonHead head) {
+                     Color color, DragonType type, DragonCharacter character,
+                     DragonHead head) implements Comparable<Dragon> {
+    @Override
+    public int compareTo(Dragon o) {
+        return this.id.compareTo(o.id());
+    }
 }

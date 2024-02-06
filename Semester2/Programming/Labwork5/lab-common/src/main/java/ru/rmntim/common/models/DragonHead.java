@@ -1,4 +1,4 @@
-package ru.rmntim.server.models;
+package ru.rmntim.common.models;
 
 /**
  * @param eyesCount non-null

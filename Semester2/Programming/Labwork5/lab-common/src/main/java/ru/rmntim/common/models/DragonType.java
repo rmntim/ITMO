@@ -1,4 +1,4 @@
-package ru.rmntim.server.models;
+package ru.rmntim.common.models;
 
 public enum DragonType {
     WATER,
