@@ -61,7 +61,7 @@ public final class Server {
                 }
                 switch (command) {
                     case "exit" -> System.exit(0);
-                    default -> throw new RuntimeException();
+                    default -> System.err.println("хуйню сморозил");
                 }
             }
         }
