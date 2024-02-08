@@ -11,6 +11,6 @@ public class DragonValidator implements Validator<Dragon> {
         if (dragon.id() <= 0 || dragon.age() <= 0 || dragon.name().isEmpty()) {
             return false;
         }
-        return Stream.of(dragon.id(), dragon.name(), dragon.coordinates(), dragon.creationDate(), dragon.age(), dragon.color(), dragon.type(), dragon.character(), dragon.head()).noneMatch(Objects::isNull);
+        return Stream.of(dragon.id(), dragon.name(), dragon.coordinates(), dragon.creationDate(), dragon.age(), dragon.color(), dragon.type(), dragon.character()).noneMatch(Objects::isNull);
     }
 }
