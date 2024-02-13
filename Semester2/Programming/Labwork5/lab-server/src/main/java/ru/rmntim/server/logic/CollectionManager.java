@@ -1,8 +1,8 @@
 package ru.rmntim.server.logic;
 
 import ru.rmntim.common.models.Dragon;
+import ru.rmntim.common.validation.DragonValidator;
 import ru.rmntim.server.storage.StorageManager;
-import ru.rmntim.server.validation.DragonValidator;
 
 import java.time.LocalDateTime;
 import java.util.TreeSet;
@@ -28,9 +28,8 @@ public class CollectionManager {
     }
 
     public void validateCollection() {
-        var validator = new DragonValidator();
         collection = collection.stream().filter(dragon -> {
-            if (!validator.validate(dragon)) {
+            if (!DragonValidator.validate(dragon)) {
                 LOGGER.log(Level.WARNING, "Dragon with id " + dragon.id() + " is not valid");
                 return false;
             }
