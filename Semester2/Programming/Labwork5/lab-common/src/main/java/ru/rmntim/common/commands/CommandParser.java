@@ -25,13 +25,13 @@ public class CommandParser {
                 if (arguments.isPresent()) {
                     yield Optional.empty();
                 }
-                yield Optional.of(new ExitCommand());
+                yield Optional.ofNullable(commands.get("exit"));
             }
             case "help" -> {
                 if (arguments.isPresent()) {
                     yield Optional.empty();
                 }
-                yield Optional.of(new HelpCommand(commands.values().stream().toList()));
+                yield Optional.ofNullable(commands.get("help"));
             }
             default -> Optional.empty();
         };
