@@ -32,8 +32,4 @@ public class CollectionManager {
             return true;
         }).collect(TreeSet::new, TreeSet::add, TreeSet::addAll);
     }
-
-    public void writeCollection() {
-        storageManager.writeCollection(collection);
-    }
 }
