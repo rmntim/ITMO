@@ -3,3 +3,6 @@
 *.iml
 *.jar
 *.json
+**/.project
+**/.classpath
+**/.settings/
