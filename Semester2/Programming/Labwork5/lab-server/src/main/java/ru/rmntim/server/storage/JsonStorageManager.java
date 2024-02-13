@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import ru.rmntim.common.models.Dragon;
-import ru.rmntim.common.util.ZonedDateTimeJson;
+import ru.rmntim.server.ZonedDateTimeJson;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -51,6 +51,7 @@ public class JsonStorageManager implements StorageManager {
         var inputFile = new File(fileName);
         try (var inputStream = new FileInputStream(inputFile); var reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             if (!inputFile.exists()) {
+                //noinspection ResultOfMethodCallIgnored
                 inputFile.createNewFile();
             }
             if (!inputFile.isFile()) {

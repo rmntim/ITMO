@@ -1,8 +1,8 @@
 package ru.rmntim.server;
 
 import ru.rmntim.common.models.Dragon;
-import ru.rmntim.common.validation.DragonValidator;
 import ru.rmntim.server.storage.StorageManager;
+import ru.rmntim.server.validation.DragonValidator;
 
 import java.util.TreeSet;
 import java.util.logging.Level;

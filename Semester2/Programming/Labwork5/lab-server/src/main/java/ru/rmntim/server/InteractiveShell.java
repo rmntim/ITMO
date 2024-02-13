@@ -1,6 +1,7 @@
 package ru.rmntim.server;
 
 import ru.rmntim.common.commands.Command;
+import ru.rmntim.common.commands.CommandParser;
 import ru.rmntim.common.commands.StatusCode;
 
 import java.io.BufferedReader;
@@ -15,6 +16,7 @@ import java.util.logging.Logger;
 public class InteractiveShell {
     private static final Logger LOGGER = Logger.getLogger(InteractiveShell.class.getName());
     private static final String PS1 = ">> ";
+    private final CommandInterpreter interpreter = new CommandInterpreter();
     private final HashMap<String, Command> commands;
 
     public InteractiveShell(final HashMap<String, Command> commands) {
@@ -49,14 +51,16 @@ public class InteractiveShell {
             LOGGER.log(Level.INFO, "Command does not exist");
             return StatusCode.ERROR;
         }
-        var arguments = userCommand.subList(1, userCommand.size());
-        var status = commands.get(commandName).execute(arguments);
+        var parser = new CommandParser(commands);
+        var command = parser.parse(userCommand).orElseThrow();
+        var status = interpreter.execute(command);
+
         if (status == StatusCode.ERROR) {
             LOGGER.log(Level.INFO, "Command is not valid");
         }
-        if (status == StatusCode.RUN_SCRIPT) {
-            status = runScript(arguments.get(0));
-        }
+//        if (status == StatusCode.RUN_SCRIPT) {
+//            status = runScript(arguments.get(0));
+//        }
         return status;
     }
 

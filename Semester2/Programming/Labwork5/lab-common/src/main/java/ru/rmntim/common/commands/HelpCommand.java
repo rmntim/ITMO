@@ -10,13 +10,12 @@ public class HelpCommand extends Command {
         this.commands = commands;
     }
 
+    public List<Command> getCommands() {
+        return commands;
+    }
+
     @Override
-    public StatusCode execute(final List<String> arguments) {
-        if (!arguments.isEmpty()) {
-            return StatusCode.ERROR;
-        }
-        commands.forEach(System.out::println);
-        System.out.println(this);
-        return StatusCode.OK;
+    public <T> T accept(CommandVisitor<T> visitor) {
+        return visitor.visit(this);
     }
 }

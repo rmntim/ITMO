@@ -1,6 +1,5 @@
 package ru.rmntim.common.commands;
 
-import java.util.List;
 import java.util.Objects;
 
 public abstract class Command {
@@ -20,7 +19,7 @@ public abstract class Command {
         return description;
     }
 
-    public abstract StatusCode execute(List<String> arguments);
+    public abstract <T> T accept(CommandVisitor<T> visitor);
 
     @Override
     public boolean equals(Object o) {

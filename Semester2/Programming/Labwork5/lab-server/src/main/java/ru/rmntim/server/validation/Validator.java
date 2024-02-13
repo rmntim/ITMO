@@ -1,4 +1,4 @@
-package ru.rmntim.common.validation;
+package ru.rmntim.server.validation;
 
 public interface Validator<T> {
     /**
