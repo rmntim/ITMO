@@ -10,4 +10,6 @@ public interface CommandVisitor<T> {
     T visit(ShowCommand command);
 
     T visit(AddCommand command);
+
+    T visit(UpdateCommand command);
 }

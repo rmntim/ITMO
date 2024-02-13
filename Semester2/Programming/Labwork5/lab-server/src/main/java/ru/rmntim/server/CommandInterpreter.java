@@ -8,6 +8,7 @@ import ru.rmntim.common.commands.HelpCommand;
 import ru.rmntim.common.commands.InfoCommand;
 import ru.rmntim.common.commands.ShowCommand;
 import ru.rmntim.common.commands.StatusCode;
+import ru.rmntim.common.commands.UpdateCommand;
 
 import java.time.format.DateTimeFormatter;
 
@@ -46,6 +47,11 @@ public class CommandInterpreter implements CommandVisitor<StatusCode> {
 
     @Override
     public StatusCode visit(AddCommand command) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public StatusCode visit(UpdateCommand command) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 }

@@ -5,6 +5,7 @@ import ru.rmntim.common.commands.CommandRegistryBuilder;
 import ru.rmntim.common.commands.ExitCommand;
 import ru.rmntim.common.commands.InfoCommand;
 import ru.rmntim.common.commands.ShowCommand;
+import ru.rmntim.common.commands.UpdateCommand;
 import ru.rmntim.server.storage.JsonStorageManager;
 
 public final class Server {
@@ -24,6 +25,7 @@ public final class Server {
                 .register("info", new InfoCommand(collectionManager.getCollection(), collectionManager.getInitializationDate()))
                 .register("show", new ShowCommand(collectionManager.getCollection()))
                 .register("add", new AddCommand(collectionManager.getCollection()))
+                .register("update [id] {element}", new UpdateCommand(collectionManager.getCollection()))
                 .build();
 
         new InteractiveShell(commandRegistry).run();
