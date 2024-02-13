@@ -52,8 +52,8 @@ public class InteractiveShell {
             return StatusCode.ERROR;
         }
         var parser = new CommandParser(commands);
-        var command = parser.parse(userCommand).orElseThrow();
-        var status = interpreter.execute(command);
+        var command = parser.parse(userCommand);
+        var status = command.map(interpreter::execute).orElse(StatusCode.ERROR);
 
         if (status == StatusCode.ERROR) {
             LOGGER.log(Level.INFO, "Command is not valid");
