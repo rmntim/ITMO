@@ -1,5 +1,6 @@
 package ru.rmntim.server;
 
+import ru.rmntim.common.commands.AddCommand;
 import ru.rmntim.common.commands.CommandRegistryBuilder;
 import ru.rmntim.common.commands.ExitCommand;
 import ru.rmntim.common.commands.InfoCommand;
@@ -22,6 +23,7 @@ public final class Server {
                 .register("exit", new ExitCommand())
                 .register("info", new InfoCommand(collectionManager.getCollection(), collectionManager.getInitializationDate()))
                 .register("show", new ShowCommand(collectionManager.getCollection()))
+                .register("add", new AddCommand(collectionManager.getCollection()))
                 .build();
 
         new InteractiveShell(commandRegistry).run();

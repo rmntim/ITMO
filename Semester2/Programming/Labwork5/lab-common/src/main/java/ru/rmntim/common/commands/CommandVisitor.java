@@ -8,4 +8,6 @@ public interface CommandVisitor<T> {
     T visit(InfoCommand command);
 
     T visit(ShowCommand command);
+
+    T visit(AddCommand command);
 }

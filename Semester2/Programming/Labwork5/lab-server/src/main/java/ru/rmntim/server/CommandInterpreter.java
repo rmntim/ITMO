@@ -1,5 +1,6 @@
 package ru.rmntim.server;
 
+import ru.rmntim.common.commands.AddCommand;
 import ru.rmntim.common.commands.Command;
 import ru.rmntim.common.commands.CommandVisitor;
 import ru.rmntim.common.commands.ExitCommand;
@@ -41,5 +42,10 @@ public class CommandInterpreter implements CommandVisitor<StatusCode> {
     public StatusCode visit(ShowCommand command) {
         command.getCollection().forEach(System.out::println);
         return StatusCode.OK;
+    }
+
+    @Override
+    public StatusCode visit(AddCommand command) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 }

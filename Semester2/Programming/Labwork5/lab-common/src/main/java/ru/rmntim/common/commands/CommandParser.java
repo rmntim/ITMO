@@ -45,6 +45,7 @@ public class CommandParser {
                 }
                 yield Optional.ofNullable(commands.get("show"));
             }
+            case "add" -> Optional.ofNullable(commands.get("add"));
             default -> Optional.empty();
         };
     }
