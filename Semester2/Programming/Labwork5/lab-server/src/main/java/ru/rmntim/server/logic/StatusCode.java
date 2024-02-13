@@ -1,4 +1,4 @@
-package ru.rmntim.common.commands;
+package ru.rmntim.server.logic;
 
 public enum StatusCode {
     OK,

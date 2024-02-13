@@ -1,4 +1,4 @@
-package ru.rmntim.server;
+package ru.rmntim.server.logic;
 
 import ru.rmntim.common.commands.AddCommand;
 import ru.rmntim.common.commands.Command;
@@ -6,7 +6,6 @@ import ru.rmntim.common.commands.ExitCommand;
 import ru.rmntim.common.commands.HelpCommand;
 import ru.rmntim.common.commands.InfoCommand;
 import ru.rmntim.common.commands.ShowCommand;
-import ru.rmntim.common.commands.StatusCode;
 import ru.rmntim.common.commands.UpdateCommand;
 
 import java.time.format.DateTimeFormatter;

@@ -1,13 +1,22 @@
-package ru.rmntim.common.commands;
+package ru.rmntim.server.logic;
+
+import ru.rmntim.common.commands.AddCommand;
+import ru.rmntim.common.commands.Command;
+import ru.rmntim.common.commands.ExitCommand;
+import ru.rmntim.common.commands.HelpCommand;
+import ru.rmntim.common.commands.InfoCommand;
+import ru.rmntim.common.commands.ShowCommand;
+import ru.rmntim.common.commands.UpdateCommand;
 
 import java.util.List;
 import java.util.Optional;
 
-public class CommandParser {
-    public CommandParser() {
+public final class Parser {
+    private Parser() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 
-    public Optional<Command> parse(final List<String> tokens) {
+    public static Optional<Command> parse(final List<String> tokens) {
         var commandName = tokens.get(0);
         Optional<String> arguments = Optional.empty();
         try {

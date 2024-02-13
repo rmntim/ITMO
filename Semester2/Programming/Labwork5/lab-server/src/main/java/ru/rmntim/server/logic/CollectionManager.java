@@ -1,4 +1,4 @@
-package ru.rmntim.server;
+package ru.rmntim.server.logic;
 
 import ru.rmntim.common.models.Dragon;
 import ru.rmntim.server.storage.StorageManager;
@@ -11,12 +11,10 @@ import java.util.logging.Logger;
 
 public class CollectionManager {
     private static final Logger LOGGER = Logger.getLogger(CollectionManager.class.getName());
-    private final StorageManager storageManager;
     private final LocalDateTime initializationDate;
     private TreeSet<Dragon> collection;
 
     public CollectionManager(final StorageManager storageManager) {
-        this.storageManager = storageManager;
         this.collection = storageManager.readCollection().orElse(new TreeSet<>());
         this.initializationDate = LocalDateTime.now();
     }

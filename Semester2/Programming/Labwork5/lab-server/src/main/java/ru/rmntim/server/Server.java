@@ -1,5 +1,6 @@
 package ru.rmntim.server;
 
+import ru.rmntim.server.logic.CollectionManager;
 import ru.rmntim.server.storage.JsonStorageManager;
 
 public final class Server {

@@ -1,7 +1,9 @@
 package ru.rmntim.server;
 
-import ru.rmntim.common.commands.CommandParser;
-import ru.rmntim.common.commands.StatusCode;
+import ru.rmntim.server.logic.CollectionManager;
+import ru.rmntim.server.logic.Interpreter;
+import ru.rmntim.server.logic.Parser;
+import ru.rmntim.server.logic.StatusCode;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -45,8 +47,7 @@ public class InteractiveShell {
     }
 
     private StatusCode runCommand(final List<String> userCommand) {
-        var parser = new CommandParser();
-        var command = parser.parse(userCommand);
+        var command = Parser.parse(userCommand);
         var status = command.map(interpreter::execute).orElse(StatusCode.ERROR);
         if (status == StatusCode.ERROR) {
             LOGGER.log(Level.INFO, "Command is not valid");
