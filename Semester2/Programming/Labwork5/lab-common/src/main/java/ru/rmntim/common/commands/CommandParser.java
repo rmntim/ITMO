@@ -1,14 +1,10 @@
 package ru.rmntim.common.commands;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
 public class CommandParser {
-    private final HashMap<String, Command> commands;
-
-    public CommandParser(final HashMap<String, Command> commands) {
-        this.commands = commands;
+    public CommandParser() {
     }
 
     public Optional<Command> parse(final List<String> tokens) {
@@ -21,32 +17,12 @@ public class CommandParser {
         }
 
         return switch (commandName) {
-            case "exit" -> {
-                if (arguments.isPresent()) {
-                    yield Optional.empty();
-                }
-                yield Optional.ofNullable(commands.get("exit"));
-            }
-            case "help" -> {
-                if (arguments.isPresent()) {
-                    yield Optional.empty();
-                }
-                yield Optional.ofNullable(commands.get("help"));
-            }
-            case "info" -> {
-                if (arguments.isPresent()) {
-                    yield Optional.empty();
-                }
-                yield Optional.ofNullable(commands.get("info"));
-            }
-            case "show" -> {
-                if (arguments.isPresent()) {
-                    yield Optional.empty();
-                }
-                yield Optional.ofNullable(commands.get("show"));
-            }
-            case "add" -> Optional.ofNullable(commands.get("add"));
-            case "update" -> Optional.ofNullable(commands.get("update"));
+            case "exit" -> arguments.isEmpty() ? Optional.of(new ExitCommand()) : Optional.empty();
+            case "help" -> arguments.isEmpty() ? Optional.of(new HelpCommand()) : Optional.empty();
+            case "info" -> arguments.isEmpty() ? Optional.of(new InfoCommand()) : Optional.empty();
+            case "show" -> arguments.isEmpty() ? Optional.of(new ShowCommand()) : Optional.empty();
+            case "add" -> Optional.of(new AddCommand());
+            case "update" -> Optional.of(new UpdateCommand(0));
             default -> Optional.empty();
         };
     }

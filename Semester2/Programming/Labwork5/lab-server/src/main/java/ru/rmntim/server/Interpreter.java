@@ -2,7 +2,6 @@ package ru.rmntim.server;
 
 import ru.rmntim.common.commands.AddCommand;
 import ru.rmntim.common.commands.Command;
-import ru.rmntim.common.commands.CommandVisitor;
 import ru.rmntim.common.commands.ExitCommand;
 import ru.rmntim.common.commands.HelpCommand;
 import ru.rmntim.common.commands.InfoCommand;
@@ -11,9 +10,22 @@ import ru.rmntim.common.commands.StatusCode;
 import ru.rmntim.common.commands.UpdateCommand;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
-public class CommandInterpreter implements CommandVisitor<StatusCode> {
-    public CommandInterpreter() {
+public class Interpreter implements Command.Visitor<StatusCode> {
+    private final CollectionManager collectionManager;
+    private final Map<String, String> availableCommands;
+
+    public Interpreter(final CollectionManager collectionManager) {
+        this.collectionManager = collectionManager;
+        this.availableCommands = Map.of(
+                "exit", "exits the program",
+                "help", "shows help",
+                "info", "shows information about collection",
+                "show", "shows collection",
+                "add {element}", "adds an element to the collection",
+                "update [ID] {element}", "updates an element in the collection by ID"
+        );
     }
 
     public StatusCode execute(Command command) {
@@ -27,21 +39,21 @@ public class CommandInterpreter implements CommandVisitor<StatusCode> {
 
     @Override
     public StatusCode visit(HelpCommand command) {
-        command.getCommands().forEach(System.out::println);
+        availableCommands.forEach((key, value) -> System.out.println(key + " - " + value));
         return StatusCode.OK;
     }
 
     @Override
     public StatusCode visit(InfoCommand command) {
-        System.out.println("Collection type: " + command.getCollection().getClass().getSimpleName());
-        System.out.println("Initialization date: " + command.getInitializationDate().format(DateTimeFormatter.ISO_LOCAL_DATE));
-        System.out.println("Number of elements: " + command.getCollection().size());
+        System.out.println("Collection type: " + collectionManager.getCollection().getClass().getSimpleName());
+        System.out.println("Initialization date: " + collectionManager.getInitializationDate().format(DateTimeFormatter.ISO_LOCAL_DATE));
+        System.out.println("Number of elements: " + collectionManager.getCollection().size());
         return StatusCode.OK;
     }
 
     @Override
     public StatusCode visit(ShowCommand command) {
-        command.getCollection().forEach(System.out::println);
+        collectionManager.getCollection().forEach(System.out::println);
         return StatusCode.OK;
     }
 

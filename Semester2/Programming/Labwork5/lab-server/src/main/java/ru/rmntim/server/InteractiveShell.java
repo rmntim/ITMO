@@ -1,6 +1,5 @@
 package ru.rmntim.server;
 
-import ru.rmntim.common.commands.Command;
 import ru.rmntim.common.commands.CommandParser;
 import ru.rmntim.common.commands.StatusCode;
 
@@ -8,7 +7,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,11 +14,10 @@ import java.util.logging.Logger;
 public class InteractiveShell {
     private static final Logger LOGGER = Logger.getLogger(InteractiveShell.class.getName());
     private static final String PS1 = ">> ";
-    private final CommandInterpreter interpreter = new CommandInterpreter();
-    private final HashMap<String, Command> commands;
+    private final Interpreter interpreter;
 
-    public InteractiveShell(final HashMap<String, Command> commands) {
-        this.commands = commands;
+    public InteractiveShell(final CollectionManager collectionManager) {
+        this.interpreter = new Interpreter(collectionManager);
     }
 
     public void run() {
@@ -37,7 +34,9 @@ public class InteractiveShell {
                     continue;
                 }
 
-                var command = Arrays.stream(input.trim().split(" ", 2)).map(String::trim).toList();
+                var command = Arrays.stream(input.trim().split(" ", 2))
+                        .map(String::trim)
+                        .toList();
                 status = runCommand(command);
             } while (status != StatusCode.EXIT);
         } catch (IOException ioe) {
@@ -46,25 +45,12 @@ public class InteractiveShell {
     }
 
     private StatusCode runCommand(final List<String> userCommand) {
-        var commandName = userCommand.get(0);
-        if (!commands.containsKey(commandName)) {
-            LOGGER.log(Level.INFO, "Command does not exist");
-            return StatusCode.ERROR;
-        }
-        var parser = new CommandParser(commands);
+        var parser = new CommandParser();
         var command = parser.parse(userCommand);
         var status = command.map(interpreter::execute).orElse(StatusCode.ERROR);
-
         if (status == StatusCode.ERROR) {
             LOGGER.log(Level.INFO, "Command is not valid");
         }
-//        if (status == StatusCode.RUN_SCRIPT) {
-//            status = runScript(arguments.get(0));
-//        }
         return status;
-    }
-
-    private StatusCode runScript(final String path) {
-        throw new UnsupportedOperationException("Not implemented yet");
     }
 }

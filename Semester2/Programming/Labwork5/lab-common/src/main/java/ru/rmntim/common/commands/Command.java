@@ -1,45 +1,19 @@
 package ru.rmntim.common.commands;
 
-import java.util.Objects;
-
 public abstract class Command {
-    private final String name;
-    private final String description;
+    public abstract <T> T accept(Visitor<T> visitor);
 
-    public Command(final String name, final String description) {
-        this.name = name;
-        this.description = description;
-    }
+    public interface Visitor<T> {
+        T visit(ExitCommand command);
 
-    public String getName() {
-        return name;
-    }
+        T visit(HelpCommand command);
 
-    public String getDescription() {
-        return description;
-    }
+        T visit(InfoCommand command);
 
-    public abstract <T> T accept(CommandVisitor<T> visitor);
+        T visit(ShowCommand command);
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Command command = (Command) o;
-        return Objects.equals(name, command.name) && Objects.equals(description, command.description);
-    }
+        T visit(AddCommand command);
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, description);
-    }
-
-    @Override
-    public String toString() {
-        return name + " - " + description;
+        T visit(UpdateCommand command);
     }
 }

@@ -1,23 +1,18 @@
 package ru.rmntim.common.commands;
 
-import ru.rmntim.common.models.Dragon;
-
-import java.util.TreeSet;
-
 public class UpdateCommand extends Command {
-    private final TreeSet<Dragon> collection;
+    private final int id;
 
-    public UpdateCommand(TreeSet<Dragon> collection) {
-        super("update [id] {element}", "updates an element in the collection");
-        this.collection = collection;
+    public UpdateCommand(int id) {
+        this.id = id;
     }
 
-    public TreeSet<Dragon> getCollection() {
-        return collection;
+    public int getId() {
+        return id;
     }
 
     @Override
-    public <T> T accept(CommandVisitor<T> visitor) {
+    public <T> T accept(Visitor<T> visitor) {
         return visitor.visit(this);
     }
 }
