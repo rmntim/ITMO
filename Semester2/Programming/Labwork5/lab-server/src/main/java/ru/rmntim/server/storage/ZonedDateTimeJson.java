@@ -1,4 +1,4 @@
-package ru.rmntim.server;
+package ru.rmntim.server.storage;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;

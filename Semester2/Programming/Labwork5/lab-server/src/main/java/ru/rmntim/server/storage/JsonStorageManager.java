@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import ru.rmntim.common.models.Dragon;
-import ru.rmntim.server.ZonedDateTimeJson;
 
 import java.io.BufferedReader;
 import java.io.File;
