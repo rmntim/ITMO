@@ -3,6 +3,7 @@ package ru.rmntim.server;
 import ru.rmntim.common.commands.CommandRegistryBuilder;
 import ru.rmntim.common.commands.ExitCommand;
 import ru.rmntim.common.commands.InfoCommand;
+import ru.rmntim.common.commands.ShowCommand;
 import ru.rmntim.server.storage.JsonStorageManager;
 
 public final class Server {
@@ -20,6 +21,7 @@ public final class Server {
         var commandRegistry = new CommandRegistryBuilder()
                 .register("exit", new ExitCommand())
                 .register("info", new InfoCommand(collectionManager.getCollection(), collectionManager.getInitializationDate()))
+                .register("show", new ShowCommand(collectionManager.getCollection()))
                 .build();
 
         new InteractiveShell(commandRegistry).run();
