@@ -33,6 +33,12 @@ public class CommandParser {
                 }
                 yield Optional.ofNullable(commands.get("help"));
             }
+            case "info" -> {
+                if (arguments.isPresent()) {
+                    yield Optional.empty();
+                }
+                yield Optional.ofNullable(commands.get("info"));
+            }
             default -> Optional.empty();
         };
     }

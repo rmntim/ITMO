@@ -4,4 +4,6 @@ public interface CommandVisitor<T> {
     T visit(ExitCommand command);
 
     T visit(HelpCommand command);
+
+    T visit(InfoCommand command);
 }
