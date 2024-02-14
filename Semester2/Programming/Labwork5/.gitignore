@@ -1,0 +1,7 @@
+/target/
+/lab-client/target/
+.idea/
+
+**/target/
+**/*.jar
+**/*.iml
