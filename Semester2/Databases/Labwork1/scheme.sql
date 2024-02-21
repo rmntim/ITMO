@@ -11,9 +11,17 @@ CREATE TABLE people (
   sex sex NOT NULL
 );
 
+CREATE TABLE friendship (
+  first_person_id INT NOT NULL REFERENCES people,
+  second_person_id INT NOT NULL REFERENCES people,
+  CONSTRAINT friendship_id PRIMARY KEY (first_person_id, second_person_id)
+);
+
 CREATE TABLE council_members (
   id SERIAL PRIMARY KEY,
-  person_id INT NOT NULL REFERENCES people
+  person_id INT NOT NULL REFERENCES people,
+  join_date TIMESTAMP NOT NULL DEFAULT NOW(),
+  leave_date TIMESTAMP
 );
 
 CREATE TABLE apprentices (
@@ -41,6 +49,12 @@ VALUES ('Джизирак', 'М'),
        ('Колега 1', 'М'),
        ('Колега 2', 'Ж'),
        ('Колега 3', 'М');
+
+INSERT INTO friendship (first_person_id, second_person_id)
+VALUES (1, 3), (1, 4), (1, 5);
+
+INSERT INTO council_members (person_id, leave_date)
+VALUES (1, NOW());
 
 INSERT INTO council_members (person_id)
 VALUES (3), (4), (5);
