@@ -30,7 +30,7 @@ CREATE TABLE contacts (
 );
 
 CREATE TABLE people_contacts (
-  contacted_person_id  INT NOT NULL REFERENCES people,
+  contacted_person_id INT NOT NULL REFERENCES people,
   contact_id INT NOT NULL REFERENCES contacts,
   CONSTRAINT people_contact_id PRIMARY KEY (contacted_person_id, contact_id)
 );
