@@ -4,6 +4,7 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import ru.rmntim.cli.commands.ExitCommand;
 import ru.rmntim.cli.commands.InfoCommand;
+import ru.rmntim.cli.commands.ShowCommand;
 import ru.rmntim.cli.logic.CollectionManager;
 import ru.rmntim.cli.logic.CommandRegistryBuilder;
 import ru.rmntim.cli.storage.JsonStorageManager;
@@ -26,6 +27,7 @@ public final class Main {
             var collectionManager = new CollectionManager(collection);
             var commandRegistry = new CommandRegistryBuilder()
                     .register(new InfoCommand(collectionManager))
+                    .register(new ShowCommand(collectionManager))
                     .register(new ExitCommand())
                     .create();
             new InteractiveShell(commandRegistry).run();
