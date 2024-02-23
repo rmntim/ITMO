@@ -1,6 +1,7 @@
 package ru.rmntim.cli.models;
 
 import java.time.ZonedDateTime;
+import java.util.Comparator;
 
 public class Dragon implements Comparable<Dragon> {
     private Integer id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
@@ -132,6 +133,10 @@ public class Dragon implements Comparable<Dragon> {
 
     @Override
     public int compareTo(Dragon o) {
-        return id.compareTo(o.getId());
+        return Comparator.comparing(Dragon::getType)
+                .thenComparing(Dragon::getCharacter)
+                .thenComparing(Dragon::getAge)
+                .thenComparing(Dragon::getName)
+                .compare(this, o);
     }
 }
