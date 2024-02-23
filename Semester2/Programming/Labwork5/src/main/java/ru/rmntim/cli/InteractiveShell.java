@@ -1,5 +1,6 @@
 package ru.rmntim.cli;
 
+import ru.rmntim.cli.commands.BadCommandArgumentsException;
 import ru.rmntim.cli.commands.Command;
 
 import java.io.BufferedReader;
@@ -19,7 +20,7 @@ public class InteractiveShell {
     public void run() {
         try (var reader = new BufferedReader(new InputStreamReader(System.in))) {
             String input;
-            for (;;) {
+            for (; ; ) {
                 System.out.print(PS1);
                 input = reader.readLine();
                 if (input == null) {
@@ -33,8 +34,8 @@ public class InteractiveShell {
                 }
                 try {
                     commands.get(commandName).execute(userCommand.subList(1, userCommand.size()));
-                } catch (IllegalArgumentException iae) {
-                    eprintln(iae.getMessage());
+                } catch (BadCommandArgumentsException bcae) {
+                    eprintln(bcae.getMessage());
                 }
             }
         } catch (IOException ioe) {

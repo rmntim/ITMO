@@ -118,6 +118,6 @@ public enum DragonCharacter {
 
 ## Notes
 
-- [ ] implement comparison on something other than `id`
-- [ ] move validation logic to classes themselves
-- [ ] don't start on invalid files (both path and content)
+- [x] implement comparison on something other than `id`
+- [x] move validation logic to classes themselves
+- [x] don't start on invalid files (both path and content)

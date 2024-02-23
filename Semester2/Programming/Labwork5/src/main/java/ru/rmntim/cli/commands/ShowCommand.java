@@ -13,9 +13,9 @@ public class ShowCommand extends Command {
     }
 
     @Override
-    public void execute(List<String> arguments) {
+    public void execute(final List<String> arguments) {
         if (!arguments.isEmpty()) {
-            throw new IllegalArgumentException(getName() + " doesn't accept any arguments");
+            throw new BadCommandArgumentsException(getName() + " doesn't accept any arguments");
         }
         var collection = collectionManager.getCollection();
         if (collection.isEmpty()) {

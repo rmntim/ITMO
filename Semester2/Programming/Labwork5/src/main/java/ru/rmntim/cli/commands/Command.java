@@ -21,7 +21,7 @@ public abstract class Command {
 
     /**
      * @param arguments list of arguments to the command, not including the command name.
-     * @throws IllegalArgumentException if argument list is not valid
+     * @throws BadCommandArgumentsException if argument list is not valid
      */
     public abstract void execute(List<String> arguments);
 

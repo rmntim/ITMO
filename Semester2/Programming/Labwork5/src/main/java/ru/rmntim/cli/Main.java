@@ -2,6 +2,7 @@ package ru.rmntim.cli;
 
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
+import ru.rmntim.cli.commands.AddCommand;
 import ru.rmntim.cli.commands.ExitCommand;
 import ru.rmntim.cli.commands.InfoCommand;
 import ru.rmntim.cli.commands.ShowCommand;
@@ -28,6 +29,7 @@ public final class Main {
             var commandRegistry = new CommandRegistryBuilder()
                     .register(new InfoCommand(collectionManager))
                     .register(new ShowCommand(collectionManager))
+                    .register(new AddCommand(collectionManager))
                     .register(new ExitCommand())
                     .create();
             new InteractiveShell(commandRegistry).run();
