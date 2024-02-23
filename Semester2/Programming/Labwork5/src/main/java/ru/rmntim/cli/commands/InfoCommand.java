@@ -1,0 +1,22 @@
+package ru.rmntim.cli.commands;
+
+import ru.rmntim.cli.logic.CollectionManager;
+
+import java.util.List;
+
+public class InfoCommand extends Command {
+    private final CollectionManager collectionManager;
+
+    public InfoCommand(final CollectionManager collectionManager) {
+        super("info", "prints information about collection");
+        this.collectionManager = collectionManager;
+    }
+
+    @Override
+    public void execute(List<String> arguments) {
+        if (!arguments.isEmpty()) {
+            throw new IllegalArgumentException(getName() + " doesn't accept any arguments");
+        }
+        System.out.println(collectionManager.getCollectionInfo());
+    }
+}
