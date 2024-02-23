@@ -139,4 +139,18 @@ public class Dragon implements Comparable<Dragon> {
                 .thenComparing(Dragon::getName)
                 .compare(this, o);
     }
+
+    @Override
+    public String toString() {
+        return "Dragon{"
+                + "id=" + id
+                + ", name='" + name + '\''
+                + ", coordinates=" + coordinates
+                + ", creationDate=" + creationDate
+                + ", age=" + age
+                + ", color=" + color
+                + ", type=" + type
+                + ", character=" + character
+                + ", head=" + head;
+    }
 }

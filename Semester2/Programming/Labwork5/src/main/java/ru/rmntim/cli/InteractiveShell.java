@@ -41,7 +41,7 @@ public class InteractiveShell {
         } catch (IOException ioe) {
             eprintln("Error getting input: " + ioe.getMessage());
         } catch (ExitException e) {
-            System.exit(0);
+            // ignore
         }
     }
 

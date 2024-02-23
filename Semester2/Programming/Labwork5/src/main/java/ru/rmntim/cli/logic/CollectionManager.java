@@ -8,10 +8,12 @@ import java.util.TreeSet;
 public class CollectionManager {
     private final TreeSet<Dragon> collection;
     private final ZonedDateTime initializationDate;
+    private final int lastSavedId;
 
-    public CollectionManager(final TreeSet<Dragon> collection) {
+    public CollectionManager(final TreeSet<Dragon> collection, ZonedDateTime initializationDate, int lastSavedId) {
         this.collection = collection;
-        this.initializationDate = ZonedDateTime.now();
+        this.lastSavedId = lastSavedId;
+        this.initializationDate = initializationDate;
     }
 
     public TreeSet<Dragon> getCollection() {
@@ -22,5 +24,9 @@ public class CollectionManager {
         return "Collection size: " + collection.size() + "\n"
                 + "Type: " + collection.getClass().getSimpleName() + "\n"
                 + "Initialization date: " + initializationDate;
+    }
+
+    public int getLastSavedId() {
+        return lastSavedId;
     }
 }

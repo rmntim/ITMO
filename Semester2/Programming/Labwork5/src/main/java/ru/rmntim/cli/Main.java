@@ -11,6 +11,7 @@ import ru.rmntim.cli.logic.CommandRegistryBuilder;
 import ru.rmntim.cli.storage.JsonStorageManager;
 
 import java.io.IOException;
+import java.time.ZonedDateTime;
 import java.util.TreeSet;
 
 public final class Main {
@@ -23,9 +24,10 @@ public final class Main {
     public static void main(String[] args) {
         try {
             var storageManager = new JsonStorageManager(System.getenv(ENV_NAME));
-            var collection = storageManager.readCollection();
-            collection = collection == null ? new TreeSet<>() : collection;
-            var collectionManager = new CollectionManager(collection);
+            var collectionManager = storageManager.readCollection();
+            if (collectionManager == null) {
+                collectionManager = new CollectionManager(new TreeSet<>(), ZonedDateTime.now(), 0);
+            }
             var commandRegistry = new CommandRegistryBuilder()
                     .register(new InfoCommand(collectionManager))
                     .register(new ShowCommand(collectionManager))
