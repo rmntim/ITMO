@@ -34,15 +34,17 @@ public class JsonStorageManager implements StorageManager {
 
     /**
      * @return collection in file, {@code null} if file is empty
-     * @throws IOException if the file is invalid
-     * @throws JsonIOException if there was a problem reading from the file
-     * @throws JsonSyntaxException if file contains invalid JSON
+     * @throws IOException                         if the file is invalid
+     * @throws com.google.gson.JsonIOException     if there was a problem reading from the file
+     * @throws com.google.gson.JsonSyntaxException if file contains invalid JSON
      */
     @Override
     public TreeSet<Dragon> readCollection() throws IOException {
         var file = new File(path);
         if (!file.exists()) {
-            file.createNewFile();
+            if (!file.createNewFile()) {
+                throw new IOException("File can't be created");
+            }
         }
         if (!file.isFile()) {
             throw new IOException(path + " is not a valid file");
@@ -58,9 +60,9 @@ public class JsonStorageManager implements StorageManager {
 
     /**
      * @param collection collection to write
-     * @throws IllegalArgumentException if {@code collection} is {@code null}
-     * @throws IOException if the file is invalid
-     * @throws JsonIOException if there was a problem writing to file
+     * @throws IllegalArgumentException        if {@code collection} is {@code null}
+     * @throws IOException                     if the file is invalid
+     * @throws com.google.gson.JsonIOException if there was a problem writing to file
      */
     @Override
     public void writeCollection(final TreeSet<Dragon> collection) throws IOException {
@@ -69,7 +71,9 @@ public class JsonStorageManager implements StorageManager {
         }
         var file = new File(path);
         if (!file.exists()) {
-            file.createNewFile();
+            if (!file.createNewFile()) {
+                throw new IOException("File can't be created");
+            }
         }
         if (!file.isFile()) {
             throw new IOException(path + " is not a file");
