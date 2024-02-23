@@ -1,4 +1,4 @@
-package ru.rmntim.common.commands;
+package ru.rmntim.server.commands;
 
 import java.util.List;
 
@@ -19,5 +19,14 @@ public abstract class Command {
         return description;
     }
 
+    /**
+     * @param arguments list of arguments to the command, not including the command name.
+     * @throws IllegalArgumentException if argument list is not valid
+     */
     public abstract void execute(List<String> arguments);
+
+    @Override
+    public String toString() {
+        return name + " - " + description;
+    }
 }

@@ -1,4 +1,4 @@
-package ru.rmntim.common.models;
+package ru.rmntim.server.models;
 
 public class DragonHead {
     private Double eyesCount; //Поле не может быть null

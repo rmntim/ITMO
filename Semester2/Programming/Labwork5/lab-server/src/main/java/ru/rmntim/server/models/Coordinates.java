@@ -1,4 +1,4 @@
-package ru.rmntim.common.models;
+package ru.rmntim.server.models;
 
 public class Coordinates {
     private static final float MAX_X = 633;

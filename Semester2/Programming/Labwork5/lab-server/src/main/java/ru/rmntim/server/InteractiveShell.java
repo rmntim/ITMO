@@ -1,8 +1,6 @@
 package ru.rmntim.server;
 
-import ru.rmntim.common.ExitException;
-import ru.rmntim.common.commands.Command;
-import ru.rmntim.server.logic.CollectionManager;
+import ru.rmntim.server.commands.Command;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,12 +10,9 @@ import java.util.Map;
 
 public class InteractiveShell {
     private static final String PS1 = "$ ";
-
-    private final CollectionManager collectionManager;
     private final Map<String, Command> commands;
 
-    public InteractiveShell(final CollectionManager collectionManager, final Map<String, Command> commands) {
-        this.collectionManager = collectionManager;
+    public InteractiveShell(final Map<String, Command> commands) {
         this.commands = commands;
     }
 
@@ -33,16 +28,23 @@ public class InteractiveShell {
                 var userCommand = Arrays.stream(input.trim().split(" ", 2)).map(String::trim).toList();
                 var commandName = userCommand.get(0);
                 if (!commands.containsKey(commandName)) {
-                    System.err.println("Command doesn't exist: " + commandName);
+                    eprintln("Command doesn't exist: " + commandName);
                     continue;
                 }
-                commands.get(commandName).execute(userCommand.subList(1, userCommand.size()));
+                try {
+                    commands.get(commandName).execute(userCommand.subList(1, userCommand.size()));
+                } catch (IllegalArgumentException iae) {
+                    eprintln(iae.getMessage());
+                }
             }
         } catch (IOException ioe) {
-            System.err.println("Error getting input: " + ioe.getMessage());
+            eprintln("Error getting input: " + ioe.getMessage());
         } catch (ExitException e) {
-            System.out.println("Got an exit command");
             System.exit(0);
         }
+    }
+
+    private void eprintln(String message) {
+        System.out.println("[ERROR]: " + message);
     }
 }

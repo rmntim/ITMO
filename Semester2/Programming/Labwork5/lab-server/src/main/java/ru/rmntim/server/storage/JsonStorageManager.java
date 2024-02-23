@@ -3,7 +3,7 @@ package ru.rmntim.server.storage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import ru.rmntim.common.models.Dragon;
+import ru.rmntim.server.models.Dragon;
 
 import java.io.BufferedReader;
 import java.io.File;

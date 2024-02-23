@@ -1,4 +1,4 @@
-package ru.rmntim.common.models;
+package ru.rmntim.server.models;
 
 import java.time.ZonedDateTime;
 

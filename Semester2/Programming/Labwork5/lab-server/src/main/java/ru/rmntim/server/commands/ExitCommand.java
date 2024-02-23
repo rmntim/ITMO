@@ -1,6 +1,6 @@
-package ru.rmntim.common.commands;
+package ru.rmntim.server.commands;
 
-import ru.rmntim.common.ExitException;
+import ru.rmntim.server.ExitException;
 
 import java.util.List;
 
@@ -11,6 +11,9 @@ public class ExitCommand extends Command {
 
     @Override
     public void execute(List<String> arguments) {
+        if (!arguments.isEmpty()) {
+            throw new IllegalArgumentException(getName() + " doesn't accept any arguments");
+        }
         throw new ExitException();
     }
 }

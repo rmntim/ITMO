@@ -1,6 +1,6 @@
 package ru.rmntim.server.storage;
 
-import ru.rmntim.common.models.Dragon;
+import ru.rmntim.server.models.Dragon;
 
 import java.io.IOException;
 import java.util.TreeSet;

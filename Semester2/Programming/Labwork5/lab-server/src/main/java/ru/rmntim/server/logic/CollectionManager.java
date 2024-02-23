@@ -1,6 +1,6 @@
 package ru.rmntim.server.logic;
 
-import ru.rmntim.common.models.Dragon;
+import ru.rmntim.server.models.Dragon;
 
 import java.time.ZonedDateTime;
 import java.util.TreeSet;

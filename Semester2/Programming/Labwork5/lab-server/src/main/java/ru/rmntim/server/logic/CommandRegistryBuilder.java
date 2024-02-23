@@ -1,6 +1,7 @@
 package ru.rmntim.server.logic;
 
-import ru.rmntim.common.commands.Command;
+import ru.rmntim.server.commands.Command;
+import ru.rmntim.server.commands.HelpCommand;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +15,7 @@ public class CommandRegistryBuilder {
     }
 
     public Map<String, Command> create() {
+        register(new HelpCommand(commandRegistry.values()));
         return commandRegistry;
     }
 }

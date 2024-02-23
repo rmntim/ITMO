@@ -2,8 +2,7 @@ package ru.rmntim.server;
 
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
-import ru.rmntim.common.commands.ExitCommand;
-import ru.rmntim.common.commands.HelpCommand;
+import ru.rmntim.server.commands.ExitCommand;
 import ru.rmntim.server.logic.CollectionManager;
 import ru.rmntim.server.logic.CommandRegistryBuilder;
 import ru.rmntim.server.storage.JsonStorageManager;
@@ -26,9 +25,8 @@ public final class Server {
             var collectionManager = new CollectionManager(collection);
             var commandRegistry = new CommandRegistryBuilder()
                     .register(new ExitCommand())
-                    .register(new HelpCommand())
                     .create();
-            new InteractiveShell(collectionManager, commandRegistry).run();
+            new InteractiveShell(commandRegistry).run();
         } catch (IOException e) {
             System.err.println("IO error occurred: " + e.getMessage());
         } catch (JsonIOException jioe) {
