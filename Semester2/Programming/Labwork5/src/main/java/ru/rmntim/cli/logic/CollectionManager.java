@@ -14,6 +14,10 @@ public class CollectionManager {
         this.initializationDate = ZonedDateTime.now();
     }
 
+    public TreeSet<Dragon> getCollection() {
+        return collection;
+    }
+
     public String getCollectionInfo() {
         return "Collection size: " + collection.size() + "\n"
                 + "Type: " + collection.getClass().getSimpleName() + "\n"
