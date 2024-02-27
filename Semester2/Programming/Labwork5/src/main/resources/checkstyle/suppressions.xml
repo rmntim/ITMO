@@ -7,5 +7,5 @@
 <suppressions>
     <suppress checks="ParameterNumber"
               files="Dragon.java"/>
-    <suppress checks="EmptyForIteratorPad" files="InteractiveShell.java"/>
+    <suppress checks="EmptyForIteratorPad" files="Interpreter.java"/>
 </suppressions>

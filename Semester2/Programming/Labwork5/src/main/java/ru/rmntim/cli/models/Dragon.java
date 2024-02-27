@@ -14,11 +14,11 @@ public class Dragon implements Comparable<Dragon> {
     private DragonCharacter character; //Поле может быть null
     private DragonHead head;
 
-    public Dragon(Integer id, String name, Coordinates coordinates, ZonedDateTime creationDate, Long age, Color color, DragonType type, DragonCharacter character, DragonHead head) {
+    public Dragon(Integer id, String name, Coordinates coordinates, Long age, Color color, DragonType type, DragonCharacter character, DragonHead head) {
         setId(id);
         setName(name);
         setCoordinates(coordinates);
-        setCreationDate(creationDate);
+        this.creationDate = ZonedDateTime.now();
         setAge(age);
         setColor(color);
         setType(type);

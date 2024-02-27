@@ -1,5 +1,8 @@
 package ru.rmntim.cli.commands;
 
+import ru.rmntim.cli.exceptions.BadCommandArgumentsException;
+
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 
@@ -12,7 +15,7 @@ public class HelpCommand extends Command {
     }
 
     @Override
-    public void execute(final List<String> arguments) {
+    public void execute(final List<String> arguments, final InputStream inputStream) {
         if (!arguments.isEmpty()) {
             throw new BadCommandArgumentsException(getName() + " doesn't accept any arguments");
         }

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.time.ZonedDateTime;
+import java.util.TreeSet;
 
 public class JsonStorageManager {
     private final String path;
@@ -32,7 +33,7 @@ public class JsonStorageManager {
     }
 
     /**
-     * @return collection in file, {@code null} if file is empty
+     * @return collection, initialization date and last id in file. If file is empty, returns empty manager.
      * @throws IOException                         if the file is invalid
      * @throws com.google.gson.JsonIOException     if there was a problem reading from the file
      * @throws com.google.gson.JsonSyntaxException if file contains invalid JSON
@@ -51,8 +52,20 @@ public class JsonStorageManager {
             throw new IOException("File can't be read");
         }
         try (var inputStream = new FileInputStream(file); var reader = new BufferedReader(new InputStreamReader(inputStream))) {
-            return gson.fromJson(reader, new TypeToken<CollectionManager>() {
+            CollectionManager collectionManager = gson.fromJson(reader, new TypeToken<CollectionManager>() {
             }.getType());
+
+            if (collectionManager == null) {
+                collectionManager = new CollectionManager(new TreeSet<>(), ZonedDateTime.now(), 0);
+            }
+            if (collectionManager.getCollection() == null) {
+                collectionManager.setCollection(new TreeSet<>());
+            }
+            if (collectionManager.getInitializationDate() == null) {
+                collectionManager.setInitializationDate(ZonedDateTime.now());
+            }
+
+            return collectionManager;
         }
     }
 

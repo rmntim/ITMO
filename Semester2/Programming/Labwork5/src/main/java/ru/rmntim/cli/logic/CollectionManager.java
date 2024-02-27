@@ -6,8 +6,8 @@ import java.time.ZonedDateTime;
 import java.util.TreeSet;
 
 public class CollectionManager {
-    private final TreeSet<Dragon> collection;
-    private final ZonedDateTime initializationDate;
+    private TreeSet<Dragon> collection;
+    private ZonedDateTime initializationDate;
     private final int lastSavedId;
 
     public CollectionManager(final TreeSet<Dragon> collection, ZonedDateTime initializationDate, int lastSavedId) {
@@ -18,6 +18,18 @@ public class CollectionManager {
 
     public TreeSet<Dragon> getCollection() {
         return collection;
+    }
+
+    public void setCollection(final TreeSet<Dragon> collection) {
+        this.collection = collection;
+    }
+
+    public ZonedDateTime getInitializationDate() {
+        return initializationDate;
+    }
+
+    public void setInitializationDate(ZonedDateTime initializationDate) {
+        this.initializationDate = initializationDate;
     }
 
     public String getCollectionInfo() {

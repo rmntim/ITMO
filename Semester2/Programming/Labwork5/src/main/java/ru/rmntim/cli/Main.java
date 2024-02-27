@@ -6,13 +6,10 @@ import ru.rmntim.cli.commands.AddCommand;
 import ru.rmntim.cli.commands.ExitCommand;
 import ru.rmntim.cli.commands.InfoCommand;
 import ru.rmntim.cli.commands.ShowCommand;
-import ru.rmntim.cli.logic.CollectionManager;
 import ru.rmntim.cli.logic.CommandRegistryBuilder;
 import ru.rmntim.cli.storage.JsonStorageManager;
 
 import java.io.IOException;
-import java.time.ZonedDateTime;
-import java.util.TreeSet;
 
 public final class Main {
     private static final String ENV_NAME = "FILENAME";
@@ -25,16 +22,13 @@ public final class Main {
         try {
             var storageManager = new JsonStorageManager(System.getenv(ENV_NAME));
             var collectionManager = storageManager.readCollection();
-            if (collectionManager == null) {
-                collectionManager = new CollectionManager(new TreeSet<>(), ZonedDateTime.now(), 0);
-            }
             var commandRegistry = new CommandRegistryBuilder()
                     .register(new InfoCommand(collectionManager))
                     .register(new ShowCommand(collectionManager))
                     .register(new AddCommand(collectionManager))
                     .register(new ExitCommand())
                     .create();
-            new InteractiveShell(commandRegistry).run();
+            new Interpreter(commandRegistry).run(System.in);
         } catch (IOException e) {
             System.err.println("IO error occurred: " + e.getMessage());
         } catch (JsonIOException jioe) {

@@ -20,7 +20,7 @@ public class Coordinates {
         if (x == null) {
             throw new IllegalArgumentException("X cannot be null");
         }
-        if (x.floatValue() > MAX_X) {
+        if (x > MAX_X) {
             throw new IllegalArgumentException("X must be <= " + MAX_X);
         }
         this.x = x;
@@ -35,5 +35,10 @@ public class Coordinates {
             throw new IllegalArgumentException("Y must be > " + MIN_Y);
         }
         this.y = y;
+    }
+
+    @Override
+    public String toString() {
+        return "Coordinates{" + "x=" + x + ", y=" + y + '}';
     }
 }

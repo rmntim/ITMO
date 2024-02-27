@@ -17,4 +17,9 @@ public class DragonHead {
         }
         this.eyesCount = eyesCount;
     }
+
+    @Override
+    public String toString() {
+        return "DragonHead{" + "eyesCount=" + eyesCount + '}';
+    }
 }
