@@ -3,6 +3,7 @@ package ru.rmntim.cli;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import ru.rmntim.cli.commands.AddCommand;
+import ru.rmntim.cli.commands.ExecuteCommand;
 import ru.rmntim.cli.commands.ExitCommand;
 import ru.rmntim.cli.commands.InfoCommand;
 import ru.rmntim.cli.commands.ShowCommand;
@@ -22,13 +23,17 @@ public final class Main {
         try {
             var storageManager = new JsonStorageManager(System.getenv(ENV_NAME));
             var collectionManager = storageManager.readCollection();
+
+            var executeCommand = new ExecuteCommand();
             var commandRegistry = new CommandRegistryBuilder()
                     .register(new InfoCommand(collectionManager))
                     .register(new ShowCommand(collectionManager))
                     .register(new AddCommand(collectionManager))
+                    .register(executeCommand)
                     .register(new ExitCommand())
                     .create();
-            new Interpreter(commandRegistry).run(System.in);
+            executeCommand.setCommands(commandRegistry);
+            new Interpreter(commandRegistry).run();
         } catch (IOException e) {
             System.err.println("IO error occurred: " + e.getMessage());
         } catch (JsonIOException jioe) {

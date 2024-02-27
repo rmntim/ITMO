@@ -5,8 +5,8 @@ import ru.rmntim.cli.exceptions.BadCommandArgumentsException;
 import ru.rmntim.cli.exceptions.ExitException;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Map;
@@ -19,11 +19,13 @@ public class Interpreter {
         this.commands = commands;
     }
 
-    public void run(final InputStream inputStream) {
-        try (var reader = new BufferedReader(new InputStreamReader(inputStream))) {
+    public void run() {
+        try (var reader = new BufferedReader(new InputStreamReader(System.in))) {
             String input;
             for (; ; ) {
-                System.out.print(PS1);
+                if (!(System.in instanceof FileInputStream)) {
+                    System.out.print(PS1);
+                }
                 input = reader.readLine();
                 if (input == null) {
                     break;
