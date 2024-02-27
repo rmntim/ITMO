@@ -66,6 +66,12 @@ public class JsonStorageManager {
             }
 
             return collectionManager;
+        } catch (RuntimeException re) {
+            if (re.getCause() instanceof IllegalArgumentException) {
+                throw (IllegalArgumentException) re.getCause();
+            } else {
+                throw re;
+            }
         }
     }
 
