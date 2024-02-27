@@ -35,7 +35,7 @@ public class Interpreter {
                     continue;
                 }
                 try {
-                    commands.get(commandName).execute(userCommand.subList(1, userCommand.size()), inputStream);
+                    commands.get(commandName).execute(userCommand.subList(1, userCommand.size()));
                 } catch (BadCommandArgumentsException bcae) {
                     eprintln(bcae.getMessage());
                 }

@@ -6,9 +6,9 @@ import java.time.ZonedDateTime;
 import java.util.TreeSet;
 
 public class CollectionManager {
-    private TreeSet<Dragon> collection;
-    private ZonedDateTime initializationDate;
-    private final int lastSavedId;
+    private final TreeSet<Dragon> collection;
+    private final ZonedDateTime initializationDate;
+    private int lastSavedId;
 
     public CollectionManager(final TreeSet<Dragon> collection, ZonedDateTime initializationDate, int lastSavedId) {
         this.collection = collection;
@@ -16,26 +16,24 @@ public class CollectionManager {
         this.initializationDate = initializationDate;
     }
 
-    public TreeSet<Dragon> getCollection() {
-        return collection;
+    public void add(Dragon dragon) {
+        collection.add(dragon);
+        lastSavedId++;
     }
 
-    public void setCollection(final TreeSet<Dragon> collection) {
-        this.collection = collection;
+    public TreeSet<Dragon> getCollection() {
+        return collection;
     }
 
     public ZonedDateTime getInitializationDate() {
         return initializationDate;
     }
 
-    public void setInitializationDate(ZonedDateTime initializationDate) {
-        this.initializationDate = initializationDate;
-    }
-
     public String getCollectionInfo() {
         return "Collection size: " + collection.size() + "\n"
                 + "Type: " + collection.getClass().getSimpleName() + "\n"
-                + "Initialization date: " + initializationDate;
+                + "Initialization date: " + initializationDate + "\n"
+                + "Last saved id: " + lastSavedId;
     }
 
     public int getLastSavedId() {

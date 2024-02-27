@@ -1,6 +1,5 @@
 package ru.rmntim.cli.commands;
 
-import java.io.InputStream;
 import java.util.List;
 
 public abstract class Command {
@@ -24,7 +23,7 @@ public abstract class Command {
      * @param arguments list of arguments to the command, not including the command name.
      * @throws ru.rmntim.cli.exceptions.BadCommandArgumentsException if argument list is not valid
      */
-    public abstract void execute(List<String> arguments, InputStream inputStream);
+    public abstract void execute(List<String> arguments);
 
     @Override
     public String toString() {
