@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.time.ZonedDateTime;
 
 public class DragonBuilder {
     private final int lastSavedId;
@@ -30,6 +31,7 @@ public class DragonBuilder {
                     lastSavedId + 1,
                     parseName(),
                     parseCoordinates(),
+                    ZonedDateTime.now(),
                     parseAge(),
                     parseColor(),
                     parseType(),

@@ -25,7 +25,7 @@ public class CoordinatesBuilder {
                     x,
                     y
             );
-        } catch (IllegalArgumentException | IOException | NullPointerException e) {
+        } catch (IOException | NullPointerException e) {
             throw new InvalidBuildException();
         }
     }
