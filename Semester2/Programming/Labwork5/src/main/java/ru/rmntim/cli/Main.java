@@ -8,6 +8,7 @@ import ru.rmntim.cli.commands.ExecuteCommand;
 import ru.rmntim.cli.commands.ExitCommand;
 import ru.rmntim.cli.commands.InfoCommand;
 import ru.rmntim.cli.commands.RemoveCommand;
+import ru.rmntim.cli.commands.SaveCommand;
 import ru.rmntim.cli.commands.ShowCommand;
 import ru.rmntim.cli.commands.UpdateCommand;
 import ru.rmntim.cli.logic.CommandRegistryBuilder;
@@ -36,6 +37,7 @@ public final class Main {
                     .register(new UpdateCommand(collectionManager))
                     .register(new RemoveCommand(collectionManager))
                     .register(new ClearCommand(collectionManager))
+                    .register(new SaveCommand(storageManager, collectionManager))
                     .register(executeCommand)
                     .register(new ExitCommand())
                     .create();
