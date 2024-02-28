@@ -15,6 +15,7 @@ import ru.rmntim.cli.commands.RemoveCommand;
 import ru.rmntim.cli.commands.RemoveLowerCommand;
 import ru.rmntim.cli.commands.SaveCommand;
 import ru.rmntim.cli.commands.ShowCommand;
+import ru.rmntim.cli.commands.StartsWithNameCommand;
 import ru.rmntim.cli.commands.UpdateCommand;
 import ru.rmntim.cli.logic.CommandRegistryBuilder;
 import ru.rmntim.cli.logic.Interpreter;
@@ -50,6 +51,7 @@ public final class Main {
                     .register(new RemoveLowerCommand(collectionManager))
                     .register(new GroupByTypeCommand(collectionManager))
                     .register(new GreaterThanCharacterCommand(collectionManager))
+                    .register(new StartsWithNameCommand(collectionManager))
                     .create();
             executeCommand.setCommands(commandRegistry); // NOTE: костыль
             new Interpreter(commandRegistry).run();
