@@ -3,6 +3,7 @@ package ru.rmntim.cli;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import ru.rmntim.cli.commands.AddCommand;
+import ru.rmntim.cli.commands.AddIfMaxCommand;
 import ru.rmntim.cli.commands.ClearCommand;
 import ru.rmntim.cli.commands.ExecuteCommand;
 import ru.rmntim.cli.commands.ExitCommand;
@@ -40,6 +41,7 @@ public final class Main {
                     .register(new SaveCommand(storageManager, collectionManager))
                     .register(executeCommand)
                     .register(new ExitCommand())
+                    .register(new AddIfMaxCommand(collectionManager))
                     .create();
             executeCommand.setCommands(commandRegistry); // NOTE: костыль
             new Interpreter(commandRegistry).run();
