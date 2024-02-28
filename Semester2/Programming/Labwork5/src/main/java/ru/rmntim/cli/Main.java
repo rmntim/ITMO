@@ -8,6 +8,7 @@ import ru.rmntim.cli.commands.AddIfMinCommand;
 import ru.rmntim.cli.commands.ClearCommand;
 import ru.rmntim.cli.commands.ExecuteCommand;
 import ru.rmntim.cli.commands.ExitCommand;
+import ru.rmntim.cli.commands.GroupByTypeCommand;
 import ru.rmntim.cli.commands.InfoCommand;
 import ru.rmntim.cli.commands.RemoveCommand;
 import ru.rmntim.cli.commands.RemoveLowerCommand;
@@ -46,6 +47,7 @@ public final class Main {
                     .register(new AddIfMaxCommand(collectionManager))
                     .register(new AddIfMinCommand(collectionManager))
                     .register(new RemoveLowerCommand(collectionManager))
+                    .register(new GroupByTypeCommand(collectionManager))
                     .create();
             executeCommand.setCommands(commandRegistry); // NOTE: костыль
             new Interpreter(commandRegistry).run();
