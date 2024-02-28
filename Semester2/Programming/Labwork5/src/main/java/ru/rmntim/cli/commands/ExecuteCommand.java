@@ -2,8 +2,8 @@ package ru.rmntim.cli.commands;
 
 import ru.rmntim.cli.Interpreter;
 import ru.rmntim.cli.exceptions.BadCommandArgumentsException;
-import ru.rmntim.cli.exceptions.InvalidScriptException;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -13,7 +13,7 @@ public class ExecuteCommand extends Command {
     private Map<String, Command> commands;
 
     public ExecuteCommand() {
-        super("execute_script", "executes given script");
+        super("execute_script", "executes given script", List.of("file_name"));
     }
 
     public void setCommands(final Map<String, Command> commands) {
@@ -21,7 +21,7 @@ public class ExecuteCommand extends Command {
     }
 
     @Override
-    public void execute(List<String> arguments) {
+    public void execute(List<String> arguments, BufferedReader reader) {
         if (arguments.size() != 1) {
             throw new BadCommandArgumentsException(getName() + " accepts only one argument");
         }
@@ -32,9 +32,7 @@ public class ExecuteCommand extends Command {
             System.setIn(inputStream);
             interpreter.run();
         } catch (FileNotFoundException fnfe) {
-            System.out.println("File not found" + System.getProperty("user.dir"));
-        } catch (InvalidScriptException ise) {
-            System.out.println("Script format error: " + ise.getMessage());
+            System.out.println("File not found");
         } finally {
             System.setIn(oldIn);
         }

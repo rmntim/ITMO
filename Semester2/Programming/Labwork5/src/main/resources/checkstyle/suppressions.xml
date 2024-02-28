@@ -8,4 +8,5 @@
     <suppress checks="ParameterNumber"
               files="Dragon.java"/>
     <suppress checks="EmptyForIteratorPad" files="Interpreter.java"/>
+    <suppress checks="EmptyForIteratorPad" files="AddCommand.java"/>
 </suppressions>
