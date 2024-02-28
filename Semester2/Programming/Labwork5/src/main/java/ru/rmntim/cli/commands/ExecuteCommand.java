@@ -2,15 +2,19 @@ package ru.rmntim.cli.commands;
 
 import ru.rmntim.cli.Interpreter;
 import ru.rmntim.cli.exceptions.BadCommandArgumentsException;
+import ru.rmntim.cli.exceptions.RecursionException;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ExecuteCommand extends Command {
     private Map<String, Command> commands;
+    private final Set<String> visitedFiles = new HashSet<>();
 
     public ExecuteCommand() {
         super("execute_script", "executes given script", List.of("file_name"));
@@ -27,9 +31,14 @@ public class ExecuteCommand extends Command {
         }
         var interpreter = new Interpreter(commands);
         var oldIn = System.in;
+        var fileName = arguments.get(0);
+        if (visitedFiles.contains(fileName)) {
+            throw new RecursionException(fileName);
+        }
         try {
-            var inputStream = new FileInputStream(arguments.get(0));
+            var inputStream = new FileInputStream(fileName);
             System.setIn(inputStream);
+            visitedFiles.add(fileName);
             interpreter.run();
         } catch (FileNotFoundException fnfe) {
             System.out.println("File not found");
