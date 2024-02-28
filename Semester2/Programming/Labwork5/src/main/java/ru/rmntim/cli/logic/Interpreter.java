@@ -1,4 +1,4 @@
-package ru.rmntim.cli;
+package ru.rmntim.cli.logic;
 
 import ru.rmntim.cli.commands.Command;
 import ru.rmntim.cli.exceptions.BadCommandArgumentsException;
@@ -22,6 +22,7 @@ public class Interpreter {
         this.commands = commands;
     }
 
+    @SuppressWarnings("checkstyle:EmptyForIteratorPad")
     public void run() {
         try (var reader = new BufferedReader(new InputStreamReader(System.in))) {
             String input;

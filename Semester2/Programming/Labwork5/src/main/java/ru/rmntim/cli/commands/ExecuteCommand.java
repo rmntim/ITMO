@@ -1,8 +1,8 @@
 package ru.rmntim.cli.commands;
 
-import ru.rmntim.cli.Interpreter;
 import ru.rmntim.cli.exceptions.BadCommandArgumentsException;
 import ru.rmntim.cli.exceptions.RecursionException;
+import ru.rmntim.cli.logic.Interpreter;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;

@@ -8,6 +8,7 @@ import ru.rmntim.cli.commands.ExitCommand;
 import ru.rmntim.cli.commands.InfoCommand;
 import ru.rmntim.cli.commands.ShowCommand;
 import ru.rmntim.cli.logic.CommandRegistryBuilder;
+import ru.rmntim.cli.logic.Interpreter;
 import ru.rmntim.cli.storage.JsonStorageManager;
 
 import java.io.IOException;
