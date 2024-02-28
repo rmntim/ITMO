@@ -12,4 +12,9 @@ public record Coordinates(Float x, float y) {
             throw new IllegalArgumentException("Y must be > " + MIN_Y);
         }
     }
+
+    @Override
+    public String toString() {
+        return "x: " + x + ", y: " + y;
+    }
 }

@@ -45,4 +45,17 @@ public record Dragon(Integer id, String name, Coordinates coordinates, ZonedDate
                 .thenComparing(Dragon::name)
                 .compare(this, o);
     }
+
+    @Override
+    public String toString() {
+        return "id: " + id + "\n"
+                + "name: " + name + "\n"
+                + "coordinates: " + coordinates + "\n"
+                + "creationDate: " + creationDate + "\n"
+                + "age: " + age + "\n"
+                + "color: " + color + "\n"
+                + "type: " + type + "\n"
+                + "character: " + character + "\n"
+                + "head: " + head + "\n";
+    }
 }

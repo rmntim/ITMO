@@ -6,4 +6,9 @@ public record DragonHead(Double eyesCount) {
             throw new IllegalArgumentException("Invalid eyes count (must be non-null)");
         }
     }
+
+    @Override
+    public String toString() {
+        return "eyesCount: " + eyesCount;
+    }
 }
