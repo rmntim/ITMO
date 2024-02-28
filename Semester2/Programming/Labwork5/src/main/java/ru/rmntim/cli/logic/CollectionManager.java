@@ -4,6 +4,7 @@ import ru.rmntim.cli.models.Dragon;
 
 import java.time.ZonedDateTime;
 import java.util.TreeSet;
+import java.util.function.Supplier;
 
 public class CollectionManager {
     private final TreeSet<Dragon> collection;
@@ -40,8 +41,24 @@ public class CollectionManager {
         return lastSavedId;
     }
 
-    public void update(int id, Dragon build) {
-        collection.remove(collection.stream().filter(dragon -> dragon.id() == id).findFirst().get());
-        collection.add(build);
+    public void update(int id, Supplier<Dragon> dragonSupplier) {
+        if (containsId(id)) {
+            remove(id);
+            collection.add(dragonSupplier.get());
+        } else {
+            throw new IllegalArgumentException("Dragon with id " + id + " not found");
+        }
+    }
+
+    public void remove(int id) {
+        if (containsId(id)) {
+            collection.remove(collection.stream().filter(dragon -> dragon.id() == id).findFirst().get());
+        } else {
+            throw new IllegalArgumentException("Dragon with id " + id + " not found");
+        }
+    }
+
+    public boolean containsId(int id) {
+        return collection.stream().anyMatch(dragon -> dragon.id() == id);
     }
 }
