@@ -7,6 +7,7 @@ import ru.rmntim.cli.commands.ExecuteCommand;
 import ru.rmntim.cli.commands.ExitCommand;
 import ru.rmntim.cli.commands.InfoCommand;
 import ru.rmntim.cli.commands.ShowCommand;
+import ru.rmntim.cli.commands.UpdateCommand;
 import ru.rmntim.cli.logic.CommandRegistryBuilder;
 import ru.rmntim.cli.logic.Interpreter;
 import ru.rmntim.cli.storage.JsonStorageManager;
@@ -30,10 +31,11 @@ public final class Main {
                     .register(new InfoCommand(collectionManager))
                     .register(new ShowCommand(collectionManager))
                     .register(new AddCommand(collectionManager))
+                    .register(new UpdateCommand(collectionManager))
                     .register(executeCommand)
                     .register(new ExitCommand())
                     .create();
-            executeCommand.setCommands(commandRegistry);
+            executeCommand.setCommands(commandRegistry); // NOTE: костыль
             new Interpreter(commandRegistry).run();
         } catch (IOException e) {
             System.err.println("IO error occurred: " + e.getMessage());

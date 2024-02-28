@@ -9,4 +9,5 @@
               files="Dragon.java"/>
     <suppress checks="EmptyForIteratorPad" files="Interpreter.java"/>
     <suppress checks="EmptyForIteratorPad" files="AddCommand.java"/>
+    <suppress checks="EmptyForIteratorPad" files="DragonBuilder.java"/>
 </suppressions>

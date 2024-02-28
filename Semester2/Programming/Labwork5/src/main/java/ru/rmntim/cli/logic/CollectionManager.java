@@ -39,4 +39,9 @@ public class CollectionManager {
     public int getLastSavedId() {
         return lastSavedId;
     }
+
+    public void update(int id, Dragon build) {
+        collection.remove(collection.stream().filter(dragon -> dragon.id() == id).findFirst().get());
+        collection.add(build);
+    }
 }

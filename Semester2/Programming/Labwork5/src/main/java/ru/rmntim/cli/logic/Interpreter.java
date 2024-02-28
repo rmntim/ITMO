@@ -22,7 +22,6 @@ public class Interpreter {
         this.commands = commands;
     }
 
-    @SuppressWarnings("checkstyle:EmptyForIteratorPad")
     public void run() {
         try (var reader = new BufferedReader(new InputStreamReader(System.in))) {
             String input;
