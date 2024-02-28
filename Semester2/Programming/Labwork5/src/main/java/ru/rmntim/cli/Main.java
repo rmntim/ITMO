@@ -17,11 +17,14 @@ import ru.rmntim.cli.commands.SaveCommand;
 import ru.rmntim.cli.commands.ShowCommand;
 import ru.rmntim.cli.commands.StartsWithNameCommand;
 import ru.rmntim.cli.commands.UpdateCommand;
+import ru.rmntim.cli.logic.CollectionManager;
 import ru.rmntim.cli.logic.CommandRegistryBuilder;
 import ru.rmntim.cli.logic.Interpreter;
 import ru.rmntim.cli.storage.JsonStorageManager;
 
 import java.io.IOException;
+import java.time.ZonedDateTime;
+import java.util.TreeSet;
 
 public final class Main {
     private static final String ENV_NAME = "FILENAME";
@@ -33,7 +36,7 @@ public final class Main {
     public static void main(String[] args) {
         try {
             var storageManager = new JsonStorageManager(System.getenv(ENV_NAME));
-            var collectionManager = storageManager.readCollection();
+            var collectionManager = storageManager.readCollection().orElse(new CollectionManager(new TreeSet<>(), ZonedDateTime.now(), 0));
 
             var executeCommand = new ExecuteCommand();
             var commandRegistry = new CommandRegistryBuilder()

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.time.ZonedDateTime;
+import java.util.Optional;
 
 public class JsonStorageManager {
     private final String path;
@@ -37,7 +38,7 @@ public class JsonStorageManager {
      * @throws com.google.gson.JsonIOException     if there was a problem reading from the file
      * @throws com.google.gson.JsonSyntaxException if file contains invalid JSON
      */
-    public CollectionManager readCollection() throws IOException {
+    public Optional<CollectionManager> readCollection() throws IOException {
         var file = new File(path);
         if (!file.exists()) {
             if (!file.createNewFile()) {
@@ -58,7 +59,7 @@ public class JsonStorageManager {
                 throw new IOException("JSON file is invalid");
             }
 
-            return collectionManager;
+            return Optional.ofNullable(collectionManager);
         } catch (RuntimeException re) {
             if (re.getCause() instanceof IllegalArgumentException) {
                 throw (IllegalArgumentException) re.getCause();
