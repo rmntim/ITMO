@@ -61,4 +61,8 @@ public class CollectionManager {
     public boolean containsId(int id) {
         return collection.stream().anyMatch(dragon -> dragon.id() == id);
     }
+
+    public void clear() {
+        collection.clear();
+    }
 }

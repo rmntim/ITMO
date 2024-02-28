@@ -3,6 +3,7 @@ package ru.rmntim.cli;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import ru.rmntim.cli.commands.AddCommand;
+import ru.rmntim.cli.commands.ClearCommand;
 import ru.rmntim.cli.commands.ExecuteCommand;
 import ru.rmntim.cli.commands.ExitCommand;
 import ru.rmntim.cli.commands.InfoCommand;
@@ -34,6 +35,7 @@ public final class Main {
                     .register(new AddCommand(collectionManager))
                     .register(new UpdateCommand(collectionManager))
                     .register(new RemoveCommand(collectionManager))
+                    .register(new ClearCommand(collectionManager))
                     .register(executeCommand)
                     .register(new ExitCommand())
                     .create();
