@@ -52,7 +52,7 @@ public class Interpreter {
         } catch (IOException ioe) {
             eprintln("Error getting input: " + ioe.getMessage());
         } catch (ExitException e) {
-            // ignore
+            System.exit(0);
         }
     }
 

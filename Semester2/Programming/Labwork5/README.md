@@ -124,7 +124,7 @@ public enum DragonCharacter {
 - [x] fix asking for `DragonHead`
 - [x] check files on `execute_script`
 - [x] catch `NumberFormatException` on update
-- [ ] use `System.exit(0)` in `ExitException` case
+- [x] use `System.exit(0)` in `ExitException` case
 - [ ] **actually** check for `id` uniqueness
 - [ ] decouple validation from `DragonBuilder`
 - [x] replace `for (;;)` with `while (true)`
