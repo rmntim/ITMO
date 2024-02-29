@@ -2,8 +2,8 @@ package ru.rmntim.cli.commands;
 
 import ru.rmntim.cli.exceptions.BadCommandArgumentsException;
 import ru.rmntim.cli.exceptions.ExitException;
+import ru.rmntim.cli.logic.ExecutionContext;
 
-import java.io.BufferedReader;
 import java.util.List;
 
 public class ExitCommand extends Command {
@@ -12,7 +12,7 @@ public class ExitCommand extends Command {
     }
 
     @Override
-    public void execute(final List<String> arguments, BufferedReader reader) {
+    public void execute(final List<String> arguments, ExecutionContext context) {
         if (!arguments.isEmpty()) {
             throw new BadCommandArgumentsException(getName() + " doesn't accept any arguments");
         }

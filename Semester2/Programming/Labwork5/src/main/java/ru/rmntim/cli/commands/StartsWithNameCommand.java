@@ -2,8 +2,8 @@ package ru.rmntim.cli.commands;
 
 import ru.rmntim.cli.exceptions.BadCommandArgumentsException;
 import ru.rmntim.cli.logic.CollectionManager;
+import ru.rmntim.cli.logic.ExecutionContext;
 
-import java.io.BufferedReader;
 import java.util.List;
 
 public class StartsWithNameCommand extends Command {
@@ -15,7 +15,7 @@ public class StartsWithNameCommand extends Command {
     }
 
     @Override
-    public void execute(List<String> arguments, BufferedReader reader) {
+    public void execute(List<String> arguments, ExecutionContext context) {
         if (arguments.size() != 1) {
             throw new BadCommandArgumentsException(getName() + " requires one argument");
         }

@@ -2,12 +2,13 @@ package ru.rmntim.cli.commands;
 
 import ru.rmntim.cli.exceptions.BadCommandArgumentsException;
 import ru.rmntim.cli.exceptions.RecursionException;
+import ru.rmntim.cli.logic.ExecutionContext;
 import ru.rmntim.cli.logic.Interpreter;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -26,30 +27,28 @@ public class ExecuteCommand extends Command {
     }
 
     @Override
-    public void execute(List<String> arguments, BufferedReader reader) {
+    public void execute(final List<String> arguments, ExecutionContext context) {
         if (arguments.size() != 1) {
             throw new BadCommandArgumentsException(getName() + " accepts only one argument");
         }
-        var interpreter = new Interpreter(commands);
-        var oldIn = System.in;
+
         var fileName = arguments.get(0);
+        var file = new File(fileName);
+
+        if (!file.isFile()) {
+            throw new BadCommandArgumentsException(fileName + " is not a valid file");
+        }
         if (visitedFiles.contains(fileName)) {
             throw new RecursionException(fileName);
         }
-        try {
-            var file = new File(fileName);
-            if (!file.isFile()) {
-                throw new BadCommandArgumentsException(fileName + " is not a valid file");
-            }
 
-            var inputStream = new FileInputStream(file);
-            System.setIn(inputStream);
+        try {
+            var fileReader = new BufferedReader(new FileReader(file));
+            var ctx = new ExecutionContext(fileReader, commands, true);
             visitedFiles.add(fileName);
-            interpreter.run();
+            new Interpreter(ctx).run();
         } catch (FileNotFoundException fnfe) {
             System.out.println("File not found");
-        } finally {
-            System.setIn(oldIn);
         }
     }
 }

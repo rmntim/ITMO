@@ -1,6 +1,7 @@
 package ru.rmntim.cli.commands;
 
-import java.io.BufferedReader;
+import ru.rmntim.cli.logic.ExecutionContext;
+
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -35,10 +36,10 @@ public abstract class Command {
 
     /**
      * @param arguments list of arguments to the command, not including the command name.
-     * @param reader
+     * @param context
      * @throws ru.rmntim.cli.exceptions.BadCommandArgumentsException if argument list is not valid
      */
-    public abstract void execute(List<String> arguments, BufferedReader reader);
+    public abstract void execute(List<String> arguments, ExecutionContext context);
 
     @Override
     public String toString() {

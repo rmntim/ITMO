@@ -10,7 +10,6 @@ import ru.rmntim.cli.models.DragonHead;
 import ru.rmntim.cli.models.DragonType;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -18,16 +17,16 @@ public final class DragonBuilder {
     private DragonBuilder() {
     }
 
-    public static Dragon build(int id, final BufferedReader reader) {
+    public static Dragon build(int id, final ExecutionContext context) {
         Dragon dragon;
-        if (System.in instanceof FileInputStream) {
+        if (context.isInFile()) {
             try {
-                dragon = parseDragonFromFile(id, reader);
+                dragon = parseDragonFromFile(id, context.getReader());
             } catch (IllegalArgumentException | IOException e) {
                 throw new InvalidScriptException(e.getMessage());
             }
         } else {
-            dragon = parseDragonFromConsole(id, reader);
+            dragon = parseDragonFromConsole(id, context.getReader());
         }
         return dragon;
     }

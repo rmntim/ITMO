@@ -2,9 +2,9 @@ package ru.rmntim.cli.commands;
 
 import ru.rmntim.cli.exceptions.BadCommandArgumentsException;
 import ru.rmntim.cli.logic.CollectionManager;
+import ru.rmntim.cli.logic.ExecutionContext;
 import ru.rmntim.cli.models.Dragon;
 
-import java.io.BufferedReader;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,7 +17,7 @@ public class GroupByTypeCommand extends Command {
     }
 
     @Override
-    public void execute(List<String> arguments, BufferedReader reader) {
+    public void execute(List<String> arguments, ExecutionContext context) {
         if (!arguments.isEmpty()) {
             throw new BadCommandArgumentsException(getName() + " requires no arguments");
         }

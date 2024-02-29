@@ -1,32 +1,30 @@
 package ru.rmntim.cli.logic;
 
-import ru.rmntim.cli.commands.Command;
 import ru.rmntim.cli.exceptions.BadCommandArgumentsException;
 import ru.rmntim.cli.exceptions.BuildCancelledException;
 import ru.rmntim.cli.exceptions.ExitException;
 import ru.rmntim.cli.exceptions.InvalidScriptException;
 import ru.rmntim.cli.exceptions.RecursionException;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.Map;
 
 public class Interpreter {
     private static final String PS1 = "$ ";
-    private final Map<String, Command> commands;
+    private final ExecutionContext context;
 
-    public Interpreter(final Map<String, Command> commands) {
-        this.commands = commands;
+    public Interpreter(final ExecutionContext context) {
+        this.context = context;
     }
 
     public void run() {
-        try (var reader = new BufferedReader(new InputStreamReader(System.in))) {
+        try {
+            var reader = context.getReader();
+            var commands = context.getCommands();
+
             String input;
             while (true) {
-                if (!(System.in instanceof FileInputStream)) {
+                if (context.isInteractive()) {
                     System.out.print(PS1);
                 }
                 input = reader.readLine();
@@ -40,7 +38,7 @@ public class Interpreter {
                     continue;
                 }
                 try {
-                    commands.get(commandName).execute(userCommand.subList(1, userCommand.size()), reader);
+                    commands.get(commandName).execute(userCommand.subList(1, userCommand.size()), context);
                 } catch (BadCommandArgumentsException | RecursionException bcae) {
                     eprintln(bcae.getMessage());
                 } catch (BuildCancelledException bce) {

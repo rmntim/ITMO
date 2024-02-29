@@ -3,9 +3,9 @@ package ru.rmntim.cli.commands;
 import com.google.gson.JsonIOException;
 import ru.rmntim.cli.exceptions.BadCommandArgumentsException;
 import ru.rmntim.cli.logic.CollectionManager;
+import ru.rmntim.cli.logic.ExecutionContext;
 import ru.rmntim.cli.storage.JsonStorageManager;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class SaveCommand extends Command {
     }
 
     @Override
-    public void execute(final List<String> arguments, final BufferedReader reader) {
+    public void execute(final List<String> arguments, ExecutionContext context) {
         if (!arguments.isEmpty()) {
             throw new BadCommandArgumentsException(getName() + " requires no arguments");
         }

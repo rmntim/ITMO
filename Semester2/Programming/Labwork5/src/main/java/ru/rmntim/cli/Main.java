@@ -20,10 +20,13 @@ import ru.rmntim.cli.commands.UpdateCommand;
 import ru.rmntim.cli.exceptions.ValidationException;
 import ru.rmntim.cli.logic.CollectionManager;
 import ru.rmntim.cli.logic.CommandRegistryBuilder;
+import ru.rmntim.cli.logic.ExecutionContext;
 import ru.rmntim.cli.logic.Interpreter;
 import ru.rmntim.cli.storage.JsonStorageManager;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.time.ZonedDateTime;
 import java.util.TreeSet;
 
@@ -59,7 +62,9 @@ public final class Main {
                     .register(new StartsWithNameCommand(collectionManager))
                     .create();
             executeCommand.setCommands(commandRegistry); // NOTE: костыль
-            new Interpreter(commandRegistry).run();
+            var reader = new BufferedReader(new InputStreamReader(System.in));
+            var ctx = new ExecutionContext(reader, commandRegistry);
+            new Interpreter(ctx).run();
         } catch (IOException e) {
             System.err.println("IO error occurred: " + e.getMessage());
         } catch (JsonIOException jioe) {
