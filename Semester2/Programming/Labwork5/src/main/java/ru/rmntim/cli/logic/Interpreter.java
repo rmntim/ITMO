@@ -25,7 +25,7 @@ public class Interpreter {
     public void run() {
         try (var reader = new BufferedReader(new InputStreamReader(System.in))) {
             String input;
-            for (; ; ) {
+            while (true) {
                 if (!(System.in instanceof FileInputStream)) {
                     System.out.print(PS1);
                 }

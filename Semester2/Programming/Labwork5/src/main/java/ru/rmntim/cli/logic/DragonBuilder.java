@@ -66,7 +66,7 @@ public final class DragonBuilder {
         }
 
         String inputEyesCount;
-        for (; ; ) {
+        while (true) {
             try {
                 System.out.print("Enter eyes count: ");
                 inputEyesCount = reader.readLine();
@@ -88,7 +88,7 @@ public final class DragonBuilder {
 
     private static DragonCharacter askCharacter(final BufferedReader reader) {
         String inputCharacter;
-        for (; ; ) {
+        while (true) {
             try {
                 System.out.print("Enter dragon character (Possible values: "
                         + Arrays.toString(DragonCharacter.values())
@@ -108,7 +108,7 @@ public final class DragonBuilder {
 
     private static DragonType askType(final BufferedReader reader) {
         String inputType;
-        for (; ; ) {
+        while (true) {
             try {
                 System.out.print("Enter dragon type (Possible values: "
                         + Arrays.toString(DragonType.values())
@@ -128,7 +128,7 @@ public final class DragonBuilder {
 
     private static Color askColor(final BufferedReader reader) {
         String inputColor;
-        for (; ; ) {
+        while (true) {
             try {
                 System.out.print("Enter color (Possible values: "
                         + Arrays.toString(Color.values())
@@ -148,7 +148,7 @@ public final class DragonBuilder {
 
     private static long askAge(final BufferedReader reader) {
         String inputAge;
-        for (; ; ) {
+        while (true) {
             try {
                 System.out.print("Enter age: ");
                 inputAge = reader.readLine();
@@ -171,7 +171,7 @@ public final class DragonBuilder {
     private static Coordinates askCoordinates(final BufferedReader reader) {
         String inputX;
         String inputY;
-        for (; ; ) {
+        while (true) {
             try {
                 System.out.print("Enter X coordinate: ");
                 inputX = reader.readLine();
@@ -203,7 +203,7 @@ public final class DragonBuilder {
     private static String askName(final BufferedReader reader) {
         String name;
         try {
-            for (; ; ) {
+            while (true) {
                 System.out.print("Enter name: ");
                 name = reader.readLine();
                 if (name == null) {

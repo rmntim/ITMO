@@ -127,4 +127,4 @@ public enum DragonCharacter {
 - [ ] use `System.exit(0)` in `ExitException` case
 - [ ] **actually** check for `id` uniqueness
 - [ ] decouple validation from `DragonBuilder`
-- [ ] replace `for (;;)` with `while (true)`
+- [x] replace `for (;;)` with `while (true)`
