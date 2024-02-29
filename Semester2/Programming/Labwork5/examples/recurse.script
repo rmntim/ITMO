@@ -1,2 +1,2 @@
 info
-execute_script test2.script
+execute_script recurse1.script

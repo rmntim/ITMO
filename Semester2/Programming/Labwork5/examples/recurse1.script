@@ -1,2 +1,2 @@
 show
-execute_script recurse.script
+execute_script recurse2.script
