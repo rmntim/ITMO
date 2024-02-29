@@ -26,9 +26,13 @@ public final class CollectionValidator {
         }
 
         var ids = new HashSet<Integer>();
+        var lastId = collectionManager.getLastSavedId();
         for (var item : collectionManager.getCollection()) {
             var id = item.id();
 
+            if (id > lastId) {
+                throw new ValidationException("Item has invalid id: " + id + " > lastSavedId (" + lastId + ")");
+            }
             if (ids.contains(id)) {
                 throw new ValidationException("Collection contains duplicated item with id " + id);
             } else {
