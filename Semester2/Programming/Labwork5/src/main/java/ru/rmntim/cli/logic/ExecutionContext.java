@@ -8,7 +8,8 @@ import java.util.Map;
 public class ExecutionContext {
     private final BufferedReader reader;
     private final Map<String, Command> commands;
-    private boolean inFile;
+    private final boolean inFile;
+    private String cwd = System.getProperty("user.dir");
 
     public ExecutionContext(final BufferedReader reader, final Map<String, Command> commands) {
         this.reader = reader;
@@ -16,9 +17,10 @@ public class ExecutionContext {
         this.inFile = false;
     }
 
-    public ExecutionContext(final BufferedReader reader, final Map<String, Command> commands, boolean inFile) {
+    public ExecutionContext(final BufferedReader reader, final Map<String, Command> commands, String cwd, boolean inFile) {
         this.reader = reader;
         this.commands = commands;
+        this.cwd = cwd;
         this.inFile = inFile;
     }
 
@@ -34,15 +36,11 @@ public class ExecutionContext {
         return !inFile;
     }
 
-    public void setInFile(boolean inFile) {
-        this.inFile = inFile;
-    }
-
-    public void setInteractive(boolean interactive) {
-        this.inFile = !interactive;
-    }
-
     public Map<String, Command> getCommands() {
         return commands;
+    }
+
+    public String getCwd() {
+        return cwd;
     }
 }

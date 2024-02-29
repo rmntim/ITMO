@@ -35,7 +35,8 @@ public class ExecuteCommand extends Command {
         }
 
         var fileName = arguments.get(0);
-        var file = new File(fileName);
+        var file = new File(context.getCwd() + File.separator + fileName);
+        var parent = file.getAbsoluteFile().getParent();
 
         if (!file.isFile()) {
             throw new BadCommandArgumentsException(fileName + " is not a valid file");
@@ -46,7 +47,7 @@ public class ExecuteCommand extends Command {
 
         try {
             var fileReader = new BufferedReader(new FileReader(file));
-            var ctx = new ExecutionContext(fileReader, commands, true);
+            var ctx = new ExecutionContext(fileReader, commands, parent, true);
             visitedFiles.add(fileName);
             new Interpreter(ctx).run();
         } catch (FileNotFoundException fnfe) {
