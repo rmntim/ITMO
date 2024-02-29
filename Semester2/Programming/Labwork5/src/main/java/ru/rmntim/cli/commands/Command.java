@@ -5,6 +5,9 @@ import ru.rmntim.cli.logic.ExecutionContext;
 import java.util.List;
 import java.util.StringJoiner;
 
+/**
+ * Abstract class for all commands
+ */
 public abstract class Command {
     private final String name;
     private final String description;
