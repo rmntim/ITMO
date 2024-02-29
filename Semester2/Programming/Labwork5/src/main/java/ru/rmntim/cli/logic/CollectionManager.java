@@ -52,7 +52,7 @@ public class CollectionManager {
 
     public void remove(int id) {
         if (containsId(id)) {
-            collection.remove(collection.stream().filter(dragon -> dragon.id() == id).findFirst().get());
+            collection.remove(collection.stream().filter(dragon -> dragon.id() == id).findFirst().orElseThrow());
         } else {
             throw new IllegalArgumentException("Dragon with id " + id + " not found");
         }
@@ -64,5 +64,6 @@ public class CollectionManager {
 
     public void clear() {
         collection.clear();
+        lastSavedId = 0;
     }
 }
