@@ -22,11 +22,12 @@ public class JsonStorageManager {
 
     /**
      * @param path path to json file
-     * @throws IllegalArgumentException if {@code path} is null or empty
+     * @throws NullPointerException     if path is {@code null}
+     * @throws IllegalArgumentException if {@code path} is empty
      */
     public JsonStorageManager(final String path) {
         if (path == null) {
-            throw new IllegalArgumentException("Path cannot be null");
+            throw new NullPointerException();
         }
         if (path.isBlank()) {
             throw new IllegalArgumentException("Path cannot be empty");
@@ -70,13 +71,13 @@ public class JsonStorageManager {
 
     /**
      * @param collectionManager collection to write
-     * @throws IllegalArgumentException        if {@code collection} is {@code null}
+     * @throws NullPointerException            if {@code collection} is {@code null}
      * @throws IOException                     if the file is invalid
      * @throws com.google.gson.JsonIOException if there was a problem writing to file
      */
     public void writeCollection(final CollectionManager collectionManager) throws IOException {
         if (collectionManager == null) {
-            throw new IllegalArgumentException("Collection to write cannot be null");
+            throw new NullPointerException();
         }
         var file = new File(path);
         if (!file.exists()) {
