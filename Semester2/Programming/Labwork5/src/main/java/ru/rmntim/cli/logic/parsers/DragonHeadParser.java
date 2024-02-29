@@ -11,9 +11,11 @@ import java.io.IOException;
 
 public class DragonHeadParser {
     private final ExecutionContext context;
+    private final DragonHeadValidator validator;
 
     public DragonHeadParser(final ExecutionContext context) {
         this.context = context;
+        this.validator = new DragonHeadValidator();
     }
 
     public DragonHead parse() {
@@ -59,7 +61,7 @@ public class DragonHeadParser {
                     throw new BuildCancelledException();
                 }
                 var eyesCount = Double.parseDouble(inputEyesCount);
-                DragonHeadValidator.validateEyesCount(eyesCount);
+                validator.validateEyesCount(eyesCount);
                 return new DragonHead(eyesCount);
             } catch (IOException e) {
                 throw new BuildCancelledException(e.getMessage());

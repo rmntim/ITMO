@@ -61,7 +61,7 @@ public class JsonStorageManager {
             if (collectionManager == null) {
                 return Optional.empty();
             } else {
-                CollectionValidator.validate(collectionManager);
+                new CollectionValidator().validate(collectionManager);
             }
 
             return Optional.of(collectionManager);

@@ -5,16 +5,8 @@ import ru.rmntim.cli.logic.CollectionManager;
 
 import java.util.HashSet;
 
-public final class CollectionValidator {
-    private CollectionValidator() {
-    }
-
-    /**
-     * @param collectionManager collection manager to validate
-     * @throws ValidationException  if collection manager is invalid
-     * @throws NullPointerException if collection manager is {@code null}
-     */
-    public static void validate(final CollectionManager collectionManager) throws ValidationException {
+public final class CollectionValidator implements Validator<CollectionManager> {
+    public void validate(final CollectionManager collectionManager) throws ValidationException {
         if (collectionManager == null) {
             throw new NullPointerException("Collection manager is null");
         }
@@ -27,6 +19,7 @@ public final class CollectionValidator {
 
         var ids = new HashSet<Integer>();
         var lastId = collectionManager.getLastSavedId();
+        var validator = new DragonValidator();
         for (var item : collectionManager.getCollection()) {
             var id = item.id();
 
@@ -40,7 +33,7 @@ public final class CollectionValidator {
             }
 
             try {
-                DragonValidator.validate(item);
+                validator.validate(item);
             } catch (ValidationException e) {
                 throw new ValidationException("Item with id " + id + " is invalid: " + e.getMessage());
             }

@@ -15,9 +15,11 @@ import java.util.Arrays;
 
 public class DragonParser {
     private final ExecutionContext context;
+    private final DragonValidator validator;
 
     public DragonParser(final ExecutionContext context) {
         this.context = context;
+        this.validator = new DragonValidator();
     }
 
     public Dragon parse(int id) {
@@ -114,7 +116,7 @@ public class DragonParser {
                     throw new BuildCancelledException();
                 }
                 var age = Long.parseLong(inputAge);
-                DragonValidator.validateAge(age);
+                validator.validateAge(age);
                 return age;
             } catch (IOException e) {
                 throw new BuildCancelledException(e.getMessage());
@@ -135,7 +137,7 @@ public class DragonParser {
                 if (name == null) {
                     throw new BuildCancelledException();
                 }
-                DragonValidator.validateName(name);
+                validator.validateName(name);
                 return name;
             } catch (IOException e) {
                 throw new BuildCancelledException(e.getMessage());

@@ -11,9 +11,11 @@ import java.io.IOException;
 
 public class CoordinatesParser {
     private final ExecutionContext context;
+    private final CoordinatesValidator validator;
 
     public CoordinatesParser(final ExecutionContext context) {
         this.context = context;
+        this.validator = new CoordinatesValidator();
     }
 
     public Coordinates parse() {
@@ -39,7 +41,7 @@ public class CoordinatesParser {
                     throw new BuildCancelledException();
                 }
                 var y = Float.parseFloat(inputY);
-                CoordinatesValidator.validateY(y);
+                validator.validateY(y);
                 return y;
             } catch (IOException e) {
                 throw new BuildCancelledException(e.getMessage());
@@ -61,7 +63,7 @@ public class CoordinatesParser {
                     throw new BuildCancelledException();
                 }
                 var x = Float.parseFloat(inputX);
-                CoordinatesValidator.validateX(x);
+                validator.validateX(x);
                 return x;
             } catch (IOException e) {
                 throw new BuildCancelledException(e.getMessage());
