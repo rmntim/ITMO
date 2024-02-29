@@ -46,17 +46,23 @@ public final class DragonBuilder {
 
     private static DragonHead askHead(final BufferedReader reader) {
         String answer;
-        System.out.print("Do you want to add head? [y/n]");
-        try {
-            answer = reader.readLine();
-            if (answer == null) {
-                throw new BuildCancelledException();
+        System.out.print("Do you want to add head? [y/n] ");
+        while (true) {
+            try {
+                answer = reader.readLine();
+                if (answer == null) {
+                    throw new BuildCancelledException();
+                }
+                if ("n".equalsIgnoreCase(answer)) {
+                    return null;
+                } else if ("y".equalsIgnoreCase(answer)) {
+                    break;
+                } else {
+                    System.out.print("Please enter y or n: ");
+                }
+            } catch (IOException e) {
+                throw new InvalidScriptException(e.getMessage());
             }
-            if ("n".equalsIgnoreCase(answer)) {
-                return null;
-            }
-        } catch (IOException e) {
-            throw new InvalidScriptException(e.getMessage());
         }
 
         String inputEyesCount;
@@ -68,7 +74,10 @@ public final class DragonBuilder {
                     throw new BuildCancelledException();
                 }
                 var eyesCount = Double.parseDouble(inputEyesCount);
-                return new DragonHead(eyesCount);
+                if (eyesCount > 0) {
+                    return new DragonHead(eyesCount);
+                }
+                System.out.println("Eyes count must be greater than 0");
             } catch (IOException e) {
                 throw new InvalidScriptException(e.getMessage());
             } catch (NumberFormatException e) {
