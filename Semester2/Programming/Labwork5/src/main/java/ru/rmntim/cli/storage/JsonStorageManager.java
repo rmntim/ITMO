@@ -58,18 +58,13 @@ public class JsonStorageManager {
             CollectionManager collectionManager = gson.fromJson(reader, new TypeToken<CollectionManager>() {
             }.getType());
 
-            try {
-                CollectionValidator.validate(collectionManager);
-            } catch (NullPointerException e) {
+            if (collectionManager == null) {
                 return Optional.empty();
-            }
-            return Optional.of(collectionManager);
-        } catch (RuntimeException re) {
-            if (re.getCause() instanceof IllegalArgumentException) {
-                throw (IllegalArgumentException) re.getCause();
             } else {
-                throw re;
+                CollectionValidator.validate(collectionManager);
             }
+
+            return Optional.of(collectionManager);
         }
     }
 

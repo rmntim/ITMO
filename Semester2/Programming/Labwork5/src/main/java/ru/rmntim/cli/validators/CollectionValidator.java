@@ -38,6 +38,12 @@ public final class CollectionValidator {
             } else {
                 ids.add(id);
             }
+
+            try {
+                DragonValidator.validate(item);
+            } catch (ValidationException e) {
+                throw new ValidationException("Item with id " + id + " is invalid: " + e.getMessage());
+            }
         }
     }
 }
