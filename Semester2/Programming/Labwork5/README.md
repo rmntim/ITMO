@@ -122,7 +122,7 @@ public enum DragonCharacter {
 - [x] move validation logic to classes themselves
 - [x] don't start on invalid files (both path and content)
 - [x] fix asking for `DragonHead`
-- [ ] check files on `execute_script`
+- [x] check files on `execute_script`
 - [ ] catch `NumberFormatException` on update
 - [ ] use `System.exit(0)` in `ExitException` case
 - [ ] **actually** check for `id` uniqueness

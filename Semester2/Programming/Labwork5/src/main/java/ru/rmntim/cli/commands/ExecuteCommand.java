@@ -5,6 +5,7 @@ import ru.rmntim.cli.exceptions.RecursionException;
 import ru.rmntim.cli.logic.Interpreter;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.HashSet;
@@ -36,7 +37,12 @@ public class ExecuteCommand extends Command {
             throw new RecursionException(fileName);
         }
         try {
-            var inputStream = new FileInputStream(fileName);
+            var file = new File(fileName);
+            if (!file.isFile()) {
+                throw new BadCommandArgumentsException(fileName + " is not a valid file");
+            }
+
+            var inputStream = new FileInputStream(file);
             System.setIn(inputStream);
             visitedFiles.add(fileName);
             interpreter.run();
