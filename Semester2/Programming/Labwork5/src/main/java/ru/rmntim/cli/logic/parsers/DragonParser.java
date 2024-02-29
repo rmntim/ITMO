@@ -13,20 +13,26 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Arrays;
 
-public class DragonParser {
+/**
+ * Class for parsing {@link Dragon} from {@code context} reader
+ */
+public class DragonParser implements Parser<Dragon> {
     private final ExecutionContext context;
     private final DragonValidator validator;
+    private final int id;
 
-    public DragonParser(final ExecutionContext context) {
+    public DragonParser(final ExecutionContext context, int id) {
         this.context = context;
         this.validator = new DragonValidator();
+        this.id = id;
     }
 
-    public Dragon parse(int id) {
-        return parseDragon(id, context.getReader());
+    @Override
+    public Dragon parse() {
+        return parseDragon(context.getReader());
     }
 
-    private Dragon parseDragon(int id, final BufferedReader reader) {
+    private Dragon parseDragon(final BufferedReader reader) {
         var name = parseName(reader);
         var coordinates = new CoordinatesParser(context).parse();
         var age = parseAge(reader);

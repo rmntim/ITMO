@@ -60,7 +60,7 @@ public final class Main {
                     .register(new GroupByTypeCommand(collectionManager))
                     .register(new GreaterThanCharacterCommand(collectionManager))
                     .register(new StartsWithNameCommand(collectionManager))
-                    .create();
+                    .build();
             executeCommand.setCommands(commandRegistry); // NOTE: костыль
             var reader = new BufferedReader(new InputStreamReader(System.in));
             var ctx = new ExecutionContext(reader, commandRegistry);

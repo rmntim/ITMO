@@ -9,7 +9,7 @@ import ru.rmntim.cli.validators.DragonHeadValidator;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-public class DragonHeadParser {
+public class DragonHeadParser implements Parser<DragonHead> {
     private final ExecutionContext context;
     private final DragonHeadValidator validator;
 
@@ -18,6 +18,7 @@ public class DragonHeadParser {
         this.validator = new DragonHeadValidator();
     }
 
+    @Override
     public DragonHead parse() {
         return askDragonHead(context.getReader());
     }

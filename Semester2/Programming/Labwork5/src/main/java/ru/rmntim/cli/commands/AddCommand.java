@@ -21,7 +21,7 @@ public class AddCommand extends Command {
             throw new BadCommandArgumentsException(getName() + " doesn't accept any arguments");
         }
 
-        var dragon = new DragonParser(context).parse(collectionManager.getLastSavedId() + 1);
+        var dragon = new DragonParser(context, collectionManager.getLastSavedId() + 1).parse();
         collectionManager.add(dragon);
     }
 }

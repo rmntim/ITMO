@@ -23,7 +23,7 @@ public class UpdateCommand extends Command {
 
         try {
             var id = Integer.parseInt(arguments.get(0));
-            collectionManager.update(id, () -> new DragonParser(context).parse(id));
+            collectionManager.update(id, () -> new DragonParser(context, id).parse());
         } catch (NumberFormatException e) {
             throw new BadCommandArgumentsException(arguments.get(0) + " is not a number");
         } catch (IllegalArgumentException e) {

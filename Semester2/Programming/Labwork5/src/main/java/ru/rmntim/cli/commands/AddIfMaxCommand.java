@@ -27,7 +27,7 @@ public class AddIfMaxCommand extends Command {
         }
         var max = collectionManager.getCollection().stream().max(comparator)
                 .orElseThrow(() -> new BadCommandArgumentsException("Collection doesn't have maximum value"));
-        var element = new DragonParser(context).parse(collectionManager.getLastSavedId() + 1);
+        var element = new DragonParser(context, collectionManager.getLastSavedId() + 1).parse();
 
         if (element.compareTo(max) > 0) {
             collectionManager.add(element);

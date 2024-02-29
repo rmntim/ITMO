@@ -27,7 +27,7 @@ public class AddIfMinCommand extends Command {
         }
         var min = collectionManager.getCollection().stream().min(comparator)
                 .orElseThrow(() -> new BadCommandArgumentsException("Collection doesn't have minimum value"));
-        var element = new DragonParser(context).parse(collectionManager.getLastSavedId() + 1);
+        var element = new DragonParser(context, collectionManager.getLastSavedId() + 1).parse();
 
         if (element.compareTo(min) < 0) {
             collectionManager.add(element);

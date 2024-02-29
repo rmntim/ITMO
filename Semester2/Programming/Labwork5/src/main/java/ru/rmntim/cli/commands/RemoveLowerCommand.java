@@ -22,7 +22,7 @@ public class RemoveLowerCommand extends Command {
             throw new BadCommandArgumentsException(getName() + " requires no arguments");
         }
 
-        var element = new DragonParser(context).parse(collectionManager.getLastSavedId() + 1);
+        var element = new DragonParser(context, collectionManager.getLastSavedId() + 1).parse();
         var toRemove = collectionManager.getCollection().stream()
                 .filter(dragon -> dragon.compareTo(element) < 0)
                 .map(Dragon::id)

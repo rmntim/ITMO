@@ -11,6 +11,11 @@ public class ExitCommand extends Command {
         super("exit", "exits the application");
     }
 
+    /**
+     * @param arguments list of arguments to the command, not including the command name
+     * @param context   execution context
+     * @throws ExitException as a signal to exit the application
+     */
     @Override
     public void execute(final List<String> arguments, ExecutionContext context) {
         if (!arguments.isEmpty()) {

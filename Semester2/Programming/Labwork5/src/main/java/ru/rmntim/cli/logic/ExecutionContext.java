@@ -5,10 +5,18 @@ import ru.rmntim.cli.commands.Command;
 import java.io.BufferedReader;
 import java.util.Map;
 
+/**
+ * Class that encapsulates execution details, such as available commands, flag for indicating file reading
+ * and reader itself.
+ */
 public class ExecutionContext {
     private final BufferedReader reader;
     private final Map<String, Command> commands;
     private final boolean inFile;
+    /**
+     * {@code cwd} is needed for {@link ru.rmntim.cli.commands.ExecuteCommand}
+     * to determine directory for relative paths in scripts
+     */
     private String cwd = System.getProperty("user.dir");
 
     public ExecutionContext(final BufferedReader reader, final Map<String, Command> commands) {

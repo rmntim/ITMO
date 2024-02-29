@@ -9,6 +9,10 @@ import ru.rmntim.cli.exceptions.RecursionException;
 import java.io.IOException;
 import java.util.Arrays;
 
+/**
+ * Class for interpreting commands.
+ * Deals with reading user input, and propagating arguments to commands.
+ */
 public class Interpreter {
     private static final String PS1 = "$ ";
     private final ExecutionContext context;

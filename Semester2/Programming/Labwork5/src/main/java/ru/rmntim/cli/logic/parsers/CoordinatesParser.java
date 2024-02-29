@@ -9,7 +9,7 @@ import ru.rmntim.cli.validators.CoordinatesValidator;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-public class CoordinatesParser {
+public class CoordinatesParser implements Parser<Coordinates> {
     private final ExecutionContext context;
     private final CoordinatesValidator validator;
 
@@ -18,6 +18,7 @@ public class CoordinatesParser {
         this.validator = new CoordinatesValidator();
     }
 
+    @Override
     public Coordinates parse() {
         return parseCoordinates(context.getReader());
     }

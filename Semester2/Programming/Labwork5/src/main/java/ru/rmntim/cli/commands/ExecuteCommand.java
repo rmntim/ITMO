@@ -28,6 +28,12 @@ public class ExecuteCommand extends Command {
         this.commands = commands;
     }
 
+    /**
+     * @param arguments list of arguments to the command, not including the command name
+     * @param context   execution context
+     * @throws RecursionException     if any of the scripts contains recursion
+     * @throws InvalidScriptException if any of the scripts contains invalid syntax
+     */
     @Override
     public void execute(final List<String> arguments, ExecutionContext context) {
         if (arguments.size() != 1) {
