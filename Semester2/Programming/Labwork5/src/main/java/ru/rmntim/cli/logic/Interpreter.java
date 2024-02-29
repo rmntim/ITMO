@@ -42,6 +42,9 @@ public class Interpreter {
                 } catch (BadCommandArgumentsException | RecursionException bcae) {
                     eprintln(bcae.getMessage());
                 } catch (BuildCancelledException bce) {
+                    if (context.isInFile()) {
+                        throw bce;
+                    }
                     System.out.println("Object build cancelled: " + bce.getMessage());
                 } catch (InvalidScriptException ise) {
                     eprintln("Script format error: " + ise.getMessage());

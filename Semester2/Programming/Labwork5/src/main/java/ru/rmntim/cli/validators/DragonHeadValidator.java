@@ -8,7 +8,11 @@ public final class DragonHeadValidator {
     }
 
     public static void validate(DragonHead head) throws ValidationException {
-        if (head.eyesCount() == null || head.eyesCount() < 0) {
+        validateEyesCount(head.eyesCount());
+    }
+
+    public static void validateEyesCount(Double eyesCount) throws ValidationException {
+        if (eyesCount == null || eyesCount < 0) {
             throw new ValidationException("Invalid eyes count");
         }
     }

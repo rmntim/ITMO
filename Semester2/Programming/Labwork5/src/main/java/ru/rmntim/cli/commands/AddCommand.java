@@ -2,8 +2,8 @@ package ru.rmntim.cli.commands;
 
 import ru.rmntim.cli.exceptions.BadCommandArgumentsException;
 import ru.rmntim.cli.logic.CollectionManager;
-import ru.rmntim.cli.logic.DragonBuilder;
 import ru.rmntim.cli.logic.ExecutionContext;
+import ru.rmntim.cli.logic.parsers.DragonParser;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public class AddCommand extends Command {
             throw new BadCommandArgumentsException(getName() + " doesn't accept any arguments");
         }
 
-        var dragon = DragonBuilder.build(collectionManager.getLastSavedId() + 1, context);
+        var dragon = new DragonParser(context).parse(collectionManager.getLastSavedId() + 1);
         collectionManager.add(dragon);
     }
 }

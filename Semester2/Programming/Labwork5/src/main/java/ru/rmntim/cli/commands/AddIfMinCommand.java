@@ -2,8 +2,8 @@ package ru.rmntim.cli.commands;
 
 import ru.rmntim.cli.exceptions.BadCommandArgumentsException;
 import ru.rmntim.cli.logic.CollectionManager;
-import ru.rmntim.cli.logic.DragonBuilder;
 import ru.rmntim.cli.logic.ExecutionContext;
+import ru.rmntim.cli.logic.parsers.DragonParser;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class AddIfMinCommand extends Command {
         }
         var min = collectionManager.getCollection().stream().min(comparator)
                 .orElseThrow(() -> new BadCommandArgumentsException("Collection doesn't have minimum value"));
-        var element = DragonBuilder.build(collectionManager.getLastSavedId() + 1, context);
+        var element = new DragonParser(context).parse(collectionManager.getLastSavedId() + 1);
 
         if (element.compareTo(min) < 0) {
             collectionManager.add(element);

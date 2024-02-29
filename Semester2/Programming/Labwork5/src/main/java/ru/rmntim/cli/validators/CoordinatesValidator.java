@@ -11,12 +11,17 @@ public final class CoordinatesValidator {
     }
 
     public static void validate(Coordinates coordinates) throws ValidationException {
-        var x = coordinates.x();
-        var y = coordinates.y();
+        validateX(coordinates.x());
+        validateY(coordinates.y());
+    }
 
+    public static void validateX(Float x) throws ValidationException {
         if (x == null || x > MAX_X) {
             throw new ValidationException("X must be <= " + MAX_X);
         }
+    }
+
+    public static void validateY(float y) throws ValidationException {
         if (y <= MIN_Y) {
             throw new ValidationException("Y must be > " + MIN_Y);
         }

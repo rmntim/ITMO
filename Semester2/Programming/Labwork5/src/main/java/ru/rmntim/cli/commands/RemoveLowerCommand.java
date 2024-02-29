@@ -2,8 +2,8 @@ package ru.rmntim.cli.commands;
 
 import ru.rmntim.cli.exceptions.BadCommandArgumentsException;
 import ru.rmntim.cli.logic.CollectionManager;
-import ru.rmntim.cli.logic.DragonBuilder;
 import ru.rmntim.cli.logic.ExecutionContext;
+import ru.rmntim.cli.logic.parsers.DragonParser;
 import ru.rmntim.cli.models.Dragon;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public class RemoveLowerCommand extends Command {
             throw new BadCommandArgumentsException(getName() + " requires no arguments");
         }
 
-        var element = DragonBuilder.build(collectionManager.getLastSavedId() + 1, context);
+        var element = new DragonParser(context).parse(collectionManager.getLastSavedId() + 1);
         var toRemove = collectionManager.getCollection().stream()
                 .filter(dragon -> dragon.compareTo(element) < 0)
                 .map(Dragon::id)

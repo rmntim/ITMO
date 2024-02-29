@@ -1,6 +1,8 @@
 package ru.rmntim.cli.commands;
 
 import ru.rmntim.cli.exceptions.BadCommandArgumentsException;
+import ru.rmntim.cli.exceptions.BuildCancelledException;
+import ru.rmntim.cli.exceptions.InvalidScriptException;
 import ru.rmntim.cli.exceptions.RecursionException;
 import ru.rmntim.cli.logic.ExecutionContext;
 import ru.rmntim.cli.logic.Interpreter;
@@ -49,6 +51,10 @@ public class ExecuteCommand extends Command {
             new Interpreter(ctx).run();
         } catch (FileNotFoundException fnfe) {
             System.out.println("File not found");
+        } catch (BuildCancelledException bce) {
+            throw new InvalidScriptException(bce.getMessage());
+        } finally {
+            visitedFiles.remove(fileName);
         }
     }
 }
