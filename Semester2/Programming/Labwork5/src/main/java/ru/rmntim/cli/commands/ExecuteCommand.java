@@ -53,7 +53,7 @@ public class ExecuteCommand extends Command {
         } catch (FileNotFoundException fnfe) {
             System.out.println("File not found");
         } catch (BuildCancelledException bce) {
-            throw new InvalidScriptException(bce.getMessage());
+            throw new InvalidScriptException();
         } finally {
             visitedFiles.remove(fileName);
         }

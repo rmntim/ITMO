@@ -39,15 +39,13 @@ public class Interpreter {
                 }
                 try {
                     commands.get(commandName).execute(userCommand.subList(1, userCommand.size()), context);
-                } catch (BadCommandArgumentsException | RecursionException bcae) {
-                    eprintln(bcae.getMessage());
+                } catch (BadCommandArgumentsException | RecursionException | InvalidScriptException e) {
+                    eprintln(e.getMessage());
                 } catch (BuildCancelledException bce) {
                     if (context.isInFile()) {
                         throw bce;
                     }
                     System.out.println("Object build cancelled: " + bce.getMessage());
-                } catch (InvalidScriptException ise) {
-                    eprintln("Script format error: " + ise.getMessage());
                 }
             }
         } catch (IOException ioe) {
