@@ -57,9 +57,8 @@ public final class DragonBuilder {
                     return null;
                 } else if ("y".equalsIgnoreCase(answer)) {
                     break;
-                } else {
-                    System.out.print("Please enter y or n: ");
                 }
+                System.out.print("Please enter y or n: ");
             } catch (IOException e) {
                 throw new InvalidScriptException(e.getMessage());
             }
