@@ -6,6 +6,9 @@ import ru.rmntim.cli.logic.ExecutionContext;
 
 import java.util.List;
 
+/**
+ * Exits the program
+ */
 public class ExitCommand extends Command {
     public ExitCommand() {
         super("exit", "exits the application");

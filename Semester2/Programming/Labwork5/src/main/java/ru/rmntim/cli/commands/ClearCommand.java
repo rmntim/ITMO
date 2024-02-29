@@ -6,6 +6,9 @@ import ru.rmntim.cli.logic.ExecutionContext;
 
 import java.util.List;
 
+/**
+ * Clear the collection
+ */
 public class ClearCommand extends Command {
     private final CollectionManager collectionManager;
 

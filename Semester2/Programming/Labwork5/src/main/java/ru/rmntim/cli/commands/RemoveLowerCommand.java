@@ -8,6 +8,9 @@ import ru.rmntim.cli.models.Dragon;
 
 import java.util.List;
 
+/**
+ * Removes all elements less than specified
+ */
 public class RemoveLowerCommand extends Command {
     private final CollectionManager collectionManager;
 

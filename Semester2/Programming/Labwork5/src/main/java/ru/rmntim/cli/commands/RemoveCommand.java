@@ -6,6 +6,9 @@ import ru.rmntim.cli.logic.ExecutionContext;
 
 import java.util.List;
 
+/**
+ * Removes item with specified id from collection
+ */
 public class RemoveCommand extends Command {
     private final CollectionManager collectionManager;
 

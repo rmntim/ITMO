@@ -9,6 +9,9 @@ import ru.rmntim.cli.storage.JsonStorageManager;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Saves the collection to file
+ */
 public class SaveCommand extends Command {
     private final CollectionManager collectionManager;
     private final JsonStorageManager storageManager;

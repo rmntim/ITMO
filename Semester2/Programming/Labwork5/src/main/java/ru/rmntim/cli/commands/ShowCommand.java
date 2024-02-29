@@ -6,6 +6,9 @@ import ru.rmntim.cli.logic.ExecutionContext;
 
 import java.util.List;
 
+/**
+ * Displays all elements in collection
+ */
 public class ShowCommand extends Command {
     private final CollectionManager collectionManager;
 

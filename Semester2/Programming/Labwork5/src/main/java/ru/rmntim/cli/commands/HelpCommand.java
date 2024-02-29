@@ -6,6 +6,9 @@ import ru.rmntim.cli.logic.ExecutionContext;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Prints all available commands and their descriptions
+ */
 public class HelpCommand extends Command {
     private final Collection<Command> commands;
 

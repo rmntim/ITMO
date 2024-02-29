@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Executes provided script
+ */
 public class ExecuteCommand extends Command {
     private Map<String, Command> commands;
     private final Set<String> visitedFiles = new HashSet<>();

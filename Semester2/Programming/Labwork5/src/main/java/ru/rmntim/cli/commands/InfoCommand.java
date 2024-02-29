@@ -6,6 +6,9 @@ import ru.rmntim.cli.logic.ExecutionContext;
 
 import java.util.List;
 
+/**
+ * Displays information about collection
+ */
 public class InfoCommand extends Command {
     private final CollectionManager collectionManager;
 

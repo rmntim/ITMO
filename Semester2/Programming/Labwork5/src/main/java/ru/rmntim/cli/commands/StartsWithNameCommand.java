@@ -6,6 +6,9 @@ import ru.rmntim.cli.logic.ExecutionContext;
 
 import java.util.List;
 
+/**
+ * Displays all elements which names start with the specified string
+ */
 public class StartsWithNameCommand extends Command {
     private final CollectionManager collectionManager;
 

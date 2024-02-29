@@ -7,6 +7,9 @@ import ru.rmntim.cli.logic.parsers.DragonParser;
 
 import java.util.List;
 
+/**
+ * Adds new element to collection
+ */
 public class AddCommand extends Command {
     private final CollectionManager collectionManager;
 

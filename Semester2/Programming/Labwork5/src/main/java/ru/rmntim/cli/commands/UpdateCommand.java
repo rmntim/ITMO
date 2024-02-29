@@ -7,6 +7,9 @@ import ru.rmntim.cli.logic.parsers.DragonParser;
 
 import java.util.List;
 
+/**
+ * Updates an element with specified id
+ */
 public class UpdateCommand extends Command {
     private final CollectionManager collectionManager;
 

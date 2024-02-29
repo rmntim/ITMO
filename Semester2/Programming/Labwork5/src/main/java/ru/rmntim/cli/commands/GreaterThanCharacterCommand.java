@@ -7,6 +7,9 @@ import ru.rmntim.cli.models.DragonCharacter;
 
 import java.util.List;
 
+/**
+ * Displays amount of elements in collection with character greater than specified
+ */
 public class GreaterThanCharacterCommand extends Command {
     private final CollectionManager collectionManager;
 

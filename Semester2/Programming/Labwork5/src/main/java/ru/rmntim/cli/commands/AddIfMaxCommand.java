@@ -7,11 +7,14 @@ import ru.rmntim.cli.logic.parsers.DragonParser;
 
 import java.util.List;
 
+/**
+ * Add an element to the collection if it's greater than the maximum
+ */
 public class AddIfMaxCommand extends Command {
     private final CollectionManager collectionManager;
 
     public AddIfMaxCommand(final CollectionManager collectionManager) {
-        super("add_if_max", "adds new element to collection if it's maximum value");
+        super("add_if_max", "adds new element to collection if it's greater than maximum element");
         this.collectionManager = collectionManager;
     }
 

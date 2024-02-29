@@ -7,11 +7,14 @@ import ru.rmntim.cli.logic.parsers.DragonParser;
 
 import java.util.List;
 
+/**
+ * Add an element to the collection if it's less than the minimum
+ */
 public class AddIfMinCommand extends Command {
     private final CollectionManager collectionManager;
 
     public AddIfMinCommand(final CollectionManager collectionManager) {
-        super("add_if_min", "adds new element to collection if it's less than minimum");
+        super("add_if_min", "adds new element to collection if it's less than minimum element");
         this.collectionManager = collectionManager;
     }
 

@@ -8,6 +8,9 @@ import ru.rmntim.cli.models.Dragon;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Groups elements by type and display size of each group
+ */
 public class GroupByTypeCommand extends Command {
     private final CollectionManager collectionManager;
 
