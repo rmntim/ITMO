@@ -126,5 +126,5 @@ public enum DragonCharacter {
 - [x] catch `NumberFormatException` on update
 - [x] use `System.exit(0)` in `ExitException` case
 - [x] **actually** check for `id` uniqueness
-- [ ] decouple validation from `DragonBuilder`
+- [x] decouple validation from `DragonParser`
 - [x] replace `for (;;)` with `while (true)`
