@@ -17,6 +17,7 @@ import ru.rmntim.cli.commands.SaveCommand;
 import ru.rmntim.cli.commands.ShowCommand;
 import ru.rmntim.cli.commands.StartsWithNameCommand;
 import ru.rmntim.cli.commands.UpdateCommand;
+import ru.rmntim.cli.exceptions.ValidationException;
 import ru.rmntim.cli.logic.CollectionManager;
 import ru.rmntim.cli.logic.CommandRegistryBuilder;
 import ru.rmntim.cli.logic.Interpreter;
@@ -36,7 +37,8 @@ public final class Main {
     public static void main(String[] args) {
         try {
             var storageManager = new JsonStorageManager(System.getenv(ENV_NAME));
-            var collectionManager = storageManager.readCollection().orElse(new CollectionManager(new TreeSet<>(), ZonedDateTime.now(), 0));
+            var collectionManager = storageManager.readCollection()
+                    .orElse(new CollectionManager(new TreeSet<>(), ZonedDateTime.now(), 0));
 
             var executeCommand = new ExecuteCommand();
             var commandRegistry = new CommandRegistryBuilder()
@@ -66,6 +68,8 @@ public final class Main {
             System.err.println("Error parsing JSON file: " + jse.getMessage());
         } catch (IllegalArgumentException iae) {
             System.err.println("Error creating resource: " + iae.getMessage());
+        } catch (ValidationException ve) {
+            System.err.println("Collection is invalid: " + ve.getMessage());
         }
     }
 }

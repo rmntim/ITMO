@@ -3,7 +3,9 @@ package ru.rmntim.cli.storage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import ru.rmntim.cli.exceptions.ValidationException;
 import ru.rmntim.cli.logic.CollectionManager;
+import ru.rmntim.cli.validators.CollectionValidator;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -33,12 +35,13 @@ public class JsonStorageManager {
     }
 
     /**
-     * @return collection, initialization date and last id in file. If file is empty, returns {@code null}
+     * @return collection, initialization date and last id in file. If file is empty or collection is invalid, returns empty Optional.
      * @throws IOException                         if the file is invalid
+     * @throws ValidationException                 if collection is invalid
      * @throws com.google.gson.JsonIOException     if there was a problem reading from the file
      * @throws com.google.gson.JsonSyntaxException if file contains invalid JSON
      */
-    public Optional<CollectionManager> readCollection() throws IOException {
+    public Optional<CollectionManager> readCollection() throws IOException, ValidationException {
         var file = new File(path);
         if (!file.exists()) {
             if (!file.createNewFile()) {
@@ -55,11 +58,12 @@ public class JsonStorageManager {
             CollectionManager collectionManager = gson.fromJson(reader, new TypeToken<CollectionManager>() {
             }.getType());
 
-            if (collectionManager != null && (collectionManager.getCollection() == null || collectionManager.getInitializationDate() == null)) {
-                throw new IOException("JSON file is invalid");
+            try {
+                CollectionValidator.validate(collectionManager);
+            } catch (NullPointerException e) {
+                return Optional.empty();
             }
-
-            return Optional.ofNullable(collectionManager);
+            return Optional.of(collectionManager);
         } catch (RuntimeException re) {
             if (re.getCause() instanceof IllegalArgumentException) {
                 throw (IllegalArgumentException) re.getCause();
