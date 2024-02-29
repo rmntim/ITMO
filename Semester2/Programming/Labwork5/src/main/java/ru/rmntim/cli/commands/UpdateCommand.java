@@ -25,7 +25,7 @@ public class UpdateCommand extends Command {
             var id = Integer.parseInt(arguments.get(0));
             collectionManager.update(id, () -> DragonBuilder.build(id, reader));
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(arguments.get(0) + " is not a number");
+            throw new BadCommandArgumentsException(arguments.get(0) + " is not a number");
         } catch (IllegalArgumentException e) {
             throw new BadCommandArgumentsException(e.getMessage());
         }
