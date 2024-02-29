@@ -12,6 +12,10 @@ import java.util.Map;
 public class ExecutionContext {
     private final BufferedReader reader;
     private final Map<String, Command> commands;
+    /**
+     * {@code inFile} is used by {@link ru.rmntim.cli.commands.ExecuteCommand} and {@link Interpreter}
+     * to handle printing some user-facing messages, such as PS1
+     */
     private final boolean inFile;
     /**
      * {@code cwd} is needed for {@link ru.rmntim.cli.commands.ExecuteCommand}

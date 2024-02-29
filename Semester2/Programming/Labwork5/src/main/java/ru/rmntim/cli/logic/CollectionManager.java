@@ -6,6 +6,10 @@ import java.time.ZonedDateTime;
 import java.util.TreeSet;
 import java.util.function.Supplier;
 
+/**
+ * Class that encapsulates logic of dragon collection
+ * and provides methods for controlling it
+ */
 public class CollectionManager {
     private final TreeSet<Dragon> collection;
     private final ZonedDateTime initializationDate;
@@ -17,6 +21,11 @@ public class CollectionManager {
         this.initializationDate = initializationDate;
     }
 
+    /**
+     * Add new dragon to collection and increment lastSavedId
+     *
+     * @param dragon dragon to add
+     */
     public void add(Dragon dragon) {
         collection.add(dragon);
         lastSavedId++;
@@ -41,6 +50,11 @@ public class CollectionManager {
         return lastSavedId;
     }
 
+    /**
+     * @param id             id of dragon to update
+     * @param dragonSupplier function that supplies new dragon. Not passing the dragon because we need to check ids before parsing it
+     * @throws IllegalArgumentException if id is out of range
+     */
     public void update(int id, Supplier<Dragon> dragonSupplier) {
         if (containsId(id)) {
             remove(id);
@@ -50,6 +64,10 @@ public class CollectionManager {
         }
     }
 
+    /**
+     * @param id id of dragon to remove
+     * @throws IllegalArgumentException if id is out of range
+     */
     public void remove(int id) {
         if (containsId(id)) {
             collection.remove(collection.stream().filter(dragon -> dragon.id() == id).findFirst().orElseThrow());
@@ -58,10 +76,17 @@ public class CollectionManager {
         }
     }
 
+    /**
+     * @param id id of dragon to check for
+     * @return {@code true} if dragon with id is in collection
+     */
     public boolean containsId(int id) {
         return collection.stream().anyMatch(dragon -> dragon.id() == id);
     }
 
+    /**
+     * Clears collection and sets {@code lastSavedId} to 0
+     */
     public void clear() {
         collection.clear();
         lastSavedId = 0;

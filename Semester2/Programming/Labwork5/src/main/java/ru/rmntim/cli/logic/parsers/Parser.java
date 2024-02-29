@@ -1,5 +1,8 @@
 package ru.rmntim.cli.logic.parsers;
 
+/**
+ * @param <T> type of the object to parse
+ */
 public interface Parser<T> {
     /**
      * @return parsed value

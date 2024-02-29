@@ -13,9 +13,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Arrays;
 
-/**
- * Class for parsing {@link Dragon} from {@code context} reader
- */
 public class DragonParser implements Parser<Dragon> {
     private final ExecutionContext context;
     private final DragonValidator validator;
