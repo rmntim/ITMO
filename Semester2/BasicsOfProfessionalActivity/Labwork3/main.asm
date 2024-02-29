@@ -20,8 +20,8 @@ start:
   ld ODD_CNT
   inc
   st ODD_CNT
-  loop $ARRAY_LEN
-  iter: jump begin_loop
+  iter: loop $ARRAY_LEN
+  jump begin_loop
   hlt
 
 ;; DATA
