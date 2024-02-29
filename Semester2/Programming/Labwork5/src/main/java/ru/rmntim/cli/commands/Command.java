@@ -46,14 +46,6 @@ public abstract class Command {
         return name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public List<String> getParameters() {
-        return parameters;
-    }
-
     /**
      * @param arguments list of arguments to the command, not including the command name
      * @param context   execution context
@@ -67,7 +59,7 @@ public abstract class Command {
         parameters.forEach(sj::add);
         var result = name;
         if (sj.length() > 0) {
-            result += " [" + sj.toString() + "]";
+            result += " [" + sj + "]";
         }
         result += " - " + description;
         return result;
