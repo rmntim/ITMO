@@ -21,7 +21,7 @@ WHERE "Н_ЛЮДИ"."ОТЧЕСТВО" > 'Владимирович'
 SELECT COUNT(*)
 FROM (SELECT "ОТЧЕСТВО"
       FROM "Н_ЛЮДИ"
-      GROUP BY "Н_ЛЮДИ"."ОТЧЕСТВО") AS НЛО;
+      GROUP BY "Н_ЛЮДИ"."ОТЧЕСТВО") AS SURNAMES;
 
 -- 4
 
