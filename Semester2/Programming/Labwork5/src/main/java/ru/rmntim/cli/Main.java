@@ -39,7 +39,7 @@ public final class Main {
 
     public static void main(String[] args) {
         try {
-            var storageManager = new JsonStorageManager(System.getenv(ENV_NAME));
+            var storageManager = new JsonStorageManager(getPath());
             var collectionManager = storageManager.readCollection()
                     .orElse(new CollectionManager(new TreeSet<>(), ZonedDateTime.now(), 0));
 
@@ -76,5 +76,14 @@ public final class Main {
         } catch (ValidationException ve) {
             System.err.println("Collection is invalid: " + ve.getMessage());
         }
+    }
+
+    private static String getPath() {
+        var path = System.getenv(ENV_NAME);
+        if (path == null) {
+            System.err.println(ENV_NAME + " is null");
+            System.exit(1);
+        }
+        return path;
     }
 }
