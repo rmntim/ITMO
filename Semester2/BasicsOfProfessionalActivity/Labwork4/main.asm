@@ -26,10 +26,10 @@ add R
 st R
 hlt
 
-Z: word 0x0064
-Y: word 0xFFFB
-X: word 0xBEEF
-R: word 0xffd3
+Z: word 2004
+Y: word 1
+X: word 0
+R: word 0
 
 ;; subroutine
 org 0x6fe
