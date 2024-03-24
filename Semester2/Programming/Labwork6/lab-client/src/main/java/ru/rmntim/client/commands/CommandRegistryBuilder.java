@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Class for creating registry of commands (basically a {@code Map<String, Command>}), which is used in {@link ExecutionContext}.
+ * Class for creating registry of commands (basically a {@code Map<String, Command>})
  */
 public class CommandRegistryBuilder {
     private final Map<String, Command> commandRegistry = new HashMap<>();
