@@ -3,7 +3,6 @@
 Тимошкин Р. В. [P3131]
 :reproducible:
 :title-page:
-:source-highlighter: pygments
 
 == Текст задания
 
