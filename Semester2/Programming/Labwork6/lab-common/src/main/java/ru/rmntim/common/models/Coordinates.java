@@ -1,6 +1,8 @@
 package ru.rmntim.common.models;
 
-public record Coordinates(Float x, float y) {
+import java.io.Serializable;
+
+public record Coordinates(Float x, float y) implements Serializable {
     @Override
     public String toString() {
         return "x: " + x + ", y: " + y;
