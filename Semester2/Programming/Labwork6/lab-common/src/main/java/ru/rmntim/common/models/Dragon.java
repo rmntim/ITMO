@@ -1,4 +1,4 @@
-package ru.rmntim.cli.models;
+package ru.rmntim.common.models;
 
 import java.time.ZonedDateTime;
 import java.util.Comparator;

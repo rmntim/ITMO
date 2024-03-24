@@ -1,4 +1,4 @@
-package ru.rmntim.cli.models;
+package ru.rmntim.common.models;
 
 public record Coordinates(Float x, float y) {
     @Override
