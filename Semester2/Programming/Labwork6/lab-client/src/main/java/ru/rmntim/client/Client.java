@@ -1,4 +1,4 @@
-package ru.rmntim.serverent;
+package ru.rmntim.client;
 
 public final class Client {
     private Client() {
