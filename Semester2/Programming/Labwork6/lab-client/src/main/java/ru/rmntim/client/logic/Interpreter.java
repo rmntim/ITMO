@@ -54,12 +54,12 @@ public class Interpreter {
                     response = commands.get(commandName)
                             .sendRequest(ctx, userCommand.subList(1, userCommand.size()));
                 } catch (BadResponseException | BadCommandArgumentsException e) {
-                    System.out.println("Error: " + e.getMessage());
+                    System.out.println("Response error: " + e.getMessage());
                     continue;
                 }
 
                 if (response.isError()) {
-                    System.out.print("Response error: ");
+                    System.out.print("Server error: ");
                 }
                 System.out.println(response.message());
             }
