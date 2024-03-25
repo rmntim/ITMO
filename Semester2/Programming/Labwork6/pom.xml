@@ -22,6 +22,7 @@
                     <violationSeverity>warning</violationSeverity>
                     <encoding>UTF-8</encoding>
                     <configLocation>config/checkstyle.xml</configLocation>
+                    <suppressionsLocation>config/suppressions.xml</suppressionsLocation>
                 </configuration>
                 <executions>
                     <execution>
@@ -58,6 +59,18 @@
             </plugins>
         </pluginManagement>
     </build>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.14.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>33.1.0-jre</version>
+        </dependency>
+    </dependencies>
     <modules>
         <module>lab-common</module>
         <module>lab-client</module>
