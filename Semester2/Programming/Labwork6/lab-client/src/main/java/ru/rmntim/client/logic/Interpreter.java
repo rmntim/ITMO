@@ -53,20 +53,18 @@ public class Interpreter {
                 try {
                     response = commands.get(commandName)
                             .sendRequest(ctx, userCommand.subList(1, userCommand.size()));
-                } catch (BadResponseException e) {
-                    System.out.println("Response error: " + e.getMessage());
+                } catch (BadResponseException | BadCommandArgumentsException e) {
+                    System.out.println("Error: " + e.getMessage());
                     continue;
                 }
 
                 if (response.isError()) {
-                    System.out.print("Request error: ");
-                } else {
-                    System.out.print("Request success: ");
+                    System.out.print("Response error: ");
                 }
                 System.out.println(response.message());
             }
-        } catch (IOException | BadCommandArgumentsException e) {
-            System.out.println("Error: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("Fatal: " + e.getMessage());
         }
     }
 }

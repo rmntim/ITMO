@@ -1,29 +1,32 @@
 package ru.rmntim.client.commands;
 
 import ru.rmntim.client.exceptions.BadCommandArgumentsException;
-import ru.rmntim.client.exceptions.BadResponseException;
 import ru.rmntim.client.logic.ExecutionContext;
-import ru.rmntim.common.network.requests.HelpRequest;
 import ru.rmntim.common.network.responses.Response;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
 
 public class Help extends Command {
-    public Help() {
+    private final Map<String, Command> commands;
+
+    public Help(Map<String, Command> commands) {
         super("help", "shows all available commands");
+        this.commands = commands;
     }
 
     @Override
-    public Response sendRequest(ExecutionContext ctx, List<String> args) throws BadResponseException {
+    public Response sendRequest(ExecutionContext ctx, List<String> args) {
         if (!args.isEmpty()) {
             throw new BadCommandArgumentsException(getName() + " doesn't take any arguments");
         }
 
-        try {
-            return ctx.getClient().sendAndReceive(new HelpRequest());
-        } catch (IOException e) {
-            throw new BadResponseException(getName() + ": " + e.getMessage());
+        var sj = new StringJoiner("\n");
+        for (var command : commands.values()) {
+            sj.add(command.getName() + " - " + command.getDescription());
         }
+
+        return new Response(sj.toString());
     }
 }
