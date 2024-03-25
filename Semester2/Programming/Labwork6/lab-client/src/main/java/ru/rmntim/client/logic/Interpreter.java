@@ -50,8 +50,13 @@ public class Interpreter {
                     continue;
                 }
 
-                commands.get(commandName)
+                var response = commands.get(commandName)
                         .sendRequest(ctx, userCommand.subList(1, userCommand.size()));
+                if (response.error() != null && !response.error().isBlank()) {
+                    System.out.println("Error: " + response.error());
+                }
+
+                System.out.println("Request success: " + response.message());
             }
         } catch (IOException | BadCommandArgumentsException e) {
             System.out.println("Error: " + e.getMessage());

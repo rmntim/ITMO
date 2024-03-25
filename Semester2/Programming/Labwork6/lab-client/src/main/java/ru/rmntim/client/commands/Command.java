@@ -1,6 +1,7 @@
 package ru.rmntim.client.commands;
 
 import ru.rmntim.client.logic.ExecutionContext;
+import ru.rmntim.common.network.responses.Response;
 
 import java.util.List;
 
@@ -27,5 +28,5 @@ public abstract class Command {
      * @param ctx  execution context
      * @param args command arguments
      */
-    public abstract void sendRequest(ExecutionContext ctx, List<String> args);
+    public abstract Response sendRequest(ExecutionContext ctx, List<String> args);
 }
