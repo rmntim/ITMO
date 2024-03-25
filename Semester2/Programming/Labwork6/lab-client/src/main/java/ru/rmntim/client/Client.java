@@ -1,8 +1,9 @@
 package ru.rmntim.client;
 
 import ru.rmntim.client.commands.Command;
-import ru.rmntim.client.commands.CommandRegistryBuilder;
 import ru.rmntim.client.commands.Exit;
+import ru.rmntim.client.commands.Help;
+import ru.rmntim.client.logic.CommandRegistryBuilder;
 import ru.rmntim.client.logic.ExecutionContext;
 import ru.rmntim.client.logic.Interpreter;
 import ru.rmntim.client.network.UDPClient;
@@ -33,7 +34,8 @@ public final class Client {
 
     private static Map<String, Command> registerCommands() {
         var registryBuilder = new CommandRegistryBuilder();
-        registryBuilder.register(new Exit());
-        return registryBuilder.build();
+        return registryBuilder.register(new Exit())
+                .register(new Help())
+                .build();
     }
 }

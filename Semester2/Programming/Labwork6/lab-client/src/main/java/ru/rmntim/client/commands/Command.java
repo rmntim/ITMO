@@ -1,5 +1,6 @@
 package ru.rmntim.client.commands;
 
+import ru.rmntim.client.exceptions.BadResponseException;
 import ru.rmntim.client.logic.ExecutionContext;
 import ru.rmntim.common.network.responses.Response;
 
@@ -27,6 +28,9 @@ public abstract class Command {
      *
      * @param ctx  execution context
      * @param args command arguments
+     * @return server response
+     * @throws ru.rmntim.client.exceptions.BadCommandArgumentsException if the command arguments are invalid
+     * @throws ru.rmntim.client.exceptions.BadResponseException         if the server response is invalid
      */
-    public abstract Response sendRequest(ExecutionContext ctx, List<String> args);
+    public abstract Response sendRequest(ExecutionContext ctx, List<String> args) throws BadResponseException;
 }

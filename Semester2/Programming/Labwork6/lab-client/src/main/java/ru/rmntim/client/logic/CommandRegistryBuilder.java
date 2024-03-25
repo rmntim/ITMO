@@ -1,4 +1,6 @@
-package ru.rmntim.client.commands;
+package ru.rmntim.client.logic;
+
+import ru.rmntim.client.commands.Command;
 
 import java.util.HashMap;
 import java.util.Map;

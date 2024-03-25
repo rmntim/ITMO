@@ -1,6 +1,8 @@
 package ru.rmntim.client.logic;
 
 import ru.rmntim.client.exceptions.BadCommandArgumentsException;
+import ru.rmntim.client.exceptions.BadResponseException;
+import ru.rmntim.common.network.responses.Response;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -39,10 +41,7 @@ public class Interpreter {
                 if (input == null) {
                     break;
                 }
-
-                var userCommand = Arrays.stream(input.trim().split(" ", 2))
-                        .map(String::trim)
-                        .toList();
+                var userCommand = Arrays.stream(input.trim().split(" ", 2)).map(String::trim).toList();
                 var commandName = userCommand.get(0);
 
                 if (!commands.containsKey(commandName)) {
@@ -50,13 +49,21 @@ public class Interpreter {
                     continue;
                 }
 
-                var response = commands.get(commandName)
-                        .sendRequest(ctx, userCommand.subList(1, userCommand.size()));
-                if (response.error() != null && !response.error().isBlank()) {
-                    System.out.println("Error: " + response.error());
+                Response response;
+                try {
+                    response = commands.get(commandName)
+                            .sendRequest(ctx, userCommand.subList(1, userCommand.size()));
+                } catch (BadResponseException e) {
+                    System.out.println("Response error: " + e.getMessage());
+                    continue;
                 }
 
-                System.out.println("Request success: " + response.message());
+                if (response.isError()) {
+                    System.out.print("Request error: ");
+                } else {
+                    System.out.print("Request success: ");
+                }
+                System.out.println(response.message());
             }
         } catch (IOException | BadCommandArgumentsException e) {
             System.out.println("Error: " + e.getMessage());
