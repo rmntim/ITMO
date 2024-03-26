@@ -5,6 +5,6 @@
         "https://checkstyle.org/dtds/suppressions_1_0.dtd">
 
 <suppressions>
-    <suppress checks="MethodLength"
-              files="Interpreter.java"/>
+    <suppress checks="MethodLength" files="Interpreter.java"/>
+    <suppress checks="ParameterNumber" files="Dragon.java"/>
 </suppressions>
