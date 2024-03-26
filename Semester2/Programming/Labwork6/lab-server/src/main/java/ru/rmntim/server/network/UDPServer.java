@@ -21,7 +21,7 @@ import java.util.Arrays;
 
 public class UDPServer {
     private static final int PACKET_SIZE = 1024;
-    private static final Logger logger = LoggerFactory.getLogger(UDPServer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UDPServer.class);
     private final DatagramSocket socket;
 
     /**
@@ -48,11 +48,11 @@ public class UDPServer {
             socket.receive(dp);
 
             addr = dp.getSocketAddress();
-            logger.info("Received " + dp.getLength() + " bytes from " + addr);
+            LOGGER.info("Received " + dp.getLength() + " bytes from " + addr);
 
             if (data[data.length - 1] == 1) {
                 finished = true;
-                logger.info("Finished receiving data from " + addr);
+                LOGGER.info("Finished receiving data from " + addr);
             }
 
             buffer = Bytes.concat(buffer, Arrays.copyOf(data, data.length - 1));
@@ -74,7 +74,7 @@ public class UDPServer {
             chunks[i] = Arrays.copyOfRange(data, start, start + dataSize);
         }
 
-        logger.info("Sending " + chunks.length + " chunks to " + addr);
+        LOGGER.info("Sending " + chunks.length + " chunks to " + addr);
 
         for (int i = 0; i < chunks.length; i++) {
             var chunk = chunks[i];
@@ -86,10 +86,10 @@ public class UDPServer {
             }
             var dp = new DatagramPacket(sendBytes, PACKET_SIZE, addr);
             socket.send(dp);
-            logger.info("Sent " + sendBytes.length + " bytes to " + addr);
+            LOGGER.info("Sent " + sendBytes.length + " bytes to " + addr);
         }
 
-        logger.info("Finished sending data to " + addr);
+        LOGGER.info("Finished sending data to " + addr);
     }
 
     /**
@@ -101,7 +101,7 @@ public class UDPServer {
             try {
                 dataPair = receive();
             } catch (IOException e) {
-                logger.error("Failed to receive data", e);
+                LOGGER.error("Failed to receive data", e);
                 disconnect();
                 continue;
             }
@@ -109,9 +109,9 @@ public class UDPServer {
             var clientAddress = dataPair.getRight();
             try {
                 connect(clientAddress);
-                logger.info("Connected to " + clientAddress);
+                LOGGER.info("Connected to " + clientAddress);
             } catch (IOException e) {
-                logger.error("Failed to connect to " + clientAddress, e);
+                LOGGER.error("Failed to connect to " + clientAddress, e);
                 continue;
             }
 
@@ -119,9 +119,9 @@ public class UDPServer {
             Request request;
             try {
                 request = SerializationUtils.deserialize(ArrayUtils.toPrimitive(requestBytes));
-                logger.info("Received request " + request.getName() + " from " + clientAddress);
+                LOGGER.info("Received request " + request.getName() + " from " + clientAddress);
             } catch (SerializationException e) {
-                logger.error("Failed to deserialize request", e);
+                LOGGER.error("Failed to deserialize request", e);
                 disconnect();
                 continue;
             }
@@ -130,18 +130,18 @@ public class UDPServer {
             try {
                 // TODO: handle request
             } catch (Exception e) {
-                logger.error("Failed to handle request", e);
+                LOGGER.error("Failed to handle request", e);
             }
 
             try {
                 var responseBytes = SerializationUtils.serialize(response);
                 send(responseBytes, clientAddress);
-                logger.info("Sending response " + response + " to " + clientAddress);
+                LOGGER.info("Sending response " + response + " to " + clientAddress);
             } catch (IOException e) {
-                logger.error("Failed to send response", e);
+                LOGGER.error("Failed to send response", e);
             }
             disconnect();
-            logger.info("Disconnected from " + clientAddress);
+            LOGGER.info("Disconnected from " + clientAddress);
         }
         close();
     }
