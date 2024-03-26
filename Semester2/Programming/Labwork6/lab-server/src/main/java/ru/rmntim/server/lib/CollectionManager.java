@@ -26,7 +26,7 @@ public class CollectionManager {
     }
 
     /**
-     * validates collection
+     * validates collection and finds max id to use
      *
      * @throws ValidationException if collection is invalid
      */
@@ -39,5 +39,9 @@ public class CollectionManager {
             id = Math.max(id, dragon.id());
         }
         lastId = id;
+    }
+
+    public TreeSet<Dragon> getCollection() {
+        return collection;
     }
 }

@@ -25,8 +25,16 @@ public final class Server {
 
             logger.info("Loading data from " + path);
             var storageManager = new StorageManager(path);
-            var collection = storageManager.readCollection();
-            var collectionManager = new CollectionManager(collection);
+            var collectionManager = new CollectionManager(storageManager.readCollection());
+
+            Runtime.getRuntime().addShutdownHook(
+                    new Thread(() -> {
+                        try {
+                            storageManager.writeCollection(collectionManager.getCollection());
+                        } catch (IOException e) {
+                            logger.error("Failed to save collection", e);
+                        }
+                    }));
         } catch (IOException | JsonIOException e) {
             logger.error("IO error occurred", e);
         } catch (ValidationException | JsonSyntaxException e) {
