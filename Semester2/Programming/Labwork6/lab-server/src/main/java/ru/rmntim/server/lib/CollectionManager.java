@@ -9,7 +9,8 @@ import java.util.TreeSet;
 
 public class CollectionManager {
     private final TreeSet<Dragon> collection;
-    private final ZonedDateTime lastInitTime;
+    private final ZonedDateTime lastInitTime = ZonedDateTime.now();
+    private int lastId = 0;
 
     /**
      * @param collection collection to work with
@@ -21,7 +22,6 @@ public class CollectionManager {
             throw new IllegalArgumentException("Collection cannot be null");
         }
         this.collection = collection;
-        this.lastInitTime = ZonedDateTime.now();
         validate();
     }
 
@@ -32,8 +32,12 @@ public class CollectionManager {
      */
     private void validate() throws ValidationException {
         var validator = new DragonValidator();
+        var id = 0;
+
         for (var dragon : collection) {
             validator.validate(dragon);
+            id = Math.max(id, dragon.id());
         }
+        lastId = id;
     }
 }
