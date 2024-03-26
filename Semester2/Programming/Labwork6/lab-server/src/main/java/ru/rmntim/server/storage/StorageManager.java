@@ -3,9 +3,7 @@ package ru.rmntim.server.storage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import ru.rmntim.common.exceptions.ValidationException;
 import ru.rmntim.common.models.Dragon;
-import ru.rmntim.common.validators.DragonValidator;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -41,11 +39,10 @@ public class StorageManager {
     /**
      * @return collection, initialization date and last id in file. If file is empty or collection is invalid, returns empty Optional.
      * @throws IOException                         if the file is invalid
-     * @throws ValidationException                 if the collection is invalid
      * @throws com.google.gson.JsonIOException     if there was a problem reading from the file
      * @throws com.google.gson.JsonSyntaxException if file contains invalid JSON
      */
-    public TreeSet<Dragon> readCollection() throws IOException, ValidationException {
+    public TreeSet<Dragon> readCollection() throws IOException {
         var file = new File(path);
         if (!file.exists()) {
             if (!file.createNewFile()) {
@@ -64,11 +61,6 @@ public class StorageManager {
 
             if (collection == null) {
                 return new TreeSet<>();
-            }
-
-            var validator = new DragonValidator();
-            for (var element : collection) {
-                validator.validate(element);
             }
 
             return collection;
