@@ -9,8 +9,7 @@ import java.util.TreeSet;
 
 public class CollectionManager {
     private final TreeSet<Dragon> collection;
-    private ZonedDateTime lastInitTime;
-    private ZonedDateTime lastSaveTime;
+    private final ZonedDateTime lastInitTime;
 
     /**
      * @param collection collection to work with
@@ -23,11 +22,14 @@ public class CollectionManager {
         }
         this.collection = collection;
         this.lastInitTime = ZonedDateTime.now();
-        this.lastSaveTime = ZonedDateTime.now();
-
         validate();
     }
 
+    /**
+     * validates collection
+     *
+     * @throws ValidationException if collection is invalid
+     */
     private void validate() throws ValidationException {
         var validator = new DragonValidator();
         for (var dragon : collection) {
