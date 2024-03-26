@@ -2,9 +2,9 @@ package ru.rmntim.client;
 
 import ru.rmntim.client.commands.Command;
 import ru.rmntim.client.commands.Exit;
-import ru.rmntim.client.logic.CommandRegistryBuilder;
-import ru.rmntim.client.logic.ExecutionContext;
-import ru.rmntim.client.logic.Interpreter;
+import ru.rmntim.client.lib.CommandRegistryBuilder;
+import ru.rmntim.client.lib.ExecutionContext;
+import ru.rmntim.client.lib.Interpreter;
 import ru.rmntim.client.network.UDPClient;
 
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package ru.rmntim.client.logic;
+package ru.rmntim.client.lib;
 
 import ru.rmntim.client.exceptions.BadCommandArgumentsException;
 import ru.rmntim.client.exceptions.BadResponseException;

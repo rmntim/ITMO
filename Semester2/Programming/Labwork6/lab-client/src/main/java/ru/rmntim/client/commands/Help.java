@@ -1,7 +1,7 @@
 package ru.rmntim.client.commands;
 
 import ru.rmntim.client.exceptions.BadCommandArgumentsException;
-import ru.rmntim.client.logic.ExecutionContext;
+import ru.rmntim.client.lib.ExecutionContext;
 import ru.rmntim.common.network.responses.Response;
 
 import java.util.List;

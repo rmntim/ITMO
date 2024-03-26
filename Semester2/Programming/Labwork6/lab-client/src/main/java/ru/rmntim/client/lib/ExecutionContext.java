@@ -1,4 +1,4 @@
-package ru.rmntim.client.logic;
+package ru.rmntim.client.lib;
 
 import ru.rmntim.client.commands.Command;
 import ru.rmntim.client.network.UDPClient;
