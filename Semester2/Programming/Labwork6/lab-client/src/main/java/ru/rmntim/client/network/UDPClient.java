@@ -6,7 +6,6 @@ import ru.rmntim.common.network.requests.Request;
 import ru.rmntim.common.network.responses.Response;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
@@ -25,12 +24,10 @@ public class UDPClient {
     /**
      * Creates a new non-blocking connection to the server.
      *
-     * @param addr host
-     * @param port port
      * @throws IOException if an I/O error occurs
      */
-    public UDPClient(final InetAddress addr, int port) throws IOException {
-        this.address = new InetSocketAddress(addr, port);
+    public UDPClient(InetSocketAddress address) throws IOException {
+        this.address = address;
         this.channel = DatagramChannel.open().bind(null).connect(address);
         this.channel.configureBlocking(false);
     }

@@ -6,9 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.rmntim.common.exceptions.ValidationException;
 import ru.rmntim.server.lib.CollectionManager;
+import ru.rmntim.server.network.UDPServer;
 import ru.rmntim.server.storage.StorageManager;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 
 public final class Server {
     private static final int PORT = 1337;
@@ -35,6 +38,11 @@ public final class Server {
                             logger.error("Failed to save collection", e);
                         }
                     }));
+
+            var address = new InetSocketAddress(InetAddress.getLocalHost(), PORT);
+            logger.info("Starting server " + address);
+            var server = new UDPServer(address);
+
         } catch (IOException | JsonIOException e) {
             logger.error("IO error occurred", e);
         } catch (ValidationException | JsonSyntaxException e) {

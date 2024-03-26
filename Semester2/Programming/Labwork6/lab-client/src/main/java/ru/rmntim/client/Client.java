@@ -9,6 +9,7 @@ import ru.rmntim.client.network.UDPClient;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.Map;
 
 public final class Client {
@@ -21,7 +22,8 @@ public final class Client {
     public static void main(String[] args) {
         try {
             var commands = registerCommands();
-            var client = new UDPClient(InetAddress.getLocalHost(), PORT);
+            var address = new InetSocketAddress(InetAddress.getLocalHost(), PORT);
+            var client = new UDPClient(address);
             var ctx = new ExecutionContext(client, System.in, commands);
             var interpreter = new Interpreter(ctx);
 
