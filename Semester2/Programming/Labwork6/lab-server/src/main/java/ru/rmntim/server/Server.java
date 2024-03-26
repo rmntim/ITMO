@@ -16,7 +16,7 @@ import java.net.InetSocketAddress;
 public final class Server {
     private static final int PORT = 1337;
     private static final String ENV_NAME = "FILENAME";
-    private static Logger logger = LoggerFactory.getLogger(Server.class);
+    private static final Logger logger = LoggerFactory.getLogger(Server.class);
 
     private Server() {
         throw new UnsupportedOperationException("This is an utility class and can not be instantiated");
@@ -42,7 +42,8 @@ public final class Server {
             var address = new InetSocketAddress(InetAddress.getLocalHost(), PORT);
             logger.info("Starting server " + address);
             var server = new UDPServer(address);
-
+            // TODO: add interpreter
+            server.run();
         } catch (IOException | JsonIOException e) {
             logger.error("IO error occurred", e);
         } catch (ValidationException | JsonSyntaxException e) {
