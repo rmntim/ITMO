@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.rmntim.common.exceptions.ValidationException;
 import ru.rmntim.server.lib.CollectionManager;
-import ru.rmntim.server.network.UDPServer;
 import ru.rmntim.server.storage.StorageManager;
 
 import java.io.IOException;
@@ -41,9 +40,8 @@ public final class Server {
 
             var address = new InetSocketAddress(InetAddress.getLocalHost(), PORT);
             LOGGER.info("Starting server " + address);
-            var server = new UDPServer(address);
-            // TODO: add interpreter
-            server.run();
+
+            // TODO: start server
         } catch (IOException | JsonIOException e) {
             LOGGER.error("IO error occurred", e);
         } catch (ValidationException | JsonSyntaxException e) {
