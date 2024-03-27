@@ -2,7 +2,6 @@ package ru.rmntim.client.lib;
 
 import ru.rmntim.client.exceptions.BadCommandArgumentsException;
 import ru.rmntim.client.exceptions.BadResponseException;
-import ru.rmntim.common.network.responses.Response;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -26,21 +25,14 @@ public class Interpreter {
      * Launches the interactive CLI mode.
      */
     public void run() {
-        var reader = ctx.getReader();
-        var commands = ctx.getCommands();
-
         try {
+            var commands = ctx.getCommands();
             String input;
-
-            while (true) {
+            while ((input = ctx.getReader().readLine()) != null) {
                 if (!ctx.isInFile()) {
                     System.out.print("> ");
                 }
 
-                input = reader.readLine();
-                if (input == null) {
-                    break;
-                }
                 var userCommand = Arrays.stream(input.trim().split(" ", 2)).map(String::trim).toList();
                 var commandName = userCommand.get(0);
 
@@ -49,19 +41,16 @@ public class Interpreter {
                     continue;
                 }
 
-                Response response;
                 try {
-                    response = commands.get(commandName)
+                    var response = commands.get(commandName)
                             .sendRequest(ctx, userCommand.subList(1, userCommand.size()));
+                    if (response.isError()) {
+                        System.out.print("Server error: ");
+                    }
+                    System.out.println(response.message());
                 } catch (BadResponseException | BadCommandArgumentsException e) {
-                    System.out.println("Response error: " + e.getMessage());
-                    continue;
+                    System.out.println("Error constructing request: " + e.getMessage());
                 }
-
-                if (response.isError()) {
-                    System.out.print("Server error: ");
-                }
-                System.out.println(response.message());
             }
         } catch (IOException e) {
             System.out.println("Fatal: " + e.getMessage());

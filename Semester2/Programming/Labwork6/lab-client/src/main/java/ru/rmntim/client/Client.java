@@ -7,7 +7,6 @@ import ru.rmntim.client.lib.ExecutionContext;
 import ru.rmntim.client.lib.Interpreter;
 import ru.rmntim.client.network.UDPClient;
 
-import java.io.IOException;
 import java.util.Map;
 
 public final class Client {
@@ -18,16 +17,12 @@ public final class Client {
     }
 
     public static void main(String[] args) {
-        try {
-            var commands = registerCommands();
-            var client = new UDPClient(PORT);
-            var ctx = new ExecutionContext(client, System.in, commands);
-            var interpreter = new Interpreter(ctx);
+        var commands = registerCommands();
+        var client = new UDPClient(PORT);
+        var ctx = new ExecutionContext(client, System.in, commands);
+        var interpreter = new Interpreter(ctx);
 
-            interpreter.run();
-        } catch (IOException e) {
-            System.err.println("Couldn't connect to the server. " + e.getMessage());
-        }
+        interpreter.run();
     }
 
     private static Map<String, Command> registerCommands() {

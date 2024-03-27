@@ -21,8 +21,8 @@
                 <configuration>
                     <violationSeverity>warning</violationSeverity>
                     <encoding>UTF-8</encoding>
-                    <configLocation>config/checkstyle.xml</configLocation>
-                    <suppressionsLocation>config/suppressions.xml</suppressionsLocation>
+                    <configLocation>checkstyle.xml</configLocation>
+                    <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
                 </configuration>
                 <executions>
                     <execution>

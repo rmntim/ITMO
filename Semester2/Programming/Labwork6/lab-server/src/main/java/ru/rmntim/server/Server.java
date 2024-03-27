@@ -9,8 +9,6 @@ import ru.rmntim.server.lib.CollectionManager;
 import ru.rmntim.server.storage.StorageManager;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 
 public final class Server {
     private static final int PORT = 1337;
@@ -38,10 +36,7 @@ public final class Server {
                         }
                     }));
 
-            var address = new InetSocketAddress(InetAddress.getLocalHost(), PORT);
-            LOGGER.info("Starting server " + address);
-
-            // TODO: start server
+            LOGGER.info("Starting server on port " + PORT);
         } catch (IOException | JsonIOException e) {
             LOGGER.error("IO error occurred", e);
         } catch (ValidationException | JsonSyntaxException e) {
