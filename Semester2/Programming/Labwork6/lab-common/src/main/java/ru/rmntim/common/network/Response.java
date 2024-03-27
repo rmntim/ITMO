@@ -1,4 +1,4 @@
-package ru.rmntim.common.network.responses;
+package ru.rmntim.common.network;
 
 import java.io.Serializable;
 

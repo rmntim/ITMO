@@ -1,4 +1,4 @@
-package ru.rmntim.common.network.requests;
+package ru.rmntim.common.network;
 
 import java.io.Serializable;
 
