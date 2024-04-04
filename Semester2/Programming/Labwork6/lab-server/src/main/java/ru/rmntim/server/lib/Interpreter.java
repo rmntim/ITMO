@@ -35,7 +35,14 @@ public class Interpreter implements Command.Visitor {
                 var data = server.receive();
                 LOGGER.info("Received a command from {} (length: {})", data.address(), data.bytes().length);
 
-                var command = (Command) SerializationUtils.deserialize(data.bytes());
+                Command command;
+                try {
+                    command = SerializationUtils.deserialize(data.bytes());
+                } catch (ClassCastException e) {
+                    LOGGER.error("Invalid command received from {}", data.address());
+                    continue;
+                }
+
                 var response = execute(command);
 
                 var responseBytes = SerializationUtils.serialize(response);
@@ -44,8 +51,6 @@ public class Interpreter implements Command.Visitor {
                 LOGGER.info("Sent response to {} (length: {})", data.address(), responseBytes.length);
             } catch (IOException e) {
                 LOGGER.error("IO error occurred", e);
-            } catch (ClassCastException e) {
-                LOGGER.error("Wrong command received", e);
             }
         }
     }
