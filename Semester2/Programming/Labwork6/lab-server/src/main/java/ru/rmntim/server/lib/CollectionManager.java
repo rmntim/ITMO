@@ -1,4 +1,4 @@
-package ru.rmntim.common;
+package ru.rmntim.server.lib;
 
 import ru.rmntim.common.models.Dragon;
 import ru.rmntim.common.validators.DragonValidator;

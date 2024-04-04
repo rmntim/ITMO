@@ -1,12 +1,22 @@
 package ru.rmntim.common.commands;
 
-import ru.rmntim.common.CollectionManager;
 import ru.rmntim.common.network.Response;
 
+/**
+ * Base class for all commands.
+ */
 public abstract class Command {
+    public interface Visitor {
+        // TODO
+    }
+
     private final String name;
     private final String description;
 
+    /**
+     * @param name        command name
+     * @param description command description
+     */
     public Command(String name, String description) {
         this.name = name;
         this.description = description;
@@ -20,9 +30,11 @@ public abstract class Command {
         return description;
     }
 
-    public static Command parse(byte[] rawCommand) {
-        return null;
-    }
-
-    public abstract Response execute(CollectionManager collectionManager);
+    /**
+     * Accepts visitor and returns response.
+     *
+     * @param visitor command visitor
+     * @return response
+     */
+    public abstract Response accept(Visitor visitor);
 }
