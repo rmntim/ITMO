@@ -2,10 +2,12 @@ package ru.rmntim.common.commands;
 
 import ru.rmntim.common.network.Response;
 
+import java.io.Serializable;
+
 /**
  * Base class for all commands.
  */
-public abstract class Command {
+public abstract class Command implements Serializable {
     private final String name;
     private final String description;
 
