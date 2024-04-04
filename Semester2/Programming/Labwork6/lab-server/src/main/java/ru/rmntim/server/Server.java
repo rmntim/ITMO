@@ -23,7 +23,7 @@ public final class Server {
         try {
             var path = getPath();
 
-            LOGGER.info("Loading data from " + path);
+            LOGGER.info("Loading data from {}", path);
             var storageManager = new StorageManager(path);
             var collectionManager = new CollectionManager(storageManager.readCollection());
 
