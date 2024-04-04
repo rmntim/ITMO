@@ -1,5 +1,7 @@
 package ru.rmntim.client;
 
+import ru.rmntim.client.lib.CommandRegistryBuilder;
+import ru.rmntim.client.lib.REPL;
 import ru.rmntim.client.network.UDPClient;
 import ru.rmntim.common.commands.Info;
 

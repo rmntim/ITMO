@@ -1,4 +1,4 @@
-package ru.rmntim.client;
+package ru.rmntim.client.lib;
 
 import ru.rmntim.common.commands.Command;
 

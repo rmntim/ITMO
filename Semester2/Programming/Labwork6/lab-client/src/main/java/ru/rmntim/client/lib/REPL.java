@@ -1,4 +1,4 @@
-package ru.rmntim.client;
+package ru.rmntim.client.lib;
 
 import org.apache.commons.lang3.SerializationUtils;
 import ru.rmntim.client.network.UDPClient;
