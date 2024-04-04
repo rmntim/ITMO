@@ -29,16 +29,8 @@ public final class Server {
             LOGGER.info("Loading data from {}", path);
 
             var storageManager = new StorageManager(path);
-            var collectionManager = new CollectionManager(storageManager.readCollection());
-
-            Runtime.getRuntime().addShutdownHook(
-                    new Thread(() -> {
-                        try {
-                            storageManager.writeCollection(collectionManager.getCollection());
-                        } catch (IOException e) {
-                            LOGGER.error("Failed to save collection", e);
-                        }
-                    }));
+            var collectionManager = new CollectionManager(storageManager);
+            Runtime.getRuntime().addShutdownHook(new Thread(collectionManager::saveCollection));
 
             LOGGER.info("Starting server on port " + PORT);
             var server = new UDPServer(new InetSocketAddress(InetAddress.getLocalHost(), PORT));
