@@ -22,10 +22,10 @@ public class UDPServer {
     }
 
     /**
-     * Gets data from client.
+     * Gets bytes from client.
      *
-     * @return received data
-     * @throws IOException if data can't be received
+     * @return received bytes
+     * @throws IOException if bytes can't be received
      */
     public Data receive() throws IOException {
         buffer.clear();
@@ -35,10 +35,10 @@ public class UDPServer {
     }
 
     /**
-     * Sends data to the specified socket address.
+     * Sends bytes to the specified socket address.
      *
      * @param data    the byte array of data to be sent
-     * @param address the socket address to send the data to
+     * @param address the socket address to send the bytes to
      * @throws IOException if an I/O error occurs
      */
     public void send(byte[] data, SocketAddress address) throws IOException {

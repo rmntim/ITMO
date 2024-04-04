@@ -3,10 +3,10 @@ package ru.rmntim.server.network;
 import java.net.SocketAddress;
 
 /**
- * Class for encapsulating data received from the client.
+ * Class for encapsulating bytes received from the client.
  *
- * @param address the address of the client, from which the data was received
- * @param data    the received data
+ * @param address the address of the client, from which the bytes was received
+ * @param bytes   the received bytes
  */
-public record Data(SocketAddress address, byte[] data) {
+public record Data(SocketAddress address, byte[] bytes) {
 }
