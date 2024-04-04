@@ -8,9 +8,12 @@ import ru.rmntim.common.network.Response;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 
 public final class Client {
     private static final int PORT = 1337;
+    private static final Duration TIMEOUT = Duration.of(10, ChronoUnit.SECONDS);
 
     private Client() {
         throw new UnsupportedOperationException("This is an utility class and can not be instantiated");
@@ -20,8 +23,8 @@ public final class Client {
         var command = new Info();
         var commandBytes = SerializationUtils.serialize(command);
 
-        var client = new UDPClient(new InetSocketAddress(InetAddress.getLocalHost(), PORT));
-        var responseBytes = client.sendThenRecieve(commandBytes);
+        var client = new UDPClient(new InetSocketAddress(InetAddress.getLocalHost(), PORT), TIMEOUT);
+        var responseBytes = client.sendThenReceive(commandBytes);
         var response = (Response) SerializationUtils.deserialize(responseBytes);
         System.out.println("Status: " + response.status());
         System.out.println("Message: \n---\n" + response.message() + "\n---");
