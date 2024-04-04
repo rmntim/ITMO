@@ -10,11 +10,23 @@ public class UDPServer {
     private final DatagramChannel datagramChannel;
     private final ByteBuffer buffer = ByteBuffer.allocate(PACKET_SIZE);
 
+    /**
+     * Creates new server that binds to given address.
+     *
+     * @param address server address to bind
+     * @throws IOException if server can't be created
+     */
     public UDPServer(SocketAddress address) throws IOException {
         datagramChannel = DatagramChannel.open();
         datagramChannel.bind(address);
     }
 
+    /**
+     * Gets data from client.
+     *
+     * @return received data
+     * @throws IOException if data can't be received
+     */
     public Data receive() throws IOException {
         buffer.clear();
         var clientAddress = datagramChannel.receive(buffer);
@@ -22,6 +34,13 @@ public class UDPServer {
         return new Data(clientAddress, buffer.array());
     }
 
+    /**
+     * Sends data to the specified socket address.
+     *
+     * @param data    the byte array of data to be sent
+     * @param address the socket address to send the data to
+     * @throws IOException if an I/O error occurs
+     */
     public void send(byte[] data, SocketAddress address) throws IOException {
         buffer.clear();
         buffer.put(data);
