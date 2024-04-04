@@ -6,9 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.rmntim.common.exceptions.ValidationException;
 import ru.rmntim.server.lib.CollectionManager;
+import ru.rmntim.server.network.UDPServer;
 import ru.rmntim.server.storage.StorageManager;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 
 public final class Server {
     private static final int PORT = 1337;
@@ -22,8 +25,8 @@ public final class Server {
     public static void main(String[] args) {
         try {
             var path = getPath();
-
             LOGGER.info("Loading data from {}", path);
+
             var storageManager = new StorageManager(path);
             var collectionManager = new CollectionManager(storageManager.readCollection());
 
@@ -37,6 +40,9 @@ public final class Server {
                     }));
 
             LOGGER.info("Starting server on port " + PORT);
+            var server = new UDPServer(new InetSocketAddress(InetAddress.getLocalHost(), PORT));
+
+            new Interpreter(collectionManager, server).run();
         } catch (IOException | JsonIOException e) {
             LOGGER.error("IO error occurred", e);
         } catch (ValidationException | JsonSyntaxException e) {
