@@ -44,4 +44,11 @@ public class CollectionManager {
     public TreeSet<Dragon> getCollection() {
         return collection;
     }
+
+    public String getCollectionInfo() {
+        return "Collection size: " + collection.size() + "\n"
+                + "Initialized at: " + lastInitTime + "\n"
+                + "Collection type: " + collection.getClass().getSimpleName() + "\n"
+                + "Last id in collection: " + lastId;
+    }
 }

@@ -4,6 +4,7 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.rmntim.common.commands.Command;
+import ru.rmntim.common.commands.Info;
 import ru.rmntim.common.network.Response;
 import ru.rmntim.server.network.UDPServer;
 
@@ -38,6 +39,8 @@ public class Interpreter implements Command.Visitor {
                 server.send(responseBytes, data.address());
             } catch (IOException e) {
                 LOGGER.error("IO error occurred", e);
+            } catch (ClassCastException e) {
+                LOGGER.error("Wrong command received", e);
             }
         }
     }
@@ -50,5 +53,10 @@ public class Interpreter implements Command.Visitor {
      */
     private Response execute(Command command) {
         return command.accept(this);
+    }
+
+    @Override
+    public Response visit(Info info) {
+        return new Response(Response.Status.OK, collectionManager.getCollectionInfo());
     }
 }

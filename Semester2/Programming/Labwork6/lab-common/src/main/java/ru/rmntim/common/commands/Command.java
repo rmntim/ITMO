@@ -6,10 +6,6 @@ import ru.rmntim.common.network.Response;
  * Base class for all commands.
  */
 public abstract class Command {
-    public interface Visitor {
-        // TODO
-    }
-
     private final String name;
     private final String description;
 
@@ -37,4 +33,8 @@ public abstract class Command {
      * @return response
      */
     public abstract Response accept(Visitor visitor);
+
+    public interface Visitor {
+        Response visit(Info info);
+    }
 }
