@@ -69,6 +69,7 @@ public class CollectionManager {
         try {
             storageManager.writeCollection(collection);
         } catch (IOException ignored) {
+            // ignore
         }
     }
 }
