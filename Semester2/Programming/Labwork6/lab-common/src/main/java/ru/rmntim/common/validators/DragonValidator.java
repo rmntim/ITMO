@@ -1,6 +1,5 @@
 package ru.rmntim.common.validators;
 
-import ru.rmntim.common.exceptions.ValidationException;
 import ru.rmntim.common.models.Color;
 import ru.rmntim.common.models.Coordinates;
 import ru.rmntim.common.models.Dragon;

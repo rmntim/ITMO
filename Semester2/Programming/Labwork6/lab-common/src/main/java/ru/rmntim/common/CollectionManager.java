@@ -1,8 +1,8 @@
-package ru.rmntim.server.lib;
+package ru.rmntim.common;
 
-import ru.rmntim.common.exceptions.ValidationException;
 import ru.rmntim.common.models.Dragon;
 import ru.rmntim.common.validators.DragonValidator;
+import ru.rmntim.common.validators.ValidationException;
 
 import java.time.ZonedDateTime;
 import java.util.TreeSet;

@@ -1,7 +1,5 @@
 package ru.rmntim.common.validators;
 
-import ru.rmntim.common.exceptions.ValidationException;
-
 public interface Validator<T> {
     /**
      * @param value value to validate
