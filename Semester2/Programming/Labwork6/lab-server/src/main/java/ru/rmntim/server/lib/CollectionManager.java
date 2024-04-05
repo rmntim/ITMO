@@ -74,6 +74,9 @@ public class CollectionManager {
         }
     }
 
+    /**
+     * @return string representation of the collection
+     */
     public String collectionString() {
         if (collection.isEmpty()) {
             return "Collection is empty";
@@ -82,5 +85,16 @@ public class CollectionManager {
             collection.forEach(dragon -> sj.add(dragon.toString()));
             return sj.toString();
         }
+    }
+
+    /**
+     * Validates and adds dragon to the collection.
+     *
+     * @param dragon dragon to add
+     * @throws ValidationException if dragon is invalid
+     */
+    public void add(Dragon dragon) throws ValidationException {
+        new DragonValidator().validate(dragon);
+        collection.add(dragon);
     }
 }
