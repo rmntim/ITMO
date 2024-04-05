@@ -17,6 +17,8 @@ public abstract class Command implements Serializable {
     public abstract Response accept(Visitor visitor);
 
     public interface Visitor {
-        Response visit(Info info);
+        Response visit(Info command);
+
+        Response visit(Show command);
     }
 }

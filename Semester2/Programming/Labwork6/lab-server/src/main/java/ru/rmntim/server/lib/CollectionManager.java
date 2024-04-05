@@ -7,6 +7,7 @@ import ru.rmntim.server.storage.StorageManager;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
+import java.util.StringJoiner;
 import java.util.TreeSet;
 
 public class CollectionManager {
@@ -70,6 +71,16 @@ public class CollectionManager {
             storageManager.writeCollection(collection);
         } catch (IOException ignored) {
             // ignore
+        }
+    }
+
+    public String collectionString() {
+        if (collection.isEmpty()) {
+            return "Collection is empty";
+        } else {
+            var sj = new StringJoiner("\n");
+            collection.forEach(dragon -> sj.add(dragon.toString()));
+            return sj.toString();
         }
     }
 }
