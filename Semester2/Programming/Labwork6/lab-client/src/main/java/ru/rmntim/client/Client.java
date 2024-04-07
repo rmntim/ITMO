@@ -23,8 +23,8 @@ public final class Client {
     public static void main(String[] args) throws IOException {
         var client = new UDPClient(new InetSocketAddress(InetAddress.getLocalHost(), PORT), TIMEOUT);
         var commands = new CommandRegistryBuilder()
-                .register(Info.NAME, Info.DESCRIPTION, Info::new)
-                .register(Show.NAME, Show.DESCRIPTION, Show::new)
+                .register(Info.NAME, Info.DESCRIPTION, Info::create)
+                .register(Show.NAME, Show.DESCRIPTION, Show::create)
                 .build();
         new REPL(commands, client).run();
     }

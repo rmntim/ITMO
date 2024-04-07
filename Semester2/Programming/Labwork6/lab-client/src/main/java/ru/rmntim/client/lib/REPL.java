@@ -9,11 +9,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 public class REPL {
-    private final Map<String, Supplier<Command>> commands;
+    private final Map<String, Function<List<String>, Command>> commands;
     private final UDPClient client;
 
     /**
@@ -22,7 +23,7 @@ public class REPL {
      * @param commands command registry
      * @param client   UDP client
      */
-    public REPL(Map<String, Supplier<Command>> commands, UDPClient client) {
+    public REPL(Map<String, Function<List<String>, Command>> commands, UDPClient client) {
         this.commands = commands;
         this.client = client;
     }
@@ -50,7 +51,13 @@ public class REPL {
                     continue;
                 }
 
-                var command = commands.get(commandName).get();
+                Command command;
+                try {
+                    command = commands.get(commandName).apply(userCommand.subList(1, userCommand.size()));
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Command error: " + e.getMessage());
+                    continue;
+                }
                 if (command == null) {
                     continue;
                 }
@@ -66,7 +73,7 @@ public class REPL {
                 try {
                     response = SerializationUtils.deserialize(responseBytes);
                 } catch (ClassCastException e) {
-                    System.err.println("Bad response from server: " + e.getMessage());
+                    System.out.println("Bad response from server: " + e.getMessage());
                     continue;
                 }
 
@@ -77,7 +84,7 @@ public class REPL {
                 }
             }
         } catch (IOException e) {
-            System.err.println("IO error: " + e.getMessage());
+            System.out.println("IO error: " + e.getMessage());
         }
     }
 }
