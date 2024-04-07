@@ -1,6 +1,7 @@
 package ru.rmntim.server.network;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
@@ -46,5 +47,15 @@ public class UDPServer {
         buffer.put(data);
         buffer.flip();
         datagramChannel.send(buffer, address);
+    }
+
+    /**
+     * Gets the port from local socket address.
+     *
+     * @return port of the socket
+     * @throws IOException if an I/O error occurs
+     */
+    public int getPort() throws IOException {
+        return ((InetSocketAddress) datagramChannel.getLocalAddress()).getPort();
     }
 }
