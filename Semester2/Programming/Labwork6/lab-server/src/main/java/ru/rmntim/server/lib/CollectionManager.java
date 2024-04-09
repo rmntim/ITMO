@@ -94,7 +94,13 @@ public class CollectionManager {
      * @throws ValidationException if dragon is invalid
      */
     public void add(Dragon dragon) throws ValidationException {
+        dragon.setId(lastId + 1);
         new DragonValidator().validate(dragon);
         collection.add(dragon);
+        ++lastId;
+    }
+
+    public int getLastId() {
+        return lastId;
     }
 }
