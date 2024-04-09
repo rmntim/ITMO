@@ -7,6 +7,7 @@ import ru.rmntim.common.commands.Add;
 import ru.rmntim.common.commands.Command;
 import ru.rmntim.common.commands.Info;
 import ru.rmntim.common.commands.Show;
+import ru.rmntim.common.commands.Update;
 import ru.rmntim.common.network.Response;
 import ru.rmntim.common.validators.ValidationException;
 import ru.rmntim.server.network.UDPServer;
@@ -83,6 +84,18 @@ public class Interpreter implements Command.Visitor {
         try {
             collectionManager.add(command.getDragon());
             return new Response(Response.Status.OK, "Added successfully with id " + collectionManager.getLastId());
+        } catch (ValidationException e) {
+            return new Response(Response.Status.ERROR, "Invalid element: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Response visit(Update command) {
+        try {
+            if (!collectionManager.update(command.getId(), command.getDragon())) {
+                return new Response(Response.Status.ERROR, "No elements were updated (maybe id is incorrect?)");
+            }
+            return new Response(Response.Status.OK, "Updated successfully");
         } catch (ValidationException e) {
             return new Response(Response.Status.ERROR, "Invalid element: " + e.getMessage());
         }

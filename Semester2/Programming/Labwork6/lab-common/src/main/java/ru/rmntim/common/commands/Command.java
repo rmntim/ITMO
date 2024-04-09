@@ -22,5 +22,7 @@ public abstract class Command implements Serializable {
         Response visit(Show command);
 
         Response visit(Add command);
+
+        Response visit(Update command);
     }
 }

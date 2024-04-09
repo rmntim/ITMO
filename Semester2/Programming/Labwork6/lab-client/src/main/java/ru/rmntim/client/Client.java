@@ -7,6 +7,7 @@ import ru.rmntim.common.GlobalInput;
 import ru.rmntim.common.commands.Add;
 import ru.rmntim.common.commands.Info;
 import ru.rmntim.common.commands.Show;
+import ru.rmntim.common.commands.Update;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,6 +35,7 @@ public final class Client {
                     .register(Info.NAME, Info.DESCRIPTION, Info::create)
                     .register(Show.NAME, Show.DESCRIPTION, Show::create)
                     .register(Add.NAME, Add.DESCRIPTION, Add::create)
+                    .register(Update.NAME, Update.DESCRIPTION, Update::create)
                     .build();
             new REPL(commands, client).run();
         }

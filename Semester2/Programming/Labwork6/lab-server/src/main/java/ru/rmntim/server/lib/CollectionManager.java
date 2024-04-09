@@ -31,6 +31,10 @@ public class CollectionManager {
         validate();
     }
 
+    public int getLastId() {
+        return lastId;
+    }
+
     /**
      * Validates collection and finds max id to use.
      *
@@ -100,7 +104,31 @@ public class CollectionManager {
         ++lastId;
     }
 
-    public int getLastId() {
-        return lastId;
+    /**
+     * Updates element with given id.
+     *
+     * @param id     id of the element to update
+     * @param dragon element to insert on update
+     * @return {@code false} if no elements were inserted
+     * @throws ValidationException if element is invalid
+     */
+    public boolean update(int id, Dragon dragon) throws ValidationException {
+        dragon.setId(id);
+        new DragonValidator().validate(dragon);
+        if (!remove(id)) {
+            return false;
+        }
+        collection.add(dragon);
+        return true;
+    }
+
+    /**
+     * Remove element with given id.
+     *
+     * @param id id of the element to remove
+     * @return {@code false} if no elements were removed
+     */
+    public boolean remove(int id) {
+        return collection.removeIf(e -> e.id() == id);
     }
 }
