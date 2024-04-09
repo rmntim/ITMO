@@ -31,13 +31,12 @@ public final class Client {
         try (var reader = new BufferedReader(new InputStreamReader(System.in))) {
             GlobalInput.setReader(reader);
             var client = new UDPClient(new InetSocketAddress(InetAddress.getLocalHost(), port), TIMEOUT);
-            var commands = new CommandRegistryBuilder()
+            var builder = new CommandRegistryBuilder()
                     .register(Info.NAME, Info.DESCRIPTION, Info::create)
                     .register(Show.NAME, Show.DESCRIPTION, Show::create)
                     .register(Add.NAME, Add.DESCRIPTION, Add::create)
-                    .register(Update.NAME, Update.DESCRIPTION, Update::create)
-                    .build();
-            new REPL(commands, client).run();
+                    .register(Update.NAME, Update.DESCRIPTION, Update::create);
+            new REPL(builder, client).run();
         }
     }
 
