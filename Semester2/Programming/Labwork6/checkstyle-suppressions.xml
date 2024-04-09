@@ -7,5 +7,6 @@
 <suppressions>
     <suppress checks="MethodLength" files="Interpreter.java"/>
     <suppress checks="MethodLength" files="REPL.java"/>
+    <suppress checks="ReturnCount" files="REPL.java"/>
     <suppress checks="ParameterNumber" files="Dragon.java"/>
 </suppressions>
