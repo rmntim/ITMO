@@ -3,10 +3,14 @@ package ru.rmntim.client;
 import ru.rmntim.client.lib.CommandRegistryBuilder;
 import ru.rmntim.client.lib.REPL;
 import ru.rmntim.client.network.UDPClient;
+import ru.rmntim.common.GlobalInput;
+import ru.rmntim.common.commands.Add;
 import ru.rmntim.common.commands.Info;
 import ru.rmntim.common.commands.Show;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.time.Duration;
@@ -23,12 +27,16 @@ public final class Client {
     public static void main(String[] args) throws IOException {
         handleArgs(args);
 
-        var client = new UDPClient(new InetSocketAddress(InetAddress.getLocalHost(), port), TIMEOUT);
-        var commands = new CommandRegistryBuilder()
-                .register(Info.NAME, Info.DESCRIPTION, Info::create)
-                .register(Show.NAME, Show.DESCRIPTION, Show::create)
-                .build();
-        new REPL(commands, client).run();
+        try (var reader = new BufferedReader(new InputStreamReader(System.in))) {
+            GlobalInput.setReader(reader);
+            var client = new UDPClient(new InetSocketAddress(InetAddress.getLocalHost(), port), TIMEOUT);
+            var commands = new CommandRegistryBuilder()
+                    .register(Info.NAME, Info.DESCRIPTION, Info::create)
+                    .register(Show.NAME, Show.DESCRIPTION, Show::create)
+                    .register(Add.NAME, Add.DESCRIPTION, Add::create)
+                    .build();
+            new REPL(commands, client).run();
+        }
     }
 
     private static void handleArgs(String[] args) {

@@ -3,10 +3,12 @@ package ru.rmntim.server.lib;
 import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.rmntim.common.commands.Add;
 import ru.rmntim.common.commands.Command;
 import ru.rmntim.common.commands.Info;
 import ru.rmntim.common.commands.Show;
 import ru.rmntim.common.network.Response;
+import ru.rmntim.common.validators.ValidationException;
 import ru.rmntim.server.network.UDPServer;
 
 import java.io.IOException;
@@ -74,5 +76,15 @@ public class Interpreter implements Command.Visitor {
     @Override
     public Response visit(Show command) {
         return new Response(Response.Status.OK, collectionManager.collectionString());
+    }
+
+    @Override
+    public Response visit(Add command) {
+        try {
+            collectionManager.add(command.getDragon());
+            return new Response(Response.Status.OK, "Added successfully with id " + collectionManager.getLastId());
+        } catch (ValidationException e) {
+            return new Response(Response.Status.ERROR, "Invalid element: " + e.getMessage());
+        }
     }
 }
