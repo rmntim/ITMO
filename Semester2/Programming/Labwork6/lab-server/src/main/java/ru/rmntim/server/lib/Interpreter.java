@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import ru.rmntim.common.commands.Add;
 import ru.rmntim.common.commands.Command;
 import ru.rmntim.common.commands.Info;
+import ru.rmntim.common.commands.Remove;
 import ru.rmntim.common.commands.Show;
 import ru.rmntim.common.commands.Update;
 import ru.rmntim.common.network.Response;
@@ -99,5 +100,13 @@ public class Interpreter implements Command.Visitor {
         } catch (ValidationException e) {
             return new Response(Response.Status.ERROR, "Invalid element: " + e.getMessage());
         }
+    }
+
+    @Override
+    public Response visit(Remove command) {
+        if (!collectionManager.remove(command.getId())) {
+            return new Response(Response.Status.ERROR, "No elements were removed (maybe id is incorrect?)");
+        }
+        return new Response(Response.Status.OK, "Removed successfully");
     }
 }
