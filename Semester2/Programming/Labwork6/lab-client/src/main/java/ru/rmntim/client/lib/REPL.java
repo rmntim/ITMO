@@ -45,7 +45,6 @@ public class REPL {
                 System.out.print("$ ");
 
                 line = reader.readLine();
-
                 if (line == null) {
                     break;
                 }
