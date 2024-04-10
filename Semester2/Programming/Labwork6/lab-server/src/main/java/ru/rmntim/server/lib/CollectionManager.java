@@ -159,4 +159,24 @@ public class CollectionManager {
         }
         add(dragon);
     }
+
+    /**
+     * Adds new element to the collection if it's lower than current minimum.
+     * If collection is empty, adds element unconditionally.
+     *
+     * @param dragon element to add
+     * @throws ValidationException if element is invalid
+     */
+    public void addIfMin(Dragon dragon) throws ValidationException {
+        Dragon min;
+        try {
+            min = collection.stream().min(Dragon::compareTo).orElseThrow();
+            if (dragon.compareTo(min) >= 0) {
+                return;
+            }
+        } catch (NoSuchElementException ignored) {
+            // ignore
+        }
+        add(dragon);
+    }
 }

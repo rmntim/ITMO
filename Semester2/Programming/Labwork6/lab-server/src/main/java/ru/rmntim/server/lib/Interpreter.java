@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.rmntim.common.commands.Add;
 import ru.rmntim.common.commands.AddIfMax;
+import ru.rmntim.common.commands.AddIfMin;
 import ru.rmntim.common.commands.Clear;
 import ru.rmntim.common.commands.Command;
 import ru.rmntim.common.commands.Info;
@@ -122,6 +123,16 @@ public class Interpreter implements Command.Visitor {
     public Response visit(AddIfMax command) {
         try {
             collectionManager.addIfMax(command.getDragon());
+            return new Response(Response.Status.OK, "Command executed successfully");
+        } catch (ValidationException e) {
+            return new Response(Response.Status.ERROR, "Invalid element: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Response visit(AddIfMin command) {
+        try {
+            collectionManager.addIfMin(command.getDragon());
             return new Response(Response.Status.OK, "Command executed successfully");
         } catch (ValidationException e) {
             return new Response(Response.Status.ERROR, "Invalid element: " + e.getMessage());

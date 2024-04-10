@@ -6,6 +6,7 @@ import ru.rmntim.client.network.UDPClient;
 import ru.rmntim.common.GlobalInput;
 import ru.rmntim.common.commands.Add;
 import ru.rmntim.common.commands.AddIfMax;
+import ru.rmntim.common.commands.AddIfMin;
 import ru.rmntim.common.commands.Clear;
 import ru.rmntim.common.commands.Info;
 import ru.rmntim.common.commands.Remove;
@@ -41,7 +42,8 @@ public final class Client {
                     .register(Update.NAME, Update.DESCRIPTION, Update::create)
                     .register(Remove.NAME, Remove.DESCRIPTION, Remove::create)
                     .register(Clear.NAME, Clear.DESCRIPTION, Clear::create)
-                    .register(AddIfMax.NAME, AddIfMax.DESCRIPTION, AddIfMax::create);
+                    .register(AddIfMax.NAME, AddIfMax.DESCRIPTION, AddIfMax::create)
+                    .register(AddIfMin.NAME, AddIfMin.DESCRIPTION, AddIfMin::create);
             new REPL(builder, client).run();
         }
     }
