@@ -8,6 +8,7 @@ import ru.rmntim.common.commands.AddIfMax;
 import ru.rmntim.common.commands.AddIfMin;
 import ru.rmntim.common.commands.Clear;
 import ru.rmntim.common.commands.Command;
+import ru.rmntim.common.commands.GroupByType;
 import ru.rmntim.common.commands.Info;
 import ru.rmntim.common.commands.Remove;
 import ru.rmntim.common.commands.RemoveLower;
@@ -148,5 +149,10 @@ public class Interpreter implements Command.Visitor {
         } catch (ValidationException e) {
             return new Response(Response.Status.ERROR, "Invalid element: " + e.getMessage());
         }
+    }
+
+    @Override
+    public Response visit(GroupByType command) {
+        return new Response(Response.Status.OK, collectionManager.groupByType());
     }
 }

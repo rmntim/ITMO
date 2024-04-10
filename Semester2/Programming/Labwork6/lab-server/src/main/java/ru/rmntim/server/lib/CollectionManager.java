@@ -10,6 +10,7 @@ import java.time.ZonedDateTime;
 import java.util.NoSuchElementException;
 import java.util.StringJoiner;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public class CollectionManager {
     private final StorageManager storageManager;
@@ -190,5 +191,18 @@ public class CollectionManager {
         dragon.setId(lastId + 1);
         new DragonValidator().validate(dragon);
         collection.removeIf(e -> e.compareTo(dragon) < 0);
+    }
+
+    /**
+     * Groups elements by type and displays number of elements in each group"
+     *
+     * @return grouped elements as string
+     */
+    public String groupByType() {
+        var sj = new StringJoiner("\n");
+        collection.stream()
+                .collect(Collectors.groupingBy(Dragon::type))
+                .forEach((type, count) -> sj.add(type + ": " + count.size()));
+        return sj.toString();
     }
 }
