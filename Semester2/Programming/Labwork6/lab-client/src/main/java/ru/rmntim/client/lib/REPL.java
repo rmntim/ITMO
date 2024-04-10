@@ -20,6 +20,9 @@ import java.util.Set;
 import java.util.function.Function;
 
 public class REPL {
+    // Thi
+    private static final String EXECUTE_SCRIPT_NAME = "execute_script";
+    public static final String EXECUTE_SCRIPT_DESCRIPTION = "Executes script from given file";
     private final Map<String, Function<List<String>, Command>> commands;
     private final UDPClient client;
     private final Set<String> callStack = new HashSet<>();
@@ -31,7 +34,7 @@ public class REPL {
      * @param client  UDP client
      */
     public REPL(CommandRegistryBuilder builder, UDPClient client) {
-        builder.register("execute_script", "Executes script from given file", args -> null);
+        builder.register(EXECUTE_SCRIPT_NAME, EXECUTE_SCRIPT_DESCRIPTION, args -> null);
         this.client = client;
         this.commands = builder.build();
     }
@@ -55,9 +58,9 @@ public class REPL {
                 var commandName = userCommand.get(0);
                 var commandArgs = userCommand.subList(1, userCommand.size());
 
-                if ("execute_script".equals(commandName)) {
+                if (EXECUTE_SCRIPT_NAME.equals(commandName)) {
                     if (commandArgs.size() != 1) {
-                        System.out.println("execute_script requires file path");
+                        System.out.println(EXECUTE_SCRIPT_NAME + " requires file path");
                     } else {
                         var oldReader = GlobalInput.getReader();
                         try {
@@ -130,9 +133,9 @@ public class REPL {
                 var commandName = userCommand.get(0);
                 var commandArgs = userCommand.subList(1, userCommand.size());
 
-                if ("execute_script".equals(commandName)) {
+                if (EXECUTE_SCRIPT_NAME.equals(commandName)) {
                     if (commandArgs.size() != 1) {
-                        System.out.println("execute_script requires file path");
+                        System.out.println(EXECUTE_SCRIPT_NAME + " requires file path");
                     } else {
                         runFile(commandArgs.get(0));
                     }
