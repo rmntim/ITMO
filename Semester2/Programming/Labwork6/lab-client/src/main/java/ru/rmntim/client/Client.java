@@ -52,7 +52,8 @@ public final class Client {
                     .register(GroupByType.NAME, GroupByType.DESCRIPTION, GroupByType::create)
                     .register(GreaterThanCharacter.NAME, GreaterThanCharacter.DESCRIPTION, GreaterThanCharacter::create)
                     .register(StartsWith.NAME, StartsWith.DESCRIPTION, StartsWith::create);
-            new REPL(builder, client).run();
+            var repl = new REPL(builder, client);
+            repl.run();
         }
     }
 

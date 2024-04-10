@@ -35,7 +35,8 @@ public final class Server {
 
             var server = new UDPServer(new InetSocketAddress(InetAddress.getLocalHost(), port));
             LOGGER.info("Starting server on port {}", server.getPort());
-            new Interpreter(collectionManager, server).run();
+            var interpreter = new Interpreter(collectionManager, server);
+            interpreter.run();
         } catch (IOException | JsonIOException e) {
             LOGGER.error("IO error occurred", e);
         } catch (ValidationException | JsonSyntaxException e) {
