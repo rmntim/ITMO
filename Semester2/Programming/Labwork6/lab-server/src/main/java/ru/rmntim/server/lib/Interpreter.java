@@ -4,6 +4,7 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.rmntim.common.commands.Add;
+import ru.rmntim.common.commands.AddIfMax;
 import ru.rmntim.common.commands.Clear;
 import ru.rmntim.common.commands.Command;
 import ru.rmntim.common.commands.Info;
@@ -115,5 +116,15 @@ public class Interpreter implements Command.Visitor {
     public Response visit(Clear command) {
         collectionManager.clear();
         return new Response(Response.Status.OK, "Cleared successfully");
+    }
+
+    @Override
+    public Response visit(AddIfMax command) {
+        try {
+            collectionManager.addIfMax(command.getDragon());
+            return new Response(Response.Status.OK, "Command executed successfully");
+        } catch (ValidationException e) {
+            return new Response(Response.Status.ERROR, "Invalid element: " + e.getMessage());
+        }
     }
 }

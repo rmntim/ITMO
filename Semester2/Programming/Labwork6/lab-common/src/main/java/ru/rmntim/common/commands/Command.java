@@ -28,5 +28,7 @@ public abstract class Command implements Serializable {
         Response visit(Remove command);
 
         Response visit(Clear command);
+
+        Response visit(AddIfMax command);
     }
 }

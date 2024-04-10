@@ -7,6 +7,7 @@ import ru.rmntim.server.storage.StorageManager;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
+import java.util.NoSuchElementException;
 import java.util.StringJoiner;
 import java.util.TreeSet;
 
@@ -137,5 +138,25 @@ public class CollectionManager {
      */
     public void clear() {
         collection.clear();
+    }
+
+    /**
+     * Adds new element to the collection if it's greater than current maximum.
+     * If collection is empty, adds element unconditionally.
+     *
+     * @param dragon element to add
+     * @throws ValidationException if element is invalid
+     */
+    public void addIfMax(Dragon dragon) throws ValidationException {
+        Dragon max;
+        try {
+            max = collection.stream().max(Dragon::compareTo).orElseThrow();
+            if (dragon.compareTo(max) <= 0) {
+                return;
+            }
+        } catch (NoSuchElementException ignored) {
+            // ignore
+        }
+        add(dragon);
     }
 }
