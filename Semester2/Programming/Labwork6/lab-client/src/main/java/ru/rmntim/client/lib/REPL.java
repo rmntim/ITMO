@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -72,10 +73,11 @@ public class REPL {
 
                 Response response;
                 try {
-                    response = runCommand(commandName, commandArgs);
-                    if (response == null) {
+                    var result = runCommand(commandName, commandArgs);
+                    if (result.isEmpty()) {
                         continue;
                     }
+                    response = result.get();
                 } catch (IOException e) {
                     System.out.println("Command error: " + e.getMessage());
                     continue;
@@ -139,10 +141,11 @@ public class REPL {
 
                 Response response;
                 try {
-                    response = runCommand(commandName, commandArgs);
-                    if (response == null) {
+                    var result = runCommand(commandName, commandArgs);
+                    if (result.isEmpty()) {
                         continue;
                     }
+                    response = result.get();
                 } catch (IOException e) {
                     System.out.println("Command error: " + e.getMessage());
                     continue;
@@ -169,13 +172,13 @@ public class REPL {
      *
      * @param commandName command name
      * @param commandArgs list of command arguments
-     * @return server response
+     * @return server response or empty optional if there was an error
      * @throws IOException if an I/O exception occurs
      */
-    private Response runCommand(String commandName, List<String> commandArgs) throws IOException {
+    private Optional<Response> runCommand(String commandName, List<String> commandArgs) throws IOException {
         if (!commands.containsKey(commandName)) {
             System.out.println("Unknown command: " + commandName);
-            return null;
+            return Optional.empty();
         }
 
         Command command;
@@ -183,17 +186,17 @@ public class REPL {
             command = commands.get(commandName).apply(commandArgs);
         } catch (IllegalArgumentException e) {
             System.out.println("Command error: " + e.getMessage());
-            return null;
+            return Optional.empty();
         }
         if (command == null) {
-            return null;
+            return Optional.empty();
         }
 
         var commandBytes = SerializationUtils.serialize(command);
         var responseBytes = client.sendThenReceive(commandBytes);
         if (responseBytes == null) {
             System.out.println("Server timeout");
-            return null;
+            return Optional.empty();
         }
 
         Response response;
@@ -201,8 +204,8 @@ public class REPL {
             response = SerializationUtils.deserialize(responseBytes);
         } catch (ClassCastException e) {
             System.out.println("Bad response from server: " + e.getMessage());
-            return null;
+            return Optional.empty();
         }
-        return response;
+        return Optional.of(response);
     }
 }
