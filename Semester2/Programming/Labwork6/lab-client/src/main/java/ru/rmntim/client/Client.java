@@ -8,6 +8,7 @@ import ru.rmntim.common.commands.Add;
 import ru.rmntim.common.commands.AddIfMax;
 import ru.rmntim.common.commands.AddIfMin;
 import ru.rmntim.common.commands.Clear;
+import ru.rmntim.common.commands.GreaterThanCharacter;
 import ru.rmntim.common.commands.GroupByType;
 import ru.rmntim.common.commands.Info;
 import ru.rmntim.common.commands.Remove;
@@ -47,7 +48,8 @@ public final class Client {
                     .register(AddIfMax.NAME, AddIfMax.DESCRIPTION, AddIfMax::create)
                     .register(AddIfMin.NAME, AddIfMin.DESCRIPTION, AddIfMin::create)
                     .register(RemoveLower.NAME, RemoveLower.DESCRIPTION, RemoveLower::create)
-                    .register(GroupByType.NAME, GroupByType.DESCRIPTION, GroupByType::create);
+                    .register(GroupByType.NAME, GroupByType.DESCRIPTION, GroupByType::create)
+                    .register(GreaterThanCharacter.NAME, GreaterThanCharacter.DESCRIPTION, GreaterThanCharacter::create);
             new REPL(builder, client).run();
         }
     }

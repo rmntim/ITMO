@@ -205,4 +205,16 @@ public class CollectionManager {
                 .forEach((type, count) -> sj.add(type + ": " + count.size()));
         return sj.toString();
     }
+
+    /**
+     * Displays number of elements with character greater that given.
+     *
+     * @param dragon element to compare to
+     * @return number of elements
+     */
+    public long greaterThanCharacter(Dragon dragon) throws ValidationException {
+        dragon.setId(lastId + 1);
+        new DragonValidator().validate(dragon);
+        return collection.stream().filter(e -> e.character().compareTo(dragon.character()) > 0).count();
+    }
 }

@@ -36,5 +36,7 @@ public abstract class Command implements Serializable {
         Response visit(RemoveLower command);
 
         Response visit(GroupByType command);
+
+        Response visit(GreaterThanCharacter command);
     }
 }
