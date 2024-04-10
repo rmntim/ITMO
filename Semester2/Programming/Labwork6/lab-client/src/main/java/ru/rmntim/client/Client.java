@@ -14,6 +14,7 @@ import ru.rmntim.common.commands.Info;
 import ru.rmntim.common.commands.Remove;
 import ru.rmntim.common.commands.RemoveLower;
 import ru.rmntim.common.commands.Show;
+import ru.rmntim.common.commands.StartsWith;
 import ru.rmntim.common.commands.Update;
 
 import java.io.BufferedReader;
@@ -49,7 +50,8 @@ public final class Client {
                     .register(AddIfMin.NAME, AddIfMin.DESCRIPTION, AddIfMin::create)
                     .register(RemoveLower.NAME, RemoveLower.DESCRIPTION, RemoveLower::create)
                     .register(GroupByType.NAME, GroupByType.DESCRIPTION, GroupByType::create)
-                    .register(GreaterThanCharacter.NAME, GreaterThanCharacter.DESCRIPTION, GreaterThanCharacter::create);
+                    .register(GreaterThanCharacter.NAME, GreaterThanCharacter.DESCRIPTION, GreaterThanCharacter::create)
+                    .register(StartsWith.NAME, StartsWith.DESCRIPTION, StartsWith::create);
             new REPL(builder, client).run();
         }
     }

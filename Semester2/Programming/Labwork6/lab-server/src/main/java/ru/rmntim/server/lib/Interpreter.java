@@ -14,6 +14,7 @@ import ru.rmntim.common.commands.Info;
 import ru.rmntim.common.commands.Remove;
 import ru.rmntim.common.commands.RemoveLower;
 import ru.rmntim.common.commands.Show;
+import ru.rmntim.common.commands.StartsWith;
 import ru.rmntim.common.commands.Update;
 import ru.rmntim.common.network.Response;
 import ru.rmntim.common.validators.ValidationException;
@@ -164,5 +165,10 @@ public class Interpreter implements Command.Visitor {
         } catch (ValidationException e) {
             return new Response(Response.Status.ERROR, "Invalid element: " + e.getMessage());
         }
+    }
+
+    @Override
+    public Response visit(StartsWith command) {
+        return new Response(Response.Status.OK, collectionManager.startsWith(command.getPrefix()));
     }
 }

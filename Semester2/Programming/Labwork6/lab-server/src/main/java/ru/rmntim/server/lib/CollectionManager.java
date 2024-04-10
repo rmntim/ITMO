@@ -217,4 +217,16 @@ public class CollectionManager {
         new DragonValidator().validate(dragon);
         return collection.stream().filter(e -> e.character().compareTo(dragon.character()) > 0).count();
     }
+
+    /**
+     * Displays all elements with name starting with given string.
+     *
+     * @param prefix prefix to search for
+     * @return elements with given prefix as string
+     */
+    public String startsWith(String prefix) {
+        var sj = new StringJoiner("\n");
+        collection.stream().filter(e -> e.name().startsWith(prefix)).forEach(e -> sj.add(e.toString()));
+        return sj.toString();
+    }
 }
