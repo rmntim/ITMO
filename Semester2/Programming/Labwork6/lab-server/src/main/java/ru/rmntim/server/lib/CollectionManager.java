@@ -179,4 +179,16 @@ public class CollectionManager {
         }
         add(dragon);
     }
+
+    /**
+     * Removes all elements from the collection lower that given.
+     *
+     * @param dragon element to compare to
+     * @throws ValidationException if element is invalid
+     */
+    public void removeIfLower(Dragon dragon) throws ValidationException {
+        dragon.setId(lastId + 1);
+        new DragonValidator().validate(dragon);
+        collection.removeIf(e -> e.compareTo(dragon) < 0);
+    }
 }

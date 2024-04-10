@@ -10,6 +10,7 @@ import ru.rmntim.common.commands.Clear;
 import ru.rmntim.common.commands.Command;
 import ru.rmntim.common.commands.Info;
 import ru.rmntim.common.commands.Remove;
+import ru.rmntim.common.commands.RemoveLower;
 import ru.rmntim.common.commands.Show;
 import ru.rmntim.common.commands.Update;
 import ru.rmntim.common.network.Response;
@@ -133,6 +134,16 @@ public class Interpreter implements Command.Visitor {
     public Response visit(AddIfMin command) {
         try {
             collectionManager.addIfMin(command.getDragon());
+            return new Response(Response.Status.OK, "Command executed successfully");
+        } catch (ValidationException e) {
+            return new Response(Response.Status.ERROR, "Invalid element: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Response visit(RemoveLower command) {
+        try {
+            collectionManager.removeIfLower(command.getDragon());
             return new Response(Response.Status.OK, "Command executed successfully");
         } catch (ValidationException e) {
             return new Response(Response.Status.ERROR, "Invalid element: " + e.getMessage());
