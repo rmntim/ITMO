@@ -1,12 +1,14 @@
 package ru.rmntim.server.lib;
 
 import ru.rmntim.common.models.Dragon;
+import ru.rmntim.common.models.DragonType;
 import ru.rmntim.common.validators.DragonValidator;
 import ru.rmntim.common.validators.ValidationException;
 import ru.rmntim.server.storage.StorageManager;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.StringJoiner;
 import java.util.TreeSet;
@@ -51,10 +53,6 @@ public class CollectionManager {
             id = Math.max(id, dragon.id());
         }
         lastId = id;
-    }
-
-    public TreeSet<Dragon> getCollection() {
-        return collection;
     }
 
     /**
@@ -194,16 +192,20 @@ public class CollectionManager {
     }
 
     /**
-     * Groups elements by type and displays number of elements in each group"
+     * Groups elements by type and displays number of elements in each group.
      *
-     * @return grouped elements as string
+     * @return grouped elements
      */
-    public String groupByType() {
-        var sj = new StringJoiner("\n");
-        collection.stream()
+    public Map<DragonType, Integer> groupByType() {
+        return collection.stream()
                 .collect(Collectors.groupingBy(Dragon::type))
-                .forEach((type, count) -> sj.add(type + ": " + count.size()));
-        return sj.toString();
+                .entrySet()
+                .stream()
+                .collect(
+                        Collectors.toMap(
+                                Map.Entry::getKey,
+                                e -> e.getValue().size())
+                );
     }
 
     /**
@@ -222,11 +224,11 @@ public class CollectionManager {
      * Displays all elements with name starting with given string.
      *
      * @param prefix prefix to search for
-     * @return elements with given prefix as string
+     * @return elements with given prefix
      */
-    public String startsWith(String prefix) {
-        var sj = new StringJoiner("\n");
-        collection.stream().filter(e -> e.name().startsWith(prefix)).forEach(e -> sj.add(e.toString()));
-        return sj.toString();
+    public TreeSet<Dragon> startsWith(String prefix) {
+        return collection.stream()
+                .filter(e -> e.name().startsWith(prefix))
+                .collect(Collectors.toCollection(TreeSet::new));
     }
 }

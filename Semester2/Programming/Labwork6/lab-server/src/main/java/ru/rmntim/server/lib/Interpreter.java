@@ -21,6 +21,7 @@ import ru.rmntim.common.validators.ValidationException;
 import ru.rmntim.server.network.UDPServer;
 
 import java.io.IOException;
+import java.util.StringJoiner;
 
 public class Interpreter implements Command.Visitor {
     private static final Logger LOGGER = LoggerFactory.getLogger(Interpreter.class);
@@ -155,7 +156,10 @@ public class Interpreter implements Command.Visitor {
 
     @Override
     public Response visit(GroupByType command) {
-        return new Response(Response.Status.OK, collectionManager.groupByType());
+        var sj = new StringJoiner("\n");
+        collectionManager.groupByType()
+                .forEach((key, value) -> sj.add(key + ": " + value));
+        return new Response(Response.Status.OK, sj.toString());
     }
 
     @Override
@@ -169,6 +173,9 @@ public class Interpreter implements Command.Visitor {
 
     @Override
     public Response visit(StartsWith command) {
-        return new Response(Response.Status.OK, collectionManager.startsWith(command.getPrefix()));
+        var sj = new StringJoiner("\n");
+        collectionManager.startsWith(command.getPrefix())
+                .forEach(e -> sj.add(e.toString()));
+        return new Response(Response.Status.OK, sj.toString());
     }
 }
