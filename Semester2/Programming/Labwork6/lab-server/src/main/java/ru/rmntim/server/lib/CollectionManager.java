@@ -131,4 +131,11 @@ public class CollectionManager {
     public boolean remove(int id) {
         return collection.removeIf(e -> e.id() == id);
     }
+
+    /**
+     * Clear the collection.
+     */
+    public void clear() {
+        collection.clear();
+    }
 }
