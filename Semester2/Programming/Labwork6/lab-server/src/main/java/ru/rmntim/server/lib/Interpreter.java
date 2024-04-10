@@ -46,18 +46,17 @@ public class Interpreter implements Command.Visitor {
         while (true) {
             try {
                 var data = server.receive();
-                LOGGER.info("Received a command from {} (length: {})", data.address(), data.bytes().length);
+                LOGGER.info("Received a command from {} (length: {})", data.address(), data.bytes().remaining());
 
                 Command command;
                 try {
-                    command = SerializationUtils.deserialize(data.bytes());
+                    command = SerializationUtils.deserialize(data.bytes().array());
                 } catch (ClassCastException e) {
                     LOGGER.error("Invalid command received from {}", data.address());
                     continue;
                 }
 
                 var response = execute(command);
-
                 var responseBytes = SerializationUtils.serialize(response);
                 server.send(responseBytes, data.address());
 

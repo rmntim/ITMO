@@ -9,7 +9,6 @@ import java.nio.channels.DatagramChannel;
 public class UDPServer {
     private static final int RESPONSE_BYTES_SIZE = 65_536;
     private final DatagramChannel datagramChannel;
-    private final ByteBuffer buffer = ByteBuffer.allocate(RESPONSE_BYTES_SIZE);
 
     /**
      * Creates new server that binds to given address.
@@ -29,10 +28,10 @@ public class UDPServer {
      * @throws IOException if bytes can't be received
      */
     public Data receive() throws IOException {
-        buffer.clear();
+        var buffer = ByteBuffer.allocate(RESPONSE_BYTES_SIZE);
         var clientAddress = datagramChannel.receive(buffer);
         buffer.flip();
-        return new Data(clientAddress, buffer.array());
+        return new Data(clientAddress, buffer);
     }
 
     /**
@@ -43,7 +42,7 @@ public class UDPServer {
      * @throws IOException if an I/O error occurs
      */
     public void send(byte[] data, SocketAddress address) throws IOException {
-        buffer.clear();
+        var buffer = ByteBuffer.allocate(RESPONSE_BYTES_SIZE);
         buffer.put(data);
         buffer.flip();
         datagramChannel.send(buffer, address);
