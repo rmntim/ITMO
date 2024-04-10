@@ -73,7 +73,7 @@ public class StorageManager {
      * @throws IOException                     if the file is invalid
      * @throws com.google.gson.JsonIOException if there was a problem writing to file
      */
-    public void writeCollection(TreeSet<Dragon> collection) throws IOException {
+    public synchronized void writeCollection(TreeSet<Dragon> collection) throws IOException {
         if (collection == null) {
             throw new NullPointerException();
         }

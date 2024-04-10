@@ -10,7 +10,9 @@ import ru.rmntim.server.lib.Interpreter;
 import ru.rmntim.server.network.UDPServer;
 import ru.rmntim.server.storage.StorageManager;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
@@ -36,7 +38,11 @@ public final class Server {
             var server = new UDPServer(new InetSocketAddress(InetAddress.getLocalHost(), port));
             LOGGER.info("Starting server on port {}", server.getPort());
             var interpreter = new Interpreter(collectionManager, server);
-            interpreter.run();
+
+            var serverThread = new Thread(interpreter::run);
+            serverThread.start();
+
+            runRepl(collectionManager);
         } catch (IOException | JsonIOException e) {
             LOGGER.error("IO error occurred", e);
         } catch (ValidationException | JsonSyntaxException e) {
@@ -45,6 +51,26 @@ public final class Server {
             LOGGER.error("Error creating resource", e);
         } finally {
             LOGGER.info("Server stopped");
+        }
+    }
+
+    private static void runRepl(CollectionManager collectionManager) {
+        try (var reader = new BufferedReader(new InputStreamReader(System.in))) {
+            String input;
+            //noinspection InfiniteLoopStatement
+            while (true) {
+                input = reader.readLine();
+                if (input == null) {
+                    continue;
+                }
+
+                if ("save".equals(input)) {
+                    collectionManager.saveCollection();
+                    LOGGER.info("Collection saved");
+                }
+            }
+        } catch (IOException e) {
+            LOGGER.error("Failed to init repl", e);
         }
     }
 

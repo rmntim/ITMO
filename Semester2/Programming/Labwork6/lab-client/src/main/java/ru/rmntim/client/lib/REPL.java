@@ -20,9 +20,9 @@ import java.util.Set;
 import java.util.function.Function;
 
 public class REPL {
-    // Thi
+    // This execute_script implementation is shit. Beware!
     private static final String EXECUTE_SCRIPT_NAME = "execute_script";
-    public static final String EXECUTE_SCRIPT_DESCRIPTION = "Executes script from given file";
+    private static final String EXECUTE_SCRIPT_DESCRIPTION = "Executes script from given file";
     private final Map<String, Function<List<String>, Command>> commands;
     private final UDPClient client;
     private final Set<String> callStack = new HashSet<>();
