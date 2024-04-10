@@ -7,9 +7,9 @@ import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 
 public class UDPServer {
-    private static final int PACKET_SIZE = 65_536;
+    private static final int RESPONSE_BYTES_SIZE = 65_536;
     private final DatagramChannel datagramChannel;
-    private final ByteBuffer buffer = ByteBuffer.allocate(PACKET_SIZE);
+    private final ByteBuffer buffer = ByteBuffer.allocate(RESPONSE_BYTES_SIZE);
 
     /**
      * Creates new server that binds to given address.

@@ -12,7 +12,7 @@ import java.time.Duration;
  * Manages the connection to the server.
  */
 public class UDPClient {
-    private static final int PACKET_SIZE = 1024;
+    private static final int RESPONSE_BYTES_SIZE = 65_536;
     private final SocketAddress serverAddress;
     private final DatagramSocket datagramSocket;
 
@@ -39,7 +39,7 @@ public class UDPClient {
         var packet = new DatagramPacket(data, data.length, serverAddress);
         datagramSocket.send(packet);
 
-        var buffer = new byte[PACKET_SIZE];
+        var buffer = new byte[RESPONSE_BYTES_SIZE];
         var serverPacket = new DatagramPacket(buffer, buffer.length);
 
         try {
