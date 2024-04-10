@@ -5,6 +5,7 @@ import ru.rmntim.client.network.UDPClient;
 import ru.rmntim.common.GlobalInput;
 import ru.rmntim.common.commands.Command;
 import ru.rmntim.common.network.Response;
+import ru.rmntim.common.parsers.BuildCancelledException;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -69,8 +70,17 @@ public class REPL {
                     continue;
                 }
 
-                var response = runCommand(commandName, commandArgs);
-                if (response == null) {
+                Response response;
+                try {
+                    response = runCommand(commandName, commandArgs);
+                    if (response == null) {
+                        continue;
+                    }
+                } catch (IOException e) {
+                    System.out.println("Command error: " + e.getMessage());
+                    continue;
+                } catch (BuildCancelledException e) {
+                    System.out.println("Build cancelled");
                     continue;
                 }
 
@@ -135,6 +145,9 @@ public class REPL {
                     }
                 } catch (IOException e) {
                     System.out.println("Command error: " + e.getMessage());
+                    continue;
+                } catch (BuildCancelledException e) {
+                    System.out.println("Build cancelled");
                     continue;
                 }
 
