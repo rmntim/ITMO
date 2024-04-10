@@ -9,6 +9,12 @@ public final class CoordinatesParser {
     private CoordinatesParser() {
     }
 
+    /**
+     * Creates new {@link Coordinates} object from stdin or file.
+     *
+     * @return parsed coordinates
+     * @throws BuildCancelledException if EOF is reached
+     */
     public static Coordinates parse() {
         return parseCoordinates();
     }

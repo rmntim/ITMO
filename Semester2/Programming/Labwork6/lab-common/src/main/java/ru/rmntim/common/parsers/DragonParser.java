@@ -13,6 +13,12 @@ public final class DragonParser {
     private DragonParser() {
     }
 
+    /**
+     * Creates new {@link Dragon} object from stdin or file.
+     *
+     * @return parsed dragon
+     * @throws BuildCancelledException if EOF is reached
+     */
     public static Dragon parse() {
         var name = parseName();
         var coordinates = CoordinatesParser.parse();

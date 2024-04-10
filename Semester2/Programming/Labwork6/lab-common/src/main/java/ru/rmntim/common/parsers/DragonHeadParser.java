@@ -9,6 +9,12 @@ public final class DragonHeadParser {
     private DragonHeadParser() {
     }
 
+    /**
+     * Creates new {@link DragonHead} object from stdin or file.
+     *
+     * @return parsed dragon head
+     * @throws BuildCancelledException if EOF is reached
+     */
     public static DragonHead parse() {
         return askDragonHead();
     }
