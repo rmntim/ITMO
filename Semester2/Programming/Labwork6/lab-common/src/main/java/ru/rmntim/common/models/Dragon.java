@@ -50,18 +50,6 @@ public final class Dragon implements Comparable<Dragon>, Serializable {
                 .compare(this, o);
     }
 
-    @Override
-    public String toString() {
-        return "name: " + name + "\n"
-                + "coordinates: " + coordinates + "\n"
-                + "creationDate: " + creationDate + "\n"
-                + "age: " + age + "\n"
-                + "color: " + color + "\n"
-                + "type: " + type + "\n"
-                + "character: " + character + "\n"
-                + "head: " + head + "\n";
-    }
-
     public Integer id() {
         return id;
     }
@@ -125,6 +113,19 @@ public final class Dragon implements Comparable<Dragon>, Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, coordinates, creationDate, age, color, type, character, head);
+    }
+
+    @Override
+    public String toString() {
+        return "id: " + id + "\n"
+                + "name: " + name + "\n"
+                + "coordinates: " + coordinates + "\n"
+                + "creationDate: " + creationDate + "\n"
+                + "age: " + age + "\n"
+                + "color: " + color + "\n"
+                + "type: " + type + "\n"
+                + "character: " + character + "\n"
+                + "head: " + head + "\n";
     }
 
 }
