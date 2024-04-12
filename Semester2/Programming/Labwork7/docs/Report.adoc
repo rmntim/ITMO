@@ -1,0 +1,17 @@
+= Отчет: по лабораторной работе №7
+Вариант 5379
+Тимошкин Р. В. [P3131]
+:reproducible:
+:title-page:
+
+== Текст задания
+
+TODO
+
+== Исходный код программы
+
+https://github.com/rmntim/ITMO/tree/main/Semester2/Programming/Labwork7
+
+== Вывод
+
+TODO
