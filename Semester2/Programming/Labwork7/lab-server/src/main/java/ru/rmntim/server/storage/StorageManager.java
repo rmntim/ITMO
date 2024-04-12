@@ -24,11 +24,12 @@ public class StorageManager {
 
     /**
      * @param path path to json file
-     * @throws IllegalArgumentException if {@code path} is empty or {@code null}
+     * @throws NullPointerException     if {@code path} is null
+     * @throws IllegalArgumentException if {@code path} is empty
      */
     public StorageManager(final String path) {
         if (path == null) {
-            throw new IllegalArgumentException("Path cannot be null");
+            throw new NullPointerException("Path cannot be null");
         }
         if (path.isBlank()) {
             throw new IllegalArgumentException("Path cannot be empty");

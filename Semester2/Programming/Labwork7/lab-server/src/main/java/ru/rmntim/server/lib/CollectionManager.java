@@ -22,13 +22,13 @@ public class CollectionManager {
 
     /**
      * @param storageManager storage manager to read collection from
-     * @throws IOException              if collection can't be read
-     * @throws ValidationException      if collection is invalid
-     * @throws IllegalArgumentException if collection is null
+     * @throws IOException          if collection can't be read
+     * @throws ValidationException  if collection is invalid
+     * @throws NullPointerException if {@code storageManager} is null
      */
     public CollectionManager(StorageManager storageManager) throws ValidationException, IOException {
         if (storageManager == null) {
-            throw new IllegalArgumentException("Storage manager cannot be null");
+            throw new NullPointerException("Storage manager cannot be null");
         }
         this.storageManager = storageManager;
         this.collection = storageManager.readCollection();
@@ -128,6 +128,7 @@ public class CollectionManager {
      * @param id id of the element to remove
      * @return {@code false} if no elements were removed
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean remove(int id) {
         return collection.removeIf(e -> e.id() == id);
     }
