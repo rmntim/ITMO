@@ -8,7 +8,8 @@ import ru.rmntim.common.validators.ValidationException;
 import ru.rmntim.server.lib.CollectionManager;
 import ru.rmntim.server.lib.Interpreter;
 import ru.rmntim.server.network.UDPServer;
-import ru.rmntim.server.storage.StorageManager;
+import ru.rmntim.server.storage.JSONStorageManager;
+import ru.rmntim.server.storage.StorageException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -31,7 +32,7 @@ public final class Server {
             var path = getPath();
             LOGGER.info("Loading data from {}", path);
 
-            var storageManager = new StorageManager(path);
+            var storageManager = new JSONStorageManager(path);
             var collectionManager = new CollectionManager(storageManager);
             Runtime.getRuntime().addShutdownHook(new Thread(collectionManager::saveCollection));
 
@@ -43,7 +44,7 @@ public final class Server {
             serverThread.start();
 
             runRepl(collectionManager);
-        } catch (IOException | JsonIOException e) {
+        } catch (IOException | JsonIOException | StorageException e) {
             LOGGER.error("IO error occurred", e);
         } catch (ValidationException | JsonSyntaxException e) {
             LOGGER.error("Data validation error occurred", e);
