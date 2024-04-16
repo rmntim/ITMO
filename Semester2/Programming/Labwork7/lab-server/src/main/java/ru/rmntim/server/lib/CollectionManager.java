@@ -4,9 +4,9 @@ import ru.rmntim.common.models.Dragon;
 import ru.rmntim.common.models.DragonType;
 import ru.rmntim.common.validators.DragonValidator;
 import ru.rmntim.common.validators.ValidationException;
-import ru.rmntim.server.storage.StorageException;
 import ru.rmntim.server.storage.StorageManager;
 
+import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -22,11 +22,11 @@ public class CollectionManager {
 
     /**
      * @param storageManager storage manager to read collection from
-     * @throws StorageException     if collection can't be read
+     * @throws IOException          if collection can't be read
      * @throws ValidationException  if collection is invalid
      * @throws NullPointerException if {@code storageManager} is null
      */
-    public CollectionManager(StorageManager storageManager) throws ValidationException, StorageException {
+    public CollectionManager(StorageManager storageManager) throws ValidationException, IOException {
         if (storageManager == null) {
             throw new NullPointerException("Storage manager cannot be null");
         }
@@ -73,7 +73,7 @@ public class CollectionManager {
     public void saveCollection() {
         try {
             storageManager.writeCollection(collection);
-        } catch (StorageException ignored) {
+        } catch (IOException ignored) {
             // ignore
         }
     }
