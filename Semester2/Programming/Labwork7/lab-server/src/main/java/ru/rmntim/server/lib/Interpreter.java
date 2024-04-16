@@ -16,7 +16,9 @@ import ru.rmntim.common.commands.RemoveLower;
 import ru.rmntim.common.commands.Show;
 import ru.rmntim.common.commands.StartsWith;
 import ru.rmntim.common.commands.Update;
+import ru.rmntim.common.network.Request;
 import ru.rmntim.common.network.Response;
+import ru.rmntim.common.network.UserCredentials;
 import ru.rmntim.common.validators.ValidationException;
 import ru.rmntim.server.network.UDPServer;
 
@@ -43,20 +45,30 @@ public class Interpreter implements Command.Visitor {
      * Starts the interpreter.
      */
     public void run() {
+        //noinspection InfiniteLoopStatement
         while (true) {
             try {
                 var data = server.receive();
                 LOGGER.info("Received data from {} (length: {})", data.address(), data.bytes().remaining());
 
-                Command command;
+                Request request;
                 try {
-                    command = SerializationUtils.deserialize(data.bytes().array());
-                    LOGGER.info("Received command type: {}", command.getClass().getSimpleName());
+                    request = SerializationUtils.deserialize(data.bytes().array());
+                    LOGGER.info("Received request with command type: {}", request.command().getClass().getSimpleName());
                 } catch (ClassCastException e) {
                     LOGGER.error("Invalid command received from {}", data.address());
                     continue;
                 }
+                try {
+                    checkCredentials(request.userCredentials());
+                } catch (BadCredentialsException e) {
+                    LOGGER.error("Bad credentials received from {}", data.address());
+                    var response = new Response(Response.Status.BAD_CREDENTIALS, "Invalid credentials");
+                    server.send(SerializationUtils.serialize(response), data.address());
+                    continue;
+                }
 
+                var command = request.command();
                 var response = execute(command);
                 var responseBytes = SerializationUtils.serialize(response);
                 server.send(responseBytes, data.address());
@@ -66,6 +78,18 @@ public class Interpreter implements Command.Visitor {
             } catch (IOException e) {
                 LOGGER.error("IO error occurred", e);
             }
+        }
+    }
+
+    /**
+     * Checks user credentials.
+     *
+     * @param userCredentials credentials to check
+     * @throws BadCredentialsException if credentials are incorrect
+     */
+    private void checkCredentials(UserCredentials userCredentials) {
+        if (userCredentials.password().equals("incorrect")) {
+            throw new BadCredentialsException();
         }
     }
 

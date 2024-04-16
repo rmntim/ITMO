@@ -6,6 +6,7 @@ public record Response(Status status, String message) implements Serializable {
     public enum Status {
         OK,
         ERROR,
+        BAD_CREDENTIALS
     }
 
     public Response(String message) {

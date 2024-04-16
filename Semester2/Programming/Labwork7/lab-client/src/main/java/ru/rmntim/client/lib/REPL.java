@@ -4,7 +4,9 @@ import org.apache.commons.lang3.SerializationUtils;
 import ru.rmntim.client.network.UDPClient;
 import ru.rmntim.common.GlobalInput;
 import ru.rmntim.common.commands.Command;
+import ru.rmntim.common.network.Request;
 import ru.rmntim.common.network.Response;
+import ru.rmntim.common.network.UserCredentials;
 import ru.rmntim.common.parsers.BuildCancelledException;
 
 import java.io.BufferedReader;
@@ -23,9 +25,10 @@ public class REPL {
     // This execute_script implementation is shit. Beware!
     private static final String EXECUTE_SCRIPT_NAME = "execute_script";
     private static final String EXECUTE_SCRIPT_DESCRIPTION = "Executes script from given file";
+    private final Set<String> callStack = new HashSet<>();
     private final Map<String, Function<List<String>, Command>> commands;
     private final UDPClient client;
-    private final Set<String> callStack = new HashSet<>();
+    private UserCredentials userCredentials;
 
     /**
      * Creates a new REPL.
@@ -45,6 +48,7 @@ public class REPL {
     public void run() {
         try {
             var reader = GlobalInput.getReader();
+            askForCredentials();
             String line;
             while (true) {
                 System.out.print("$ ");
@@ -98,6 +102,26 @@ public class REPL {
         } catch (IOException e) {
             System.out.println("IO error: " + e.getMessage());
         }
+    }
+
+    /**
+     * Reads credentials from stdin.
+     *
+     * @throws IOException if failed to read credentials
+     */
+    private void askForCredentials() throws IOException {
+        var reader = GlobalInput.getReader();
+        System.out.print("Enter username: ");
+        var username = reader.readLine();
+        if (username == null) {
+            throw new IOException("Failed to read username");
+        }
+        System.out.print("Enter password: ");
+        var password = reader.readLine();
+        if (password == null) {
+            throw new IOException("Failed to read password");
+        }
+        userCredentials = new UserCredentials(username, password);
     }
 
     /**
@@ -195,8 +219,9 @@ public class REPL {
             return Optional.empty();
         }
 
-        var commandBytes = SerializationUtils.serialize(command);
-        var responseBytes = client.sendThenReceive(commandBytes);
+        var request = new Request(userCredentials, command);
+        var requestBytes = SerializationUtils.serialize(request);
+        var responseBytes = client.sendThenReceive(requestBytes);
         if (responseBytes == null) {
             System.out.println("Server timeout");
             return Optional.empty();
