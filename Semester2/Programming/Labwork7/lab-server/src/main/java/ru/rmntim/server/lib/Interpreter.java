@@ -1,6 +1,7 @@
 package ru.rmntim.server.lib;
 
 import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.rmntim.common.commands.Add;
@@ -23,6 +24,7 @@ import ru.rmntim.common.validators.ValidationException;
 import ru.rmntim.server.network.UDPServer;
 
 import java.io.IOException;
+import java.net.SocketAddress;
 import java.util.StringJoiner;
 
 public class Interpreter implements Command.Visitor {
@@ -48,37 +50,75 @@ public class Interpreter implements Command.Visitor {
         //noinspection InfiniteLoopStatement
         while (true) {
             try {
-                var data = server.receive();
-                LOGGER.info("Received data from {} (length: {})", data.address(), data.bytes().remaining());
-
-                Request request;
-                try {
-                    request = SerializationUtils.deserialize(data.bytes().array());
-                    LOGGER.info("Received request with command type: {}", request.command().getClass().getSimpleName());
-                } catch (ClassCastException e) {
-                    LOGGER.error("Invalid command received from {}", data.address());
+                var result = parseRequest();
+                if (result == null) {
                     continue;
                 }
-                try {
-                    checkCredentials(request.userCredentials());
-                } catch (BadCredentialsException e) {
-                    LOGGER.error("Bad credentials received from {}", data.address());
-                    var response = new Response(Response.Status.BAD_CREDENTIALS, "Invalid credentials");
-                    server.send(SerializationUtils.serialize(response), data.address());
-                    continue;
-                }
-
-                var command = request.command();
-                var response = execute(command);
-                var responseBytes = SerializationUtils.serialize(response);
-                server.send(responseBytes, data.address());
-
-                LOGGER.info("Response ready for {} (status: {})", data.address(), response.status().toString());
-                LOGGER.info("Sent response to {} (length: {})", data.address(), responseBytes.length);
+                var addr = result.getKey();
+                var request = result.getValue();
+                var response = executeCommand(request, addr);
+                LOGGER.info("Response ready for {} (status: {})", addr, response.status().toString());
+                sendResponse(response, addr);
             } catch (IOException e) {
                 LOGGER.error("IO error occurred", e);
             }
         }
+    }
+
+    /**
+     * Sends response to client.
+     *
+     * @param response response to send
+     * @param addr     client address
+     * @throws IOException if response can't be sent
+     */
+    private void sendResponse(Response response, SocketAddress addr) throws IOException {
+        var responseBytes = SerializationUtils.serialize(response);
+        server.send(responseBytes, addr);
+        LOGGER.info("Sent response to {} (length: {})", addr, responseBytes.length);
+    }
+
+    /**
+     * Performs command execution.
+     *
+     * @param request request to execute
+     * @param addr    client address
+     * @return response
+     * @throws IOException if response can't be sent
+     */
+    private Response executeCommand(Request request, SocketAddress addr) throws IOException {
+        Response response;
+        try {
+            checkCredentials(request.userCredentials());
+            var command = request.command();
+            response = execute(command);
+        } catch (BadCredentialsException e) {
+            LOGGER.error("Bad credentials received from {}", addr);
+            response = new Response(Response.Status.BAD_CREDENTIALS, "Invalid credentials");
+        }
+        return response;
+    }
+
+    /**
+     * Reads request from socket and deserializes it.
+     *
+     * @return pair of socket address and request
+     * @throws IOException if bytes can't be received
+     */
+    private Pair<SocketAddress, Request> parseRequest() throws IOException {
+        var data = server.receive();
+        LOGGER.info("Received data from {} (length: {})", data.address(), data.bytes().remaining());
+
+        Request request;
+        try {
+            request = SerializationUtils.deserialize(data.bytes().array());
+            LOGGER.info("Received request with command type: {}", request.command().getClass().getSimpleName());
+        } catch (ClassCastException e) {
+            LOGGER.error("Invalid command received from {}", data.address());
+            return null;
+        }
+
+        return Pair.of(data.address(), request);
     }
 
     /**
