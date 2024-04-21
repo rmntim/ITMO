@@ -24,7 +24,7 @@
 
 * [Программирование](Semester1/Programming)
 
-* [LinearAlgebra](Semester1/LinearAlgebra)
+* [Линейная алгебра](Semester1/LinearAlgebra)
 
 ### Семестр 2
 
