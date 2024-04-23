@@ -1,6 +1,7 @@
 package ru.rmntim.common.commands;
 
 import ru.rmntim.common.network.Response;
+import ru.rmntim.common.network.UserCredentials;
 
 import java.util.List;
 
@@ -11,7 +12,8 @@ public class StartsWith extends Command {
 
     private final String prefix;
 
-    public StartsWith(String predicate) {
+    public StartsWith(String predicate, UserCredentials userCredentials) {
+        super(userCredentials);
         this.prefix = predicate;
     }
 
@@ -24,7 +26,7 @@ public class StartsWith extends Command {
         return visitor.visit(this);
     }
 
-    public static StartsWith create(List<String> args) {
+    public static StartsWith create(List<String> args, UserCredentials userCredentials) {
         if (args.size() != 1) {
             throw new IllegalArgumentException(NAME + " needs prefix as argument");
         }
@@ -32,6 +34,6 @@ public class StartsWith extends Command {
         if (argument.isBlank()) {
             throw new IllegalArgumentException("Prefix cannot be blank");
         }
-        return new StartsWith(argument);
+        return new StartsWith(argument, userCredentials);
     }
 }

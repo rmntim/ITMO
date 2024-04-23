@@ -1,14 +1,10 @@
 package ru.rmntim.client.lib;
 
-import ru.rmntim.common.commands.Command;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 public class CommandRegistryBuilder {
-    private final Map<String, Function<List<String>, Command>> suppliers = new HashMap<>();
+    private final Map<String, CommandCreator> suppliers = new HashMap<>();
     private final Map<String, String> descriptions = new HashMap<>();
 
     /**
@@ -20,14 +16,14 @@ public class CommandRegistryBuilder {
     /**
      * Adds a command to the registry.
      *
-     * @param name            name of the command
-     * @param description     description of the command
-     * @param commandSupplier function that accepts command args and returns the command,
-     *                        or {@code null} if the command is not supposed to be sent to the server
+     * @param name           name of the command
+     * @param description    description of the command
+     * @param commandCreator function that accepts command args, user credentials and returns the command,
+     *                       or {@code null} if the command is not supposed to be sent to the server
      * @return this, because this is a builder
      */
-    public CommandRegistryBuilder register(String name, String description, Function<List<String>, Command> commandSupplier) {
-        suppliers.put(name, commandSupplier);
+    public CommandRegistryBuilder register(String name, String description, CommandCreator commandCreator) {
+        suppliers.put(name, commandCreator);
         descriptions.put(name, description);
         return this;
     }
@@ -37,8 +33,8 @@ public class CommandRegistryBuilder {
      *
      * @return the command registry
      */
-    public Map<String, Function<List<String>, Command>> build() {
-        register("help", "Show list of commands", args -> {
+    public Map<String, CommandCreator> build() {
+        register("help", "Show list of commands", (args, creds) -> {
             if (!args.isEmpty()) {
                 throw new IllegalArgumentException("help accepts 0 arguments");
             }
@@ -46,7 +42,7 @@ public class CommandRegistryBuilder {
             return null;
         });
 
-        register("exit", "Exit the program", args -> {
+        register("exit", "Exit the program", (args, creds) -> {
             if (!args.isEmpty()) {
                 throw new IllegalArgumentException("exit accepts 0 arguments");
             }

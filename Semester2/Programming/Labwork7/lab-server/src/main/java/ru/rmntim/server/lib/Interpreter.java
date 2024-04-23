@@ -17,7 +17,6 @@ import ru.rmntim.common.commands.RemoveLower;
 import ru.rmntim.common.commands.Show;
 import ru.rmntim.common.commands.StartsWith;
 import ru.rmntim.common.commands.Update;
-import ru.rmntim.common.network.Request;
 import ru.rmntim.common.network.Response;
 import ru.rmntim.common.network.UserCredentials;
 import ru.rmntim.common.validators.ValidationException;
@@ -78,12 +77,12 @@ public class Interpreter implements Command.Visitor {
      * Executes given command.
      *
      * @param addr    client address
-     * @param request request to execute
+     * @param command command to execute
      */
-    private void executeMultithreaded(SocketAddress addr, Request request) {
+    private void executeMultithreaded(SocketAddress addr, Command command) {
         forkJoinPool.execute(() -> {
             try {
-                var response = executeCommand(request, addr);
+                var response = executeCommand(command, addr);
                 LOGGER.info("Response ready for {} (status: {})", addr, response.status().toString());
                 sendMultithreaded(addr, response);
             } catch (IOException e) {
@@ -124,16 +123,15 @@ public class Interpreter implements Command.Visitor {
     /**
      * Performs command execution.
      *
-     * @param request request to execute
+     * @param command command to execute
      * @param addr    client address
      * @return response
      * @throws IOException if response can't be sent
      */
-    private Response executeCommand(Request request, SocketAddress addr) throws IOException {
+    private Response executeCommand(Command command, SocketAddress addr) throws IOException {
         Response response;
         try {
-            checkCredentials(request.userCredentials());
-            var command = request.command();
+            checkCredentials(command.userCredentials());
             response = execute(command);
         } catch (BadCredentialsException e) {
             LOGGER.error("Bad credentials received from {}", addr);
@@ -145,23 +143,23 @@ public class Interpreter implements Command.Visitor {
     /**
      * Reads request from socket and deserializes it.
      *
-     * @return pair of socket address and request
+     * @return pair of socket address and command
      * @throws IOException if bytes can't be received
      */
-    private Pair<SocketAddress, Request> parseRequest() throws IOException {
+    private Pair<SocketAddress, Command> parseRequest() throws IOException {
         var data = server.receive();
         LOGGER.info("Received data from {} (length: {})", data.address(), data.bytes().remaining());
 
-        Request request;
+        Command command;
         try {
-            request = SerializationUtils.deserialize(data.bytes().array());
-            LOGGER.info("Received request with command type: {}", request.command().getClass().getSimpleName());
+            command = SerializationUtils.deserialize(data.bytes().array());
+            LOGGER.info("Received request with command type: {}", command.getClass().getSimpleName());
         } catch (ClassCastException e) {
             LOGGER.error("Invalid command received from {}", data.address());
             return null;
         }
 
-        return Pair.of(data.address(), request);
+        return Pair.of(data.address(), command);
     }
 
     /**

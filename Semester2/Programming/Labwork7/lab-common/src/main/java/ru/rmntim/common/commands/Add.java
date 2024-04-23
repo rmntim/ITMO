@@ -2,6 +2,7 @@ package ru.rmntim.common.commands;
 
 import ru.rmntim.common.models.Dragon;
 import ru.rmntim.common.network.Response;
+import ru.rmntim.common.network.UserCredentials;
 import ru.rmntim.common.parsers.DragonParser;
 
 import java.util.List;
@@ -12,7 +13,8 @@ public class Add extends Command {
 
     private final Dragon dragon;
 
-    public Add(Dragon dragon) {
+    public Add(Dragon dragon, UserCredentials userCredentials) {
+        super(userCredentials);
         this.dragon = dragon;
     }
 
@@ -25,11 +27,11 @@ public class Add extends Command {
         return visitor.visit(this);
     }
 
-    public static Add create(List<String> args) {
+    public static Add create(List<String> args, UserCredentials userCredentials) {
         if (!args.isEmpty()) {
             throw new IllegalArgumentException(NAME + " accepts 0 arguments");
         }
         var dragon = DragonParser.parse();
-        return new Add(dragon);
+        return new Add(dragon, userCredentials);
     }
 }

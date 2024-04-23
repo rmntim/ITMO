@@ -1,6 +1,7 @@
 package ru.rmntim.common.commands;
 
 import ru.rmntim.common.network.Response;
+import ru.rmntim.common.network.UserCredentials;
 
 import java.io.Serializable;
 
@@ -8,6 +9,16 @@ import java.io.Serializable;
  * Base class for all commands.
  */
 public abstract class Command implements Serializable {
+    private final UserCredentials userCredentials;
+
+    public Command(UserCredentials userCredentials) {
+        this.userCredentials = userCredentials;
+    }
+
+    public UserCredentials userCredentials() {
+        return userCredentials;
+    }
+
     /**
      * Accepts visitor and returns response.
      *

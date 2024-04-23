@@ -4,7 +4,6 @@ import org.apache.commons.lang3.SerializationUtils;
 import ru.rmntim.client.network.UDPClient;
 import ru.rmntim.common.GlobalInput;
 import ru.rmntim.common.commands.Command;
-import ru.rmntim.common.network.Request;
 import ru.rmntim.common.network.Response;
 import ru.rmntim.common.network.UserCredentials;
 import ru.rmntim.common.parsers.BuildCancelledException;
@@ -19,14 +18,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 
 public class REPL {
     // This execute_script implementation is shit. Beware!
     private static final String EXECUTE_SCRIPT_NAME = "execute_script";
     private static final String EXECUTE_SCRIPT_DESCRIPTION = "Executes script from given file";
     private final Set<String> callStack = new HashSet<>();
-    private final Map<String, Function<List<String>, Command>> commands;
+    private final Map<String, CommandCreator> commands;
     private final UDPClient client;
     private UserCredentials userCredentials;
 
@@ -37,7 +35,7 @@ public class REPL {
      * @param client  UDP client
      */
     public REPL(CommandRegistryBuilder builder, UDPClient client) {
-        builder.register(EXECUTE_SCRIPT_NAME, EXECUTE_SCRIPT_DESCRIPTION, args -> null);
+        builder.register(EXECUTE_SCRIPT_NAME, EXECUTE_SCRIPT_DESCRIPTION, (args, creds) -> null);
         this.client = client;
         this.commands = builder.build();
     }
@@ -210,7 +208,7 @@ public class REPL {
 
         Command command;
         try {
-            command = commands.get(commandName).apply(commandArgs);
+            command = commands.get(commandName).create(commandArgs, userCredentials);
         } catch (IllegalArgumentException e) {
             System.out.println("Command error: " + e.getMessage());
             return Optional.empty();
@@ -219,8 +217,7 @@ public class REPL {
             return Optional.empty();
         }
 
-        var request = new Request(userCredentials, command);
-        var requestBytes = SerializationUtils.serialize(request);
+        var requestBytes = SerializationUtils.serialize(command);
         var responseBytes = client.sendThenReceive(requestBytes);
         if (responseBytes == null) {
             System.out.println("Server timeout");
