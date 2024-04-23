@@ -60,12 +60,11 @@ public class Interpreter implements Command.Visitor {
      */
     private void parseRequestMultithreaded() {
         forkJoinPool.execute(() -> {
-            //noinspection InfiniteLoopStatement
             while (true) {
                 try {
                     var result = parseRequest();
                     if (result == null) {
-                        continue;
+                        return;
                     }
                     executeMultithreaded(result.getKey(), result.getValue());
                 } catch (IOException e) {
@@ -201,7 +200,7 @@ public class Interpreter implements Command.Visitor {
     public Response visit(Add command) {
         try {
             collectionManager.add(command.getDragon());
-            return new Response(Response.Status.OK, "Added successfully with id " + collectionManager.getLastId());
+            return new Response(Response.Status.OK, "Added successfully with id " + 1);
         } catch (ValidationException e) {
             return new Response(Response.Status.ERROR, "Invalid element: " + e.getMessage());
         }

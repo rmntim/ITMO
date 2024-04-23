@@ -15,6 +15,7 @@ dependencies {
     api(libs.ch.qos.logback.logback.classic)
     api(libs.com.google.code.gson.gson)
     api(libs.org.slf4j.slf4j.api)
+    implementation("org.postgresql:postgresql:42.6.0")
 }
 
 repositories {

@@ -4,9 +4,9 @@ import ru.rmntim.common.models.Dragon;
 import ru.rmntim.common.models.DragonType;
 import ru.rmntim.common.validators.DragonValidator;
 import ru.rmntim.common.validators.ValidationException;
-import ru.rmntim.server.storage.StorageManager;
+import ru.rmntim.server.storage.ConnectionManager;
 
-import java.io.IOException;
+import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -15,44 +15,19 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class CollectionManager {
-    private final StorageManager storageManager;
+    private final ConnectionManager connectionManager;
     private final TreeSet<Dragon> collection;
     private final ZonedDateTime lastInitTime = ZonedDateTime.now();
-    private int lastId = 0;
+    private int lastId = 1;
 
     /**
-     * @param storageManager storage manager to read collection from
-     * @throws IOException          if collection can't be read
-     * @throws ValidationException  if collection is invalid
-     * @throws NullPointerException if {@code storageManager} is null
-     */
-    public CollectionManager(StorageManager storageManager) throws ValidationException, IOException {
-        if (storageManager == null) {
-            throw new NullPointerException("Storage manager cannot be null");
-        }
-        this.storageManager = storageManager;
-        this.collection = storageManager.readCollection();
-        validate();
-    }
-
-    public int getLastId() {
-        return lastId;
-    }
-
-    /**
-     * Validates collection and finds max id to use.
-     *
+     * @param connectionManager connection manager with database to read collection from
+     * @throws SQLException        if collection can't be read
      * @throws ValidationException if collection is invalid
      */
-    private void validate() throws ValidationException {
-        var validator = new DragonValidator();
-        var id = 0;
-
-        for (var dragon : collection) {
-            validator.validate(dragon);
-            id = Math.max(id, dragon.id());
-        }
-        lastId = id;
+    public CollectionManager(ConnectionManager connectionManager) throws ValidationException, SQLException {
+        this.connectionManager = connectionManager;
+        this.collection = connectionManager.readCollection();
     }
 
     /**
@@ -61,21 +36,7 @@ public class CollectionManager {
     public String getCollectionInfo() {
         return "Collection size: " + collection.size() + "\n"
                 + "Initialized at: " + lastInitTime + "\n"
-                + "Collection type: " + collection.getClass().getSimpleName() + "\n"
-                + "Last id in collection: " + lastId;
-    }
-
-    /**
-     * Saves the collection.
-     * <p>
-     * <strong>NOTE</strong>: If there is an error while saving, it will be ignored.
-     */
-    public void saveCollection() {
-        try {
-            storageManager.writeCollection(collection);
-        } catch (IOException ignored) {
-            // ignore
-        }
+                + "Collection type: " + collection.getClass().getSimpleName() + "\n";
     }
 
     /**

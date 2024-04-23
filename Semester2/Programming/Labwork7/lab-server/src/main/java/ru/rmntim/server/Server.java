@@ -8,13 +8,12 @@ import ru.rmntim.common.validators.ValidationException;
 import ru.rmntim.server.lib.CollectionManager;
 import ru.rmntim.server.lib.Interpreter;
 import ru.rmntim.server.network.UDPServer;
-import ru.rmntim.server.storage.StorageManager;
+import ru.rmntim.server.storage.ConnectionManager;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.sql.SQLException;
 
 public final class Server {
     private static final String ENV_NAME = "FILENAME";
@@ -26,51 +25,29 @@ public final class Server {
     }
 
     public static void main(String[] args) {
-        try {
+        try (var connectionManager = ConnectionManager.getInstance()) {
             handleArgs(args);
             var path = getPath();
             LOGGER.info("Loading data from {}", path);
 
-            var storageManager = new StorageManager(path);
-            var collectionManager = new CollectionManager(storageManager);
-            Runtime.getRuntime().addShutdownHook(new Thread(collectionManager::saveCollection));
-
+            var collectionManager = new CollectionManager(connectionManager);
             var server = new UDPServer(new InetSocketAddress(InetAddress.getLocalHost(), port));
             LOGGER.info("Starting server on port {}", server.getPort());
             var interpreter = new Interpreter(collectionManager, server);
-
-            var serverThread = new Thread(interpreter::run);
-            serverThread.start();
-
-            runRepl(collectionManager);
+            new Thread(interpreter::run).start();
+            while (true) {
+                continue;
+            }
         } catch (IOException | JsonIOException e) {
             LOGGER.error("IO error occurred", e);
         } catch (ValidationException | JsonSyntaxException e) {
             LOGGER.error("Data validation error occurred", e);
         } catch (IllegalArgumentException e) {
             LOGGER.error("Error creating resource", e);
+        } catch (SQLException e) {
+            LOGGER.error("Error while connecting to database", e);
         } finally {
             LOGGER.info("Server stopped");
-        }
-    }
-
-    private static void runRepl(CollectionManager collectionManager) {
-        try (var reader = new BufferedReader(new InputStreamReader(System.in))) {
-            String input;
-            //noinspection InfiniteLoopStatement
-            while (true) {
-                input = reader.readLine();
-                if (input == null) {
-                    continue;
-                }
-
-                if ("save".equals(input)) {
-                    collectionManager.saveCollection();
-                    LOGGER.info("Collection saved");
-                }
-            }
-        } catch (IOException e) {
-            LOGGER.error("Failed to init repl", e);
         }
     }
 
