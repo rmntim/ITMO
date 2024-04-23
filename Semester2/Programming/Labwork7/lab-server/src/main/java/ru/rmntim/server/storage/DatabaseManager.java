@@ -14,20 +14,20 @@ import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.TreeSet;
 
-public final class ConnectionManager implements AutoCloseable {
-    private static ConnectionManager instance;
+public final class DatabaseManager implements AutoCloseable {
+    private static DatabaseManager instance;
     private static Connection connection;
 
-    private ConnectionManager() throws SQLException {
+    private DatabaseManager() throws SQLException {
         String url = "jdbc:postgresql://localhost:5432/lab";
         String username = "postgres";
         String password = "postgres";
         connection = DriverManager.getConnection(url, username, password);
     }
 
-    public static synchronized ConnectionManager getInstance() throws SQLException {
+    public static synchronized DatabaseManager getInstance() throws SQLException {
         if (instance == null) {
-            instance = new ConnectionManager();
+            instance = new DatabaseManager();
         }
         return instance;
     }

@@ -4,7 +4,7 @@ import ru.rmntim.common.models.Dragon;
 import ru.rmntim.common.models.DragonType;
 import ru.rmntim.common.validators.DragonValidator;
 import ru.rmntim.common.validators.ValidationException;
-import ru.rmntim.server.storage.ConnectionManager;
+import ru.rmntim.server.storage.DatabaseManager;
 
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
@@ -15,19 +15,19 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class CollectionManager {
-    private final ConnectionManager connectionManager;
+    private final DatabaseManager databaseManager;
     private final TreeSet<Dragon> collection;
     private final ZonedDateTime lastInitTime = ZonedDateTime.now();
     private int lastId = 1;
 
     /**
-     * @param connectionManager connection manager with database to read collection from
+     * @param databaseManager connection manager with database to read collection from
      * @throws SQLException        if collection can't be read
      * @throws ValidationException if collection is invalid
      */
-    public CollectionManager(ConnectionManager connectionManager) throws ValidationException, SQLException {
-        this.connectionManager = connectionManager;
-        this.collection = connectionManager.readCollection();
+    public CollectionManager(DatabaseManager databaseManager) throws ValidationException, SQLException {
+        this.databaseManager = databaseManager;
+        this.collection = databaseManager.readCollection();
     }
 
     /**

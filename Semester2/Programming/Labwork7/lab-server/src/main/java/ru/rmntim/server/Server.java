@@ -8,7 +8,7 @@ import ru.rmntim.common.validators.ValidationException;
 import ru.rmntim.server.lib.CollectionManager;
 import ru.rmntim.server.lib.Interpreter;
 import ru.rmntim.server.network.UDPServer;
-import ru.rmntim.server.storage.ConnectionManager;
+import ru.rmntim.server.storage.DatabaseManager;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -25,7 +25,7 @@ public final class Server {
     }
 
     public static void main(String[] args) {
-        try (var connectionManager = ConnectionManager.getInstance()) {
+        try (var connectionManager = DatabaseManager.getInstance()) {
             handleArgs(args);
             var path = getPath();
             LOGGER.info("Loading data from {}", path);
