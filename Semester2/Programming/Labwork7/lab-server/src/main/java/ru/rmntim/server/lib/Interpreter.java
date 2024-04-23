@@ -26,9 +26,14 @@ import ru.rmntim.server.network.UDPServer;
 import java.io.IOException;
 import java.net.SocketAddress;
 import java.util.StringJoiner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 
 public class Interpreter implements Command.Visitor {
     private static final Logger LOGGER = LoggerFactory.getLogger(Interpreter.class);
+    private final ForkJoinPool forkJoinPool = ForkJoinPool.commonPool();
+    private final ExecutorService executorService = Executors.newFixedThreadPool(4);
     private final CollectionManager collectionManager;
     private final UDPServer server;
 
@@ -47,22 +52,61 @@ public class Interpreter implements Command.Visitor {
      * Starts the interpreter.
      */
     public void run() {
-        //noinspection InfiniteLoopStatement
-        while (true) {
-            try {
-                var result = parseRequest();
-                if (result == null) {
-                    continue;
+        parseRequestMultithreaded();
+    }
+
+    /**
+     * Parses request from socket and deserializes it.
+     */
+    private void parseRequestMultithreaded() {
+        forkJoinPool.execute(() -> {
+            //noinspection InfiniteLoopStatement
+            while (true) {
+                try {
+                    var result = parseRequest();
+                    if (result == null) {
+                        continue;
+                    }
+                    executeMultithreaded(result.getKey(), result.getValue());
+                } catch (IOException e) {
+                    LOGGER.error("IO error occurred", e);
                 }
-                var addr = result.getKey();
-                var request = result.getValue();
+            }
+        });
+    }
+
+    /**
+     * Executes given command.
+     *
+     * @param addr    client address
+     * @param request request to execute
+     */
+    private void executeMultithreaded(SocketAddress addr, Request request) {
+        forkJoinPool.execute(() -> {
+            try {
                 var response = executeCommand(request, addr);
                 LOGGER.info("Response ready for {} (status: {})", addr, response.status().toString());
-                sendResponse(response, addr);
+                sendMultithreaded(addr, response);
             } catch (IOException e) {
                 LOGGER.error("IO error occurred", e);
             }
-        }
+        });
+    }
+
+    /**
+     * Sends response to client.
+     *
+     * @param addr     client address
+     * @param response response to send
+     */
+    private void sendMultithreaded(SocketAddress addr, Response response) {
+        executorService.execute(() -> {
+            try {
+                sendResponse(addr, response);
+            } catch (IOException e) {
+                LOGGER.error("IO error occurred", e);
+            }
+        });
     }
 
     /**
@@ -72,7 +116,7 @@ public class Interpreter implements Command.Visitor {
      * @param addr     client address
      * @throws IOException if response can't be sent
      */
-    private void sendResponse(Response response, SocketAddress addr) throws IOException {
+    private void sendResponse(SocketAddress addr, Response response) throws IOException {
         var responseBytes = SerializationUtils.serialize(response);
         server.send(responseBytes, addr);
         LOGGER.info("Sent response to {} (length: {})", addr, responseBytes.length);
