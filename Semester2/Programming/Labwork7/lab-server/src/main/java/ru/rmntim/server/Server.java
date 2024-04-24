@@ -44,6 +44,8 @@ public final class Server {
             LOGGER.error("Error creating resource", e);
         } catch (SQLException e) {
             LOGGER.error("Error while connecting to database", e);
+        } catch (IllegalStateException e) {
+            LOGGER.error("Environment variable is not set", e);
         } finally {
             LOGGER.info("Server stopped");
         }

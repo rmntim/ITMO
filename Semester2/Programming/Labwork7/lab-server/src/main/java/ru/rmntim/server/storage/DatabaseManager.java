@@ -24,8 +24,14 @@ public final class DatabaseManager implements AutoCloseable {
 
     private DatabaseManager() throws SQLException {
         String url = "jdbc:postgresql://localhost:5432/lab";
-        String username = "postgres";
-        String password = "postgres";
+        String username = System.getenv("DATABASE_USER");
+        if (username == null) {
+            throw new IllegalStateException("Environment variable DATABASE_USER is not set");
+        }
+        String password = System.getenv("DATABASE_PASSWORD");
+        if (password == null) {
+            throw new IllegalStateException("Environment variable DATABASE_PASSWORD is not set");
+        }
         connection = DriverManager.getConnection(url, username, password);
     }
 
