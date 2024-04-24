@@ -27,15 +27,3 @@ CREATE TABLE IF NOT EXISTS dragon_heads (
     eyes_count DOUBLE PRECISION NOT NULL,
     dragon_id INTEGER NOT NULL REFERENCES dragons ON DELETE CASCADE
 );
-
-INSERT INTO users (username, password_hash) VALUES
-    ('admin', MD5('admin'));
-
-INSERT INTO dragons (name, creation_date, age, color, dragon_type, dragon_character, owner_id) VALUES
-    ('Drake', '2020-01-01', 10, 'GREEN', 'WATER', 'EVIL', 1);
-
-INSERT INTO coordinates (x, y, dragon_id) VALUES
-    (-5.0, 2.0, 1);
-
-INSERT INTO dragon_heads (eyes_count, dragon_id) VALUES
-    (3.0, 1);
