@@ -25,7 +25,6 @@ public final class Server {
         try (var connectionManager = DatabaseManager.getInstance()) {
             handleArgs(args);
             LOGGER.info("Loading data from db");
-
             var collectionManager = new CollectionManager(connectionManager);
             var server = new UDPServer(new InetSocketAddress(InetAddress.getLocalHost(), port));
             LOGGER.info("Starting server on port {}", server.getPort());
