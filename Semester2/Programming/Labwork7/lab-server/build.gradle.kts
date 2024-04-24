@@ -13,7 +13,6 @@ dependencies {
     api(libs.org.apache.commons.lang3)
     api(libs.ch.qos.logback.logback.core)
     api(libs.ch.qos.logback.logback.classic)
-    api(libs.com.google.code.gson.gson)
     api(libs.org.slf4j.slf4j.api)
     implementation("org.postgresql:postgresql:42.6.0")
 }

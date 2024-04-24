@@ -13,7 +13,6 @@ dependencyResolutionManagement {
             library("org-apache-commons-lang3", "org.apache.commons:commons-lang3:3.14.0")
             library("ch-qos-logback-logback-classic", "ch.qos.logback:logback-classic:1.5.3")
             library("ch-qos-logback-logback-core", "ch.qos.logback:logback-core:1.5.3")
-            library("com-google-code-gson-gson", "com.google.code.gson:gson:2.10.1")
             library("org-slf4j-slf4j-api", "org.slf4j:slf4j-api:2.0.12")
         }
     }
