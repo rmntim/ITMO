@@ -178,12 +178,14 @@ public class Interpreter implements Command.Visitor {
         try {
             var hash = MessageDigest.getInstance("MD5");
             var passwordHash = new String(hash.digest(passwordBytes));
-            var user = collectionManager.getUser(username).orElseThrow(() -> new BadCredentialsException("User not found"));
-            if (passwordHash.equals(user.passwordHash())) {
+            var user = collectionManager.getUser(username).orElse(collectionManager.registerUser(userCredentials));
+            if (!passwordHash.equals(user.passwordHash())) {
                 throw new BadCredentialsException("Invalid password");
             }
         } catch (NoSuchAlgorithmException e) {
             LOGGER.error("No such algorithm", e);
+        } catch (SQLException e) {
+            LOGGER.error("Couldn't register user", e);
         }
     }
 

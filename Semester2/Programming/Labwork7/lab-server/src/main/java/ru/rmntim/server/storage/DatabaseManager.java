@@ -6,6 +6,7 @@ import ru.rmntim.common.models.Dragon;
 import ru.rmntim.common.models.DragonCharacter;
 import ru.rmntim.common.models.DragonHead;
 import ru.rmntim.common.models.DragonType;
+import ru.rmntim.common.network.UserCredentials;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -243,7 +244,7 @@ public final class DatabaseManager implements AutoCloseable {
                     return;
                 }
             }
-            throw new SQLException("Can't find dragon with id " + id + "in user " + username);
+            throw new SQLException("Can't find dragon with id " + id + " in user " + username);
         }
     }
 
@@ -318,7 +319,7 @@ public final class DatabaseManager implements AutoCloseable {
                     return;
                 }
             }
-            throw new SQLException("Can't find dragon with id " + id + "in user " + username);
+            throw new SQLException("Can't find dragon with id " + id + " in user " + username);
         }
     }
 
@@ -385,6 +386,20 @@ public final class DatabaseManager implements AutoCloseable {
                 return Optional.of(new User(rs.getString("username"), rs.getString("password_hash")));
             }
             return Optional.empty();
+        }
+    }
+
+    /**
+     * Creates user in database.
+     *
+     * @param userCredentials user credentials
+     * @throws SQLException if user can't be registered
+     */
+    public void registerUser(UserCredentials userCredentials) throws SQLException {
+        try (var stmt = connection.prepareStatement("INSERT INTO users (username, password_hash) VALUES (?, MD5(?))")) {
+            stmt.setString(1, userCredentials.username());
+            stmt.setString(2, userCredentials.password());
+            stmt.executeUpdate();
         }
     }
 }

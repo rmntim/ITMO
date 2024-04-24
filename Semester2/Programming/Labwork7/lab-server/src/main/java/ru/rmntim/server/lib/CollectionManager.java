@@ -2,11 +2,15 @@ package ru.rmntim.server.lib;
 
 import ru.rmntim.common.models.Dragon;
 import ru.rmntim.common.models.DragonType;
+import ru.rmntim.common.network.UserCredentials;
 import ru.rmntim.common.validators.DragonValidator;
 import ru.rmntim.common.validators.ValidationException;
 import ru.rmntim.server.storage.DatabaseManager;
 import ru.rmntim.server.storage.User;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.Map;
@@ -223,5 +227,19 @@ public class CollectionManager {
         } catch (SQLException e) {
             return Optional.empty();
         }
+    }
+
+    /**
+     * Registers user in database.
+     *
+     * @param userCredentials user credentials
+     * @return user from database
+     * @throws SQLException             if user can't be read
+     * @throws NoSuchAlgorithmException if password can't be hashed
+     */
+    public User registerUser(UserCredentials userCredentials) throws SQLException, NoSuchAlgorithmException {
+        databaseManager.registerUser(userCredentials);
+        var passwordHash = MessageDigest.getInstance("MD5").digest(userCredentials.password().getBytes(StandardCharsets.UTF_8));
+        return new User(userCredentials.username(), new String(passwordHash));
     }
 }

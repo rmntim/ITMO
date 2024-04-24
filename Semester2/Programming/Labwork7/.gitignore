@@ -1,4 +1,5 @@
 **/*.jar
+.env
 **/*.json
 .idea/
 **/*.iml
