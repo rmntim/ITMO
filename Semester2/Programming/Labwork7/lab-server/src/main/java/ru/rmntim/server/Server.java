@@ -14,7 +14,6 @@ import java.net.InetSocketAddress;
 import java.sql.SQLException;
 
 public final class Server {
-    private static final String ENV_NAME = "FILENAME";
     private static final Logger LOGGER = LoggerFactory.getLogger(Server.class);
     private static int port = 0;
 
@@ -25,8 +24,7 @@ public final class Server {
     public static void main(String[] args) {
         try (var connectionManager = DatabaseManager.getInstance()) {
             handleArgs(args);
-            var path = getPath();
-            LOGGER.info("Loading data from {}", path);
+            LOGGER.info("Loading data from db");
 
             var collectionManager = new CollectionManager(connectionManager);
             var server = new UDPServer(new InetSocketAddress(InetAddress.getLocalHost(), port));
@@ -49,15 +47,6 @@ public final class Server {
         } finally {
             LOGGER.info("Server stopped");
         }
-    }
-
-    private static String getPath() {
-        var path = System.getenv(ENV_NAME);
-        if (path == null) {
-            LOGGER.error("Environment variable " + ENV_NAME + " is not set");
-            System.exit(1);
-        }
-        return path;
     }
 
     private static void handleArgs(String[] args) {
