@@ -223,8 +223,7 @@ public class CollectionManager {
      */
     public Optional<User> getUser(String username) {
         try {
-            var user = databaseManager.getUser(username);
-            return user;
+            return databaseManager.getUser(username);
         } catch (SQLException e) {
             return Optional.empty();
         }
@@ -239,8 +238,8 @@ public class CollectionManager {
      * @throws NoSuchAlgorithmException if password can't be hashed
      */
     public User registerUser(UserCredentials userCredentials) throws SQLException, NoSuchAlgorithmException {
-        databaseManager.registerUser(userCredentials);
         var passwordHash = MessageDigest.getInstance("MD5").digest(userCredentials.password().getBytes(StandardCharsets.UTF_8));
-        return new User(userCredentials.username(), new String(passwordHash));
+        databaseManager.registerUser(userCredentials.username(), passwordHash);
+        return new User(userCredentials.username(), passwordHash);
     }
 }
