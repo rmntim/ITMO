@@ -210,7 +210,7 @@ public class Interpreter implements Command.Visitor {
     @Override
     public Response visit(Add command) {
         try {
-            var id = collectionManager.add(command.getDragon());
+            var id = collectionManager.add(command.getDragon(), command.userCredentials().username());
             return new Response(Response.Status.OK, "Added successfully with id " + id);
         } catch (ValidationException e) {
             return new Response(Response.Status.ERROR, "Invalid element: " + e.getMessage());
@@ -222,7 +222,7 @@ public class Interpreter implements Command.Visitor {
     @Override
     public Response visit(Update command) {
         try {
-            collectionManager.update(command.getId(), command.getDragon());
+            collectionManager.update(command.getId(), command.getDragon(), command.userCredentials().username());
             return new Response(Response.Status.OK, "Updated successfully");
         } catch (ValidationException e) {
             return new Response(Response.Status.ERROR, "Invalid element: " + e.getMessage());
@@ -234,7 +234,7 @@ public class Interpreter implements Command.Visitor {
     @Override
     public Response visit(Remove command) {
         try {
-            collectionManager.remove(command.getId());
+            collectionManager.remove(command.getId(), command.userCredentials().username());
         } catch (SQLException e) {
             return new Response(Response.Status.ERROR, "Database error: " + e.getMessage());
         }
@@ -244,7 +244,7 @@ public class Interpreter implements Command.Visitor {
     @Override
     public Response visit(Clear command) {
         try {
-            collectionManager.clear();
+            collectionManager.clear(command.userCredentials().username());
         } catch (SQLException e) {
             return new Response(Response.Status.ERROR, "Database error: " + e.getMessage());
         }
@@ -254,7 +254,7 @@ public class Interpreter implements Command.Visitor {
     @Override
     public Response visit(AddIfMax command) {
         try {
-            collectionManager.addIfMax(command.getDragon());
+            collectionManager.addIfMax(command.getDragon(), command.userCredentials().username());
             return new Response(Response.Status.OK, "Command executed successfully");
         } catch (ValidationException e) {
             return new Response(Response.Status.ERROR, "Invalid element: " + e.getMessage());
@@ -266,7 +266,7 @@ public class Interpreter implements Command.Visitor {
     @Override
     public Response visit(AddIfMin command) {
         try {
-            collectionManager.addIfMin(command.getDragon());
+            collectionManager.addIfMin(command.getDragon(), command.userCredentials().username());
             return new Response(Response.Status.OK, "Command executed successfully");
         } catch (ValidationException e) {
             return new Response(Response.Status.ERROR, "Invalid element: " + e.getMessage());
@@ -278,7 +278,7 @@ public class Interpreter implements Command.Visitor {
     @Override
     public Response visit(RemoveLower command) {
         try {
-            collectionManager.removeIfLower(command.getDragon());
+            collectionManager.removeIfLower(command.getDragon(), command.userCredentials().username());
             return new Response(Response.Status.OK, "Command executed successfully");
         } catch (ValidationException e) {
             return new Response(Response.Status.ERROR, "Invalid element: " + e.getMessage());

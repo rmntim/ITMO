@@ -121,13 +121,27 @@ public final class DatabaseManager implements AutoCloseable {
     /**
      * Adds dragon to database.
      *
-     * @param dragon dragon to add
+     * @param dragon   dragon to add
+     * @param username username
      * @return id of the dragon
      * @throws SQLException if dragon can't be added
      */
-    public int addDragon(Dragon dragon) throws SQLException {
+    public int addDragon(Dragon dragon, String username) throws SQLException {
+        int userId;
         try (var stmt = connection.prepareStatement(
-                "INSERT INTO dragons (name, creation_date, age, color, dragon_type, dragon_character) VALUES (?, ?, ?, ?, ?, ?) RETURNING id"
+                "SELECT id FROM users WHERE username = ?"
+        )
+        ) {
+            stmt.setString(1, username);
+            var rs = stmt.executeQuery();
+            if (rs.next()) {
+                userId = rs.getInt("id");
+            } else {
+                throw new SQLException("Can't find user with username " + username);
+            }
+        }
+        try (var stmt = connection.prepareStatement(
+                "INSERT INTO dragons (name, creation_date, age, color, dragon_type, dragon_character, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id"
         )
         ) {
             stmt.setString(1, dragon.name());
@@ -136,6 +150,7 @@ public final class DatabaseManager implements AutoCloseable {
             stmt.setString(4, dragon.color().name());
             stmt.setString(5, dragon.type().name());
             stmt.setString(6, dragon.character().name());
+            stmt.setInt(7, userId);
             var rs = stmt.executeQuery();
             if (rs.next()) {
                 var id = rs.getInt(1);
@@ -181,27 +196,54 @@ public final class DatabaseManager implements AutoCloseable {
     /**
      * Updates dragon in database.
      *
-     * @param id     id of the dragon
-     * @param dragon dragon to update
+     * @param id       id of the dragon
+     * @param dragon   dragon to update
+     * @param username username
      * @throws SQLException if dragon can't be updated
      */
-    public void updateDragon(int id, Dragon dragon) throws SQLException {
+    public void updateDragon(int id, Dragon dragon, String username) throws SQLException {
+        int userId;
         try (var stmt = connection.prepareStatement(
-                "UPDATE dragons SET name = ?, creation_date = ?, age = ?, color = ?, dragon_type = ?, dragon_character = ? WHERE id = ?"
+                "SELECT id FROM users WHERE username = ?"
         )
         ) {
-            stmt.setString(1, dragon.name());
-            stmt.setTimestamp(2, Timestamp.from(dragon.creationDate().toInstant()));
-            stmt.setLong(3, dragon.age());
-            stmt.setString(4, dragon.color().name());
-            stmt.setString(5, dragon.type().name());
-            stmt.setString(6, dragon.character().name());
-            stmt.setInt(7, id);
-            stmt.executeUpdate();
+            stmt.setString(1, username);
+            var rs = stmt.executeQuery();
+            if (rs.next()) {
+                userId = rs.getInt("id");
+            } else {
+                throw new SQLException("Can't find user with username " + username);
+            }
         }
-        updateCoordinates(id, dragon.coordinates());
-        if (dragon.head() != null) {
-            updateDragonHead(id, dragon.head());
+        try (var stmt2 = connection.prepareStatement(
+                "SELECT id FROM dragons WHERE owner_id = ?"
+        )
+        ) {
+            stmt2.setInt(1, userId);
+            var rs = stmt2.executeQuery();
+            while (rs.next()) {
+                if (rs.getInt("id") == id) {
+                    try (var stmt = connection.prepareStatement(
+                            "UPDATE dragons SET name = ?, creation_date = ?, age = ?, color = ?, dragon_type = ?, dragon_character = ? WHERE id = ?"
+                    )
+                    ) {
+                        stmt.setString(1, dragon.name());
+                        stmt.setTimestamp(2, Timestamp.from(dragon.creationDate().toInstant()));
+                        stmt.setLong(3, dragon.age());
+                        stmt.setString(4, dragon.color().name());
+                        stmt.setString(5, dragon.type().name());
+                        stmt.setString(6, dragon.character().name());
+                        stmt.setInt(7, id);
+                        stmt.executeUpdate();
+                    }
+                    updateCoordinates(id, dragon.coordinates());
+                    if (dragon.head() != null) {
+                        updateDragonHead(id, dragon.head());
+                    }
+                    return;
+                }
+            }
+            throw new SQLException("Can't find dragon with id " + id + "in user " + username);
         }
     }
 
@@ -239,52 +281,91 @@ public final class DatabaseManager implements AutoCloseable {
     /**
      * Removes dragon from database.
      *
-     * @param id id of the dragon
+     * @param id       id of the dragon
+     * @param username username
      * @throws SQLException if dragon head can't be read
      */
-    public void removeDragon(int id) throws SQLException {
-        try (var stmt = connection.prepareStatement("DELETE FROM dragons WHERE id = ?")) {
-            stmt.setInt(1, id);
-            stmt.executeUpdate();
-        }
-        try (var stmt2 = connection.prepareStatement("DELETE FROM coordinates WHERE dragon_id = ?")) {
-            stmt2.setInt(1, id);
-            stmt2.executeUpdate();
-        }
-        if (getDragonHead(id) != null) {
-            try (var stmt3 = connection.prepareStatement("DELETE FROM dragon_heads WHERE dragon_id = ?")) {
-                stmt3.setInt(1, id);
-                stmt3.executeUpdate();
+    public void removeDragon(int id, String username) throws SQLException {
+        int userId;
+        try (var stmt = connection.prepareStatement("SELECT id FROM users WHERE username = ?")) {
+            stmt.setString(1, username);
+            var rs = stmt.executeQuery();
+            if (rs.next()) {
+                userId = rs.getInt("id");
+            } else {
+                throw new SQLException("Can't find user with username " + username);
             }
+        }
+        try (var stmt = connection.prepareStatement("SELECT id FROM dragons WHERE owner_id = ?")) {
+            stmt.setInt(1, userId);
+            var rs = stmt.executeQuery();
+            while (rs.next()) {
+                if (rs.getInt("id") == id) {
+                    try (var stmt2 = connection.prepareStatement("DELETE FROM dragons WHERE id = ?")) {
+                        stmt2.setInt(1, id);
+                        stmt2.executeUpdate();
+                    }
+                    try (var stmt2 = connection.prepareStatement("DELETE FROM coordinates WHERE dragon_id = ?")) {
+                        stmt2.setInt(1, id);
+                        stmt2.executeUpdate();
+                    }
+                    if (getDragonHead(id) != null) {
+                        try (var stmt3 = connection.prepareStatement("DELETE FROM dragon_heads WHERE dragon_id = ?")) {
+                            stmt3.setInt(1, id);
+                            stmt3.executeUpdate();
+                        }
+                    }
+                    return;
+                }
+            }
+            throw new SQLException("Can't find dragon with id " + id + "in user " + username);
         }
     }
 
     /**
      * Clears database.
      *
+     * @param username username
      * @throws SQLException if coordinates can't be read
      */
-    public void clear() throws SQLException {
-        try (var stmt = connection.prepareStatement("DELETE FROM dragons")) {
+    public void clear(String username) throws SQLException {
+        int userId;
+        try (var stmt = connection.prepareStatement("SELECT id FROM users WHERE username = ?")) {
+            stmt.setString(1, username);
+            var rs = stmt.executeQuery();
+            if (rs.next()) {
+                userId = rs.getInt("id");
+            } else {
+                throw new SQLException("Can't find user with username " + username);
+            }
+        }
+        try (var stmt = connection.prepareStatement("DELETE FROM dragons WHERE owner_id = ?")) {
+            stmt.setInt(1, userId);
             stmt.executeUpdate();
-        }
-        try (var stmt2 = connection.prepareStatement("DELETE FROM coordinates")) {
-            stmt2.executeUpdate();
-        }
-        try (var stmt3 = connection.prepareStatement("DELETE FROM dragon_heads")) {
-            stmt3.executeUpdate();
         }
     }
 
     /**
      * Removes dragons from database.
      *
-     * @param ids ids of dragons to remove
+     * @param ids      ids of dragons to remove
+     * @param username username
      * @throws SQLException if dragons can't be removed
      */
-    public void removeDragons(Set<Integer> ids) throws SQLException {
-        try (var stmt = connection.prepareStatement("DELETE FROM dragons WHERE id = ANY(?)")) {
+    public void removeDragons(Set<Integer> ids, String username) throws SQLException {
+        int userId;
+        try (var stmt = connection.prepareStatement("SELECT id FROM users WHERE username = ?")) {
+            stmt.setString(1, username);
+            var rs = stmt.executeQuery();
+            if (rs.next()) {
+                userId = rs.getInt("id");
+            } else {
+                throw new SQLException("Can't find user with username " + username);
+            }
+        }
+        try (var stmt = connection.prepareStatement("DELETE FROM dragons WHERE id = ANY(?) AND owner_id = ?")) {
             stmt.setArray(1, connection.createArrayOf("integer", ids.toArray()));
+            stmt.setInt(2, userId);
             stmt.executeUpdate();
         }
     }

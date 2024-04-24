@@ -56,13 +56,14 @@ public class CollectionManager {
     /**
      * Validates and adds dragon to the collection.
      *
-     * @param dragon dragon to add
+     * @param dragon   dragon to add
+     * @param username username
      * @throws ValidationException if dragon is invalid
      * @throws SQLException        if dragon can't be added
      */
-    public synchronized int add(Dragon dragon) throws ValidationException, SQLException {
+    public synchronized int add(Dragon dragon, String username) throws ValidationException, SQLException {
         new DragonValidator().validate(dragon);
-        var id = databaseManager.addDragon(dragon);
+        var id = databaseManager.addDragon(dragon, username);
         collection.add(dragon);
         return id;
     }
@@ -70,37 +71,41 @@ public class CollectionManager {
     /**
      * Updates element with given id.
      *
-     * @param id     id of the element to update
-     * @param dragon element to insert on update
+     * @param id       id of the element to update
+     * @param dragon   dragon to update
+     * @param username username
      * @throws ValidationException if element is invalid
      * @throws SQLException        if dragon can't be updated
      */
-    public synchronized void update(int id, Dragon dragon) throws ValidationException, SQLException {
+    public synchronized void update(int id, Dragon dragon, String username) throws ValidationException, SQLException {
         new DragonValidator().validate(dragon);
-        databaseManager.updateDragon(id, dragon);
+        databaseManager.updateDragon(id, dragon, username);
         collection.removeIf(e -> e.id() == id);
+        dragon.setId(id);
         collection.add(dragon);
     }
 
     /**
      * Remove element with given id.
      *
-     * @param id id of the element to remove
+     * @param id       id of the element to remove
+     * @param username username
      * @throws SQLException if dragon can't be removed
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public synchronized void remove(int id) throws SQLException {
-        databaseManager.removeDragon(id);
+    public synchronized void remove(int id, String username) throws SQLException {
+        databaseManager.removeDragon(id, username);
         collection.removeIf(e -> e.id() == id);
     }
 
     /**
      * Clear the collection.
      *
+     * @param username username
      * @throws SQLException if coordinates can't be read
      */
-    public synchronized void clear() throws SQLException {
-        databaseManager.clear();
+    public synchronized void clear(String username) throws SQLException {
+        databaseManager.clear(username);
         collection.clear();
     }
 
@@ -108,11 +113,12 @@ public class CollectionManager {
      * Adds new element to the collection if it's greater than current maximum.
      * If collection is empty, adds element unconditionally.
      *
-     * @param dragon element to add
+     * @param dragon   dragon to add
+     * @param username username
      * @throws ValidationException if element is invalid
      * @throws SQLException        if dragon can't be added
      */
-    public synchronized void addIfMax(Dragon dragon) throws ValidationException, SQLException {
+    public synchronized void addIfMax(Dragon dragon, String username) throws ValidationException, SQLException {
         Dragon max;
         try {
             max = collection.stream().max(Dragon::compareTo).orElseThrow();
@@ -122,18 +128,19 @@ public class CollectionManager {
         } catch (NoSuchElementException ignored) {
             // ignore
         }
-        add(dragon);
+        add(dragon, username);
     }
 
     /**
      * Adds new element to the collection if it's lower than current minimum.
      * If collection is empty, adds element unconditionally.
      *
-     * @param dragon element to add
+     * @param dragon   dragon to add
+     * @param username username
      * @throws ValidationException if element is invalid
      * @throws SQLException        if dragon can't be added
      */
-    public synchronized void addIfMin(Dragon dragon) throws ValidationException, SQLException {
+    public synchronized void addIfMin(Dragon dragon, String username) throws ValidationException, SQLException {
         Dragon min;
         try {
             min = collection.stream().min(Dragon::compareTo).orElseThrow();
@@ -143,23 +150,24 @@ public class CollectionManager {
         } catch (NoSuchElementException ignored) {
             // ignore
         }
-        add(dragon);
+        add(dragon, username);
     }
 
     /**
      * Removes all elements from the collection lower that given.
      *
-     * @param dragon element to compare to
+     * @param dragon   dragon to compare to
+     * @param username username
      * @throws ValidationException if element is invalid
      * @throws SQLException        if dragons can't be removed
      */
-    public synchronized void removeIfLower(Dragon dragon) throws ValidationException, SQLException {
+    public synchronized void removeIfLower(Dragon dragon, String username) throws ValidationException, SQLException {
         new DragonValidator().validate(dragon);
         var ids = collection.stream()
                 .filter(e -> e.compareTo(dragon) < 0)
                 .map(Dragon::id)
                 .collect(Collectors.toSet());
-        databaseManager.removeDragons(ids);
+        databaseManager.removeDragons(ids, username);
         collection.removeIf(e -> ids.contains(e.id()));
     }
 
