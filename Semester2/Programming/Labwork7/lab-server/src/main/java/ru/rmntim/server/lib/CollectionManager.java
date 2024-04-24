@@ -33,7 +33,7 @@ public class CollectionManager {
     /**
      * Returns info about collection.
      */
-    public String getCollectionInfo() {
+    public synchronized String getCollectionInfo() {
         return "Collection size: " + collection.size() + "\n"
                 + "Initialized at: " + lastInitTime + "\n"
                 + "Collection type: " + collection.getClass().getSimpleName() + "\n";
@@ -42,7 +42,7 @@ public class CollectionManager {
     /**
      * @return string representation of the collection
      */
-    public String collectionString() {
+    public synchronized String collectionString() {
         if (collection.isEmpty()) {
             return "Collection is empty";
         } else {
@@ -58,7 +58,7 @@ public class CollectionManager {
      * @param dragon dragon to add
      * @throws ValidationException if dragon is invalid
      */
-    public void add(Dragon dragon) throws ValidationException {
+    public synchronized void add(Dragon dragon) throws ValidationException {
         dragon.setId(lastId + 1);
         new DragonValidator().validate(dragon);
         collection.add(dragon);
@@ -73,7 +73,7 @@ public class CollectionManager {
      * @return {@code false} if no elements were inserted
      * @throws ValidationException if element is invalid
      */
-    public boolean update(int id, Dragon dragon) throws ValidationException {
+    public synchronized boolean update(int id, Dragon dragon) throws ValidationException {
         dragon.setId(id);
         new DragonValidator().validate(dragon);
         if (!remove(id)) {
@@ -90,14 +90,14 @@ public class CollectionManager {
      * @return {@code false} if no elements were removed
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean remove(int id) {
+    public synchronized boolean remove(int id) {
         return collection.removeIf(e -> e.id() == id);
     }
 
     /**
      * Clear the collection.
      */
-    public void clear() {
+    public synchronized void clear() {
         collection.clear();
     }
 
@@ -108,7 +108,7 @@ public class CollectionManager {
      * @param dragon element to add
      * @throws ValidationException if element is invalid
      */
-    public void addIfMax(Dragon dragon) throws ValidationException {
+    public synchronized void addIfMax(Dragon dragon) throws ValidationException {
         Dragon max;
         try {
             max = collection.stream().max(Dragon::compareTo).orElseThrow();
@@ -128,7 +128,7 @@ public class CollectionManager {
      * @param dragon element to add
      * @throws ValidationException if element is invalid
      */
-    public void addIfMin(Dragon dragon) throws ValidationException {
+    public synchronized void addIfMin(Dragon dragon) throws ValidationException {
         Dragon min;
         try {
             min = collection.stream().min(Dragon::compareTo).orElseThrow();
@@ -147,7 +147,7 @@ public class CollectionManager {
      * @param dragon element to compare to
      * @throws ValidationException if element is invalid
      */
-    public void removeIfLower(Dragon dragon) throws ValidationException {
+    public synchronized void removeIfLower(Dragon dragon) throws ValidationException {
         dragon.setId(lastId + 1);
         new DragonValidator().validate(dragon);
         collection.removeIf(e -> e.compareTo(dragon) < 0);
@@ -158,7 +158,7 @@ public class CollectionManager {
      *
      * @return grouped elements
      */
-    public Map<DragonType, Integer> groupByType() {
+    public synchronized Map<DragonType, Integer> groupByType() {
         return collection.stream()
                 .collect(Collectors.groupingBy(Dragon::type))
                 .entrySet()
@@ -176,7 +176,7 @@ public class CollectionManager {
      * @param dragon element to compare to
      * @return number of elements
      */
-    public long greaterThanCharacter(Dragon dragon) throws ValidationException {
+    public synchronized long greaterThanCharacter(Dragon dragon) throws ValidationException {
         dragon.setId(lastId + 1);
         new DragonValidator().validate(dragon);
         return collection.stream().filter(e -> e.character().compareTo(dragon.character()) > 0).count();
@@ -188,7 +188,7 @@ public class CollectionManager {
      * @param prefix prefix to search for
      * @return elements with given prefix
      */
-    public TreeSet<Dragon> startsWith(String prefix) {
+    public synchronized TreeSet<Dragon> startsWith(String prefix) {
         return collection.stream()
                 .filter(e -> e.name().startsWith(prefix))
                 .collect(Collectors.toCollection(TreeSet::new));
