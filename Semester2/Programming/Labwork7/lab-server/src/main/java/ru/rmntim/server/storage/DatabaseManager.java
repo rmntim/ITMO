@@ -23,12 +23,16 @@ public final class DatabaseManager implements AutoCloseable {
     private static Connection connection;
 
     private DatabaseManager() throws SQLException {
-        String url = "jdbc:postgresql://localhost:5432/lab";
-        String username = System.getenv("DATABASE_USER");
+        var databaseName = System.getenv("DATABASE_NAME");
+        if (databaseName == null) {
+            throw new IllegalStateException("Environment variable DATABASE_NAME is not set");
+        }
+        var url = "jdbc:postgresql://localhost:5432/" + databaseName;
+        var username = System.getenv("DATABASE_USER");
         if (username == null) {
             throw new IllegalStateException("Environment variable DATABASE_USER is not set");
         }
-        String password = System.getenv("DATABASE_PASSWORD");
+        var password = System.getenv("DATABASE_PASSWORD");
         if (password == null) {
             throw new IllegalStateException("Environment variable DATABASE_PASSWORD is not set");
         }
