@@ -223,7 +223,8 @@ public class CollectionManager {
      */
     public Optional<User> getUser(String username) {
         try {
-            return databaseManager.getUser(username);
+            var user = databaseManager.getUser(username);
+            return user;
         } catch (SQLException e) {
             return Optional.empty();
         }

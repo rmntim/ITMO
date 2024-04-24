@@ -21,6 +21,7 @@ import ru.rmntim.common.network.Response;
 import ru.rmntim.common.network.UserCredentials;
 import ru.rmntim.common.validators.ValidationException;
 import ru.rmntim.server.network.UDPServer;
+import ru.rmntim.server.storage.User;
 
 import java.io.IOException;
 import java.net.SocketAddress;
@@ -178,7 +179,13 @@ public class Interpreter implements Command.Visitor {
         try {
             var hash = MessageDigest.getInstance("MD5");
             var passwordHash = new String(hash.digest(passwordBytes));
-            var user = collectionManager.getUser(username).orElse(collectionManager.registerUser(userCredentials));
+            var optionalUser = collectionManager.getUser(username);
+            User user;
+            if (optionalUser.isEmpty()) {
+                user = collectionManager.registerUser(userCredentials);
+            } else {
+                user = optionalUser.get();
+            }
             if (!passwordHash.equals(user.passwordHash())) {
                 throw new BadCredentialsException("Invalid password");
             }
