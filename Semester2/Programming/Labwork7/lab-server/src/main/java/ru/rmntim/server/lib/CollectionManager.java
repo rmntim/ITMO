@@ -5,11 +5,13 @@ import ru.rmntim.common.models.DragonType;
 import ru.rmntim.common.validators.DragonValidator;
 import ru.rmntim.common.validators.ValidationException;
 import ru.rmntim.server.storage.DatabaseManager;
+import ru.rmntim.server.storage.User;
 
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -199,5 +201,19 @@ public class CollectionManager {
         return collection.stream()
                 .filter(e -> e.name().startsWith(prefix))
                 .collect(Collectors.toCollection(TreeSet::new));
+    }
+
+    /**
+     * Gets user from database.
+     *
+     * @param username username
+     * @return user
+     */
+    public Optional<User> getUser(String username) {
+        try {
+            return databaseManager.getUser(username);
+        } catch (SQLException e) {
+            return Optional.empty();
+        }
     }
 }

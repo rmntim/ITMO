@@ -29,3 +29,9 @@ INSERT INTO coordinates (x, y, dragon_id) VALUES
 
 INSERT INTO dragon_heads (eyes_count, dragon_id) VALUES
     (3.0, 1);
+
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password_hash BYTEA NOT NULL
+);

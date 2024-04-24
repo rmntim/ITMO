@@ -24,7 +24,11 @@ import ru.rmntim.server.network.UDPServer;
 
 import java.io.IOException;
 import java.net.SocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.StringJoiner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -170,8 +174,17 @@ public class Interpreter implements Command.Visitor {
      * @throws BadCredentialsException if credentials are incorrect
      */
     private void checkCredentials(UserCredentials userCredentials) {
-        if (userCredentials.password().equals("incorrect")) {
-            throw new BadCredentialsException();
+        var username = userCredentials.username();
+        var passwordBytes = userCredentials.password().getBytes(StandardCharsets.UTF_8);
+        try {
+            var hash = MessageDigest.getInstance("MD5");
+            var passwordHash = hash.digest(passwordBytes);
+            var user = collectionManager.getUser(username).orElseThrow(() -> new BadCredentialsException("User not found"));
+            if (!Arrays.equals(user.passwordHash(), passwordHash)) {
+                throw new BadCredentialsException("Invalid password");
+            }
+        } catch (NoSuchAlgorithmException e) {
+            LOGGER.error("No such algorithm", e);
         }
     }
 

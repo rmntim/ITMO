@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -285,6 +286,24 @@ public final class DatabaseManager implements AutoCloseable {
         try (var stmt = connection.prepareStatement("DELETE FROM dragons WHERE id = ANY(?)")) {
             stmt.setArray(1, connection.createArrayOf("integer", ids.toArray()));
             stmt.executeUpdate();
+        }
+    }
+
+    /**
+     * Gets user from database.
+     *
+     * @param username username
+     * @return user
+     * @throws SQLException if user can't be read
+     */
+    public Optional<User> getUser(String username) throws SQLException {
+        try (var stmt = connection.prepareStatement("SELECT * FROM users WHERE username = ?")) {
+            stmt.setString(1, username);
+            var rs = stmt.executeQuery();
+            if (rs.next()) {
+                return Optional.of(new User(rs.getString("username"), rs.getBytes("password_hash")));
+            }
+            return Optional.empty();
         }
     }
 }
