@@ -6,5 +6,5 @@ package ru.rmntim.server.storage;
  * @param username     username
  * @param passwordHash password hash
  */
-public record User(String username, byte[] passwordHash) {
+public record User(String username, String passwordHash) {
 }

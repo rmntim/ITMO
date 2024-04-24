@@ -301,7 +301,7 @@ public final class DatabaseManager implements AutoCloseable {
             stmt.setString(1, username);
             var rs = stmt.executeQuery();
             if (rs.next()) {
-                return Optional.of(new User(rs.getString("username"), rs.getBytes("password_hash")));
+                return Optional.of(new User(rs.getString("username"), rs.getString("password_hash")));
             }
             return Optional.empty();
         }

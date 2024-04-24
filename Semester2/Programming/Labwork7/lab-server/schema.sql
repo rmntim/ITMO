@@ -1,3 +1,9 @@
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS dragons (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -5,7 +11,8 @@ CREATE TABLE IF NOT EXISTS dragons (
     age BIGINT NOT NULL,
     color VARCHAR(255) NOT NULL CHECK (color IN ('GREEN', 'ORANGE', 'BROWN')),
     dragon_type VARCHAR(255) NOT NULL CHECK (dragon_type IN ('WATER', 'UNDERGROUND', 'AIR', 'FIRE')),
-    dragon_character VARCHAR(255) NOT NULL CHECK (dragon_character IN ('EVIL', 'CHAOTIC', 'FICKLE'))
+    dragon_character VARCHAR(255) NOT NULL CHECK (dragon_character IN ('EVIL', 'CHAOTIC', 'FICKLE')),
+    owner_id INTEGER NOT NULL REFERENCES users ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS coordinates (
@@ -21,17 +28,14 @@ CREATE TABLE IF NOT EXISTS dragon_heads (
     dragon_id INTEGER NOT NULL REFERENCES dragons ON DELETE CASCADE
 );
 
-INSERT INTO dragons (name, creation_date, age, color, dragon_type, dragon_character) VALUES
-    ('Drake', '2020-01-01', 10, 'GREEN', 'WATER', 'EVIL');
+INSERT INTO users (username, password_hash) VALUES
+    ('admin', MD5('admin'));
+
+INSERT INTO dragons (name, creation_date, age, color, dragon_type, dragon_character, owner_id) VALUES
+    ('Drake', '2020-01-01', 10, 'GREEN', 'WATER', 'EVIL', 1);
 
 INSERT INTO coordinates (x, y, dragon_id) VALUES
     (-5.0, 2.0, 1);
 
 INSERT INTO dragon_heads (eyes_count, dragon_id) VALUES
     (3.0, 1);
-
-CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY,
-    username VARCHAR(255) NOT NULL UNIQUE,
-    password_hash BYTEA NOT NULL
-);
