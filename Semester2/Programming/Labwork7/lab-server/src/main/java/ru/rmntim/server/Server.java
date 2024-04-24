@@ -1,7 +1,5 @@
 package ru.rmntim.server;
 
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.rmntim.common.validators.ValidationException;
@@ -38,9 +36,9 @@ public final class Server {
             while (true) {
                 continue;
             }
-        } catch (IOException | JsonIOException e) {
+        } catch (IOException e) {
             LOGGER.error("IO error occurred", e);
-        } catch (ValidationException | JsonSyntaxException e) {
+        } catch (ValidationException e) {
             LOGGER.error("Data validation error occurred", e);
         } catch (IllegalArgumentException e) {
             LOGGER.error("Error creating resource", e);

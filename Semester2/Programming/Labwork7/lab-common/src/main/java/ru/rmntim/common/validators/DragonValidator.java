@@ -15,7 +15,6 @@ public final class DragonValidator implements Validator<Dragon> {
             throw new NullPointerException();
         }
 
-        validateId(dragon.id());
         validateName(dragon.name());
         validateCoordinates(dragon.coordinates());
         validateCreationDate(dragon.creationDate());
@@ -25,12 +24,6 @@ public final class DragonValidator implements Validator<Dragon> {
         validateCharacter(dragon.character());
         if (dragon.head() != null) {
             new DragonHeadValidator().validate(dragon.head());
-        }
-    }
-
-    private void validateId(Integer id) throws ValidationException {
-        if (id == null || id <= 0) {
-            throw new ValidationException("Invalid id");
         }
     }
 

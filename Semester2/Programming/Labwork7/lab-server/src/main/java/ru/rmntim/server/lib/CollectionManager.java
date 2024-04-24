@@ -18,7 +18,6 @@ public class CollectionManager {
     private final DatabaseManager databaseManager;
     private final TreeSet<Dragon> collection;
     private final ZonedDateTime lastInitTime = ZonedDateTime.now();
-    private int lastId = 1;
 
     /**
      * @param databaseManager connection manager with database to read collection from
@@ -57,12 +56,13 @@ public class CollectionManager {
      *
      * @param dragon dragon to add
      * @throws ValidationException if dragon is invalid
+     * @throws SQLException        if dragon can't be added
      */
-    public synchronized void add(Dragon dragon) throws ValidationException {
-        dragon.setId(lastId + 1);
+    public synchronized int add(Dragon dragon) throws ValidationException, SQLException {
         new DragonValidator().validate(dragon);
+        var id = databaseManager.addDragon(dragon);
         collection.add(dragon);
-        ++lastId;
+        return id;
     }
 
     /**
@@ -70,34 +70,35 @@ public class CollectionManager {
      *
      * @param id     id of the element to update
      * @param dragon element to insert on update
-     * @return {@code false} if no elements were inserted
      * @throws ValidationException if element is invalid
+     * @throws SQLException        if dragon can't be updated
      */
-    public synchronized boolean update(int id, Dragon dragon) throws ValidationException {
-        dragon.setId(id);
+    public synchronized void update(int id, Dragon dragon) throws ValidationException, SQLException {
         new DragonValidator().validate(dragon);
-        if (!remove(id)) {
-            return false;
-        }
+        databaseManager.updateDragon(id, dragon);
+        collection.removeIf(e -> e.id() == id);
         collection.add(dragon);
-        return true;
     }
 
     /**
      * Remove element with given id.
      *
      * @param id id of the element to remove
-     * @return {@code false} if no elements were removed
+     * @throws SQLException if dragon can't be removed
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public synchronized boolean remove(int id) {
-        return collection.removeIf(e -> e.id() == id);
+    public synchronized void remove(int id) throws SQLException {
+        databaseManager.removeDragon(id);
+        collection.removeIf(e -> e.id() == id);
     }
 
     /**
      * Clear the collection.
+     *
+     * @throws SQLException if coordinates can't be read
      */
-    public synchronized void clear() {
+    public synchronized void clear() throws SQLException {
+        databaseManager.clear();
         collection.clear();
     }
 
@@ -107,8 +108,9 @@ public class CollectionManager {
      *
      * @param dragon element to add
      * @throws ValidationException if element is invalid
+     * @throws SQLException        if dragon can't be added
      */
-    public synchronized void addIfMax(Dragon dragon) throws ValidationException {
+    public synchronized void addIfMax(Dragon dragon) throws ValidationException, SQLException {
         Dragon max;
         try {
             max = collection.stream().max(Dragon::compareTo).orElseThrow();
@@ -127,8 +129,9 @@ public class CollectionManager {
      *
      * @param dragon element to add
      * @throws ValidationException if element is invalid
+     * @throws SQLException        if dragon can't be added
      */
-    public synchronized void addIfMin(Dragon dragon) throws ValidationException {
+    public synchronized void addIfMin(Dragon dragon) throws ValidationException, SQLException {
         Dragon min;
         try {
             min = collection.stream().min(Dragon::compareTo).orElseThrow();
@@ -146,11 +149,16 @@ public class CollectionManager {
      *
      * @param dragon element to compare to
      * @throws ValidationException if element is invalid
+     * @throws SQLException        if dragons can't be removed
      */
-    public synchronized void removeIfLower(Dragon dragon) throws ValidationException {
-        dragon.setId(lastId + 1);
+    public synchronized void removeIfLower(Dragon dragon) throws ValidationException, SQLException {
         new DragonValidator().validate(dragon);
-        collection.removeIf(e -> e.compareTo(dragon) < 0);
+        var ids = collection.stream()
+                .filter(e -> e.compareTo(dragon) < 0)
+                .map(Dragon::id)
+                .collect(Collectors.toSet());
+        databaseManager.removeDragons(ids);
+        collection.removeIf(e -> ids.contains(e.id()));
     }
 
     /**
@@ -177,7 +185,6 @@ public class CollectionManager {
      * @return number of elements
      */
     public synchronized long greaterThanCharacter(Dragon dragon) throws ValidationException {
-        dragon.setId(lastId + 1);
         new DragonValidator().validate(dragon);
         return collection.stream().filter(e -> e.character().compareTo(dragon.character()) > 0).count();
     }

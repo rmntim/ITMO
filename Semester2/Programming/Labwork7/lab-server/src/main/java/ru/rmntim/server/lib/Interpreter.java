@@ -24,6 +24,7 @@ import ru.rmntim.server.network.UDPServer;
 
 import java.io.IOException;
 import java.net.SocketAddress;
+import java.sql.SQLException;
 import java.util.StringJoiner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -197,36 +198,44 @@ public class Interpreter implements Command.Visitor {
     @Override
     public Response visit(Add command) {
         try {
-            collectionManager.add(command.getDragon());
-            return new Response(Response.Status.OK, "Added successfully with id " + 1);
+            var id = collectionManager.add(command.getDragon());
+            return new Response(Response.Status.OK, "Added successfully with id " + id);
         } catch (ValidationException e) {
             return new Response(Response.Status.ERROR, "Invalid element: " + e.getMessage());
+        } catch (SQLException e) {
+            return new Response(Response.Status.ERROR, "Database error: " + e.getMessage());
         }
     }
 
     @Override
     public Response visit(Update command) {
         try {
-            if (!collectionManager.update(command.getId(), command.getDragon())) {
-                return new Response(Response.Status.ERROR, "No elements were updated (maybe id is incorrect?)");
-            }
+            collectionManager.update(command.getId(), command.getDragon());
             return new Response(Response.Status.OK, "Updated successfully");
         } catch (ValidationException e) {
             return new Response(Response.Status.ERROR, "Invalid element: " + e.getMessage());
+        } catch (SQLException e) {
+            return new Response(Response.Status.ERROR, "Database error: " + e.getMessage());
         }
     }
 
     @Override
     public Response visit(Remove command) {
-        if (!collectionManager.remove(command.getId())) {
-            return new Response(Response.Status.ERROR, "No elements were removed (maybe id is incorrect?)");
+        try {
+            collectionManager.remove(command.getId());
+        } catch (SQLException e) {
+            return new Response(Response.Status.ERROR, "Database error: " + e.getMessage());
         }
         return new Response(Response.Status.OK, "Removed successfully");
     }
 
     @Override
     public Response visit(Clear command) {
-        collectionManager.clear();
+        try {
+            collectionManager.clear();
+        } catch (SQLException e) {
+            return new Response(Response.Status.ERROR, "Database error: " + e.getMessage());
+        }
         return new Response(Response.Status.OK, "Cleared successfully");
     }
 
@@ -237,6 +246,8 @@ public class Interpreter implements Command.Visitor {
             return new Response(Response.Status.OK, "Command executed successfully");
         } catch (ValidationException e) {
             return new Response(Response.Status.ERROR, "Invalid element: " + e.getMessage());
+        } catch (SQLException e) {
+            return new Response(Response.Status.ERROR, "Database error: " + e.getMessage());
         }
     }
 
@@ -247,6 +258,8 @@ public class Interpreter implements Command.Visitor {
             return new Response(Response.Status.OK, "Command executed successfully");
         } catch (ValidationException e) {
             return new Response(Response.Status.ERROR, "Invalid element: " + e.getMessage());
+        } catch (SQLException e) {
+            return new Response(Response.Status.ERROR, "Database error: " + e.getMessage());
         }
     }
 
@@ -257,6 +270,8 @@ public class Interpreter implements Command.Visitor {
             return new Response(Response.Status.OK, "Command executed successfully");
         } catch (ValidationException e) {
             return new Response(Response.Status.ERROR, "Invalid element: " + e.getMessage());
+        } catch (SQLException e) {
+            return new Response(Response.Status.ERROR, "Database error: " + e.getMessage());
         }
     }
 
