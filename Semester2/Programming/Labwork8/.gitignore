@@ -1,0 +1,8 @@
+**/*.jar
+.env
+**/*.json
+.idea/
+**/*.iml
+.gradle/
+gradle/
+**/build/
