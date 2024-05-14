@@ -3,9 +3,6 @@ package ru.rmntim.common.commands;
 import ru.rmntim.common.models.Dragon;
 import ru.rmntim.common.network.Response;
 import ru.rmntim.common.network.UserCredentials;
-import ru.rmntim.common.parsers.DragonParser;
-
-import java.util.List;
 
 public class Update extends Command {
     public static final String NAME = "update";
@@ -31,19 +28,5 @@ public class Update extends Command {
     @Override
     public Response accept(Command.Visitor visitor) {
         return visitor.visit(this);
-    }
-
-    public static Update create(List<String> args, UserCredentials userCredentials) {
-        if (args.size() != 1) {
-            throw new IllegalArgumentException(NAME + " needs id as argument");
-        }
-        try {
-            var id = Integer.parseInt(args.get(0));
-            var dragon = DragonParser.parse();
-            return new Update(id, dragon, userCredentials);
-        } catch (NumberFormatException e) {
-            System.out.println("Id must be a valid integer");
-            return null;
-        }
     }
 }
