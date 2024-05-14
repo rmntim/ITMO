@@ -8,7 +8,9 @@ import ru.rmntim.server.lib.Interpreter;
 import ru.rmntim.server.network.UDPServer;
 import ru.rmntim.server.storage.DatabaseManager;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.sql.SQLException;
@@ -22,16 +24,22 @@ public final class Server {
     }
 
     public static void main(String[] args) {
-        try (var connectionManager = DatabaseManager.getInstance()) {
+        try (var connectionManager = DatabaseManager.getInstance(); var consoleReader = new BufferedReader(new InputStreamReader(System.in))) {
             handleArgs(args);
             LOGGER.info("Loading data from db");
             var collectionManager = new CollectionManager(connectionManager);
             var server = new UDPServer(new InetSocketAddress(InetAddress.getLocalHost(), port));
             LOGGER.info("Starting server on port {}", server.getPort());
             var interpreter = new Interpreter(collectionManager, server);
-            new Thread(interpreter::run).start();
-            while (true) {
+            var serverThread = new Thread(interpreter::run);
+            serverThread.start();
+            String userInput;
+            while ((userInput = consoleReader.readLine()) != null) {
+                if (userInput.equals("exit")) {
+                    break;
+                }
             }
+            serverThread.join();
         } catch (IOException e) {
             LOGGER.error("IO error occurred", e);
         } catch (ValidationException e) {
@@ -42,6 +50,8 @@ public final class Server {
             LOGGER.error("Error while connecting to database", e);
         } catch (IllegalStateException e) {
             LOGGER.error("Environment variable is not set", e);
+        } catch (InterruptedException e) {
+            LOGGER.error("Thread interrupted", e);
         } finally {
             LOGGER.info("Server stopped");
         }
