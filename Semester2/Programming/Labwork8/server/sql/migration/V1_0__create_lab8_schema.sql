@@ -5,16 +5,25 @@
 -- Dumped from database version 14.2 (Debian 14.2-1.pgdg110+1)
 -- Dumped by pg_dump version 14.5
 
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
+SET
+statement_timeout = 0;
+SET
+lock_timeout = 0;
+SET
+idle_in_transaction_session_timeout = 0;
+SET
+client_encoding = 'UTF8';
+SET
+standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
+SET
+check_function_bodies = false;
+SET
+xmloption = content;
+SET
+client_min_messages = warning;
+SET
+row_security = off;
 
 --
 -- Name: organization_type; Type: TYPE; Schema: public; Owner: s367081
@@ -44,22 +53,25 @@ CREATE TYPE public.unit_of_measure AS ENUM (
 
 ALTER TYPE public.unit_of_measure OWNER TO s367081;
 
-SET default_tablespace = '';
+SET
+default_tablespace = '';
 
-SET default_table_access_method = heap;
+SET
+default_table_access_method = heap;
 
 --
 -- Name: organizations; Type: TABLE; Schema: public; Owner: s367081
 --
 
-CREATE TABLE public.organizations (
-                                      id integer NOT NULL,
-                                      employees_count bigint NOT NULL,
-                                      name character varying(255) NOT NULL,
-                                      street character varying(255) NOT NULL,
-                                      type character varying(255) NOT NULL,
-                                      zip_code character varying(255),
-                                      creator_id integer NOT NULL
+CREATE TABLE public.organizations
+(
+    id              integer                NOT NULL,
+    employees_count bigint                 NOT NULL,
+    name            character varying(255) NOT NULL,
+    street          character varying(255) NOT NULL,
+    type            character varying(255) NOT NULL,
+    zip_code        character varying(255),
+    creator_id      integer                NOT NULL
 );
 
 
@@ -74,8 +86,7 @@ CREATE SEQUENCE public.organizations_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
+    NO MAXVALUE CACHE 1;
 
 
 ALTER TABLE public.organizations_id_seq OWNER TO s367081;
@@ -91,17 +102,18 @@ ALTER SEQUENCE public.organizations_id_seq OWNED BY public.organizations.id;
 -- Name: products; Type: TABLE; Schema: public; Owner: s367081
 --
 
-CREATE TABLE public.products (
-                                 id integer NOT NULL,
-                                 creation_date date NOT NULL,
-                                 name character varying(255) NOT NULL,
-                                 part_number character varying(255),
-                                 price bigint NOT NULL,
-                                 unit_of_measure character varying(255),
-                                 x integer NOT NULL,
-                                 y bigint NOT NULL,
-                                 creator_id integer NOT NULL,
-                                 manufacturer_id integer
+CREATE TABLE public.products
+(
+    id              integer                NOT NULL,
+    creation_date   date                   NOT NULL,
+    name            character varying(255) NOT NULL,
+    part_number     character varying(255),
+    price           bigint                 NOT NULL,
+    unit_of_measure character varying(255),
+    x               integer                NOT NULL,
+    y               bigint                 NOT NULL,
+    creator_id      integer                NOT NULL,
+    manufacturer_id integer
 );
 
 
@@ -116,8 +128,7 @@ CREATE SEQUENCE public.products_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
+    NO MAXVALUE CACHE 1;
 
 
 ALTER TABLE public.products_id_seq OWNER TO s367081;
@@ -133,11 +144,12 @@ ALTER SEQUENCE public.products_id_seq OWNED BY public.products.id;
 -- Name: users; Type: TABLE; Schema: public; Owner: s367081
 --
 
-CREATE TABLE public.users (
-                              id integer NOT NULL,
-                              name character varying(40) NOT NULL,
-                              password_digest character varying(64) NOT NULL,
-                              salt character varying(10) NOT NULL
+CREATE TABLE public.users
+(
+    id              integer               NOT NULL,
+    name            character varying(40) NOT NULL,
+    password_digest character varying(64) NOT NULL,
+    salt            character varying(10) NOT NULL
 );
 
 
@@ -152,8 +164,7 @@ CREATE SEQUENCE public.users_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
+    NO MAXVALUE CACHE 1;
 
 
 ALTER TABLE public.users_id_seq OWNER TO s367081;
@@ -191,7 +202,8 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.organizations (id, employees_count, name, street, type, zip_code, creator_id) FROM stdin;
-\.
+\
+.
 
 
 --
@@ -199,7 +211,9 @@ COPY public.organizations (id, employees_count, name, street, type, zip_code, cr
 --
 
 COPY public.products (id, creation_date, name, part_number, price, unit_of_measure, x, y, creator_id, manufacturer_id) FROM stdin;
-1	2023-03-29	123	12	1	\N	123	12	1	\N
+1	2023-03-29	123	12	1
+\N	123	12	1
+\N
 \.
 
 

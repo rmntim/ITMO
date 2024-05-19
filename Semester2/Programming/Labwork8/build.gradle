@@ -47,10 +47,8 @@ project(':server') {
     flywayMigrate.dependsOn classes
 
     jar {
-        manifest.attributes(
-            'Main-Class': 'server.App',
-            'Implementation-Title': 'Gradle'
-        )
+        manifest.attributes('Main-Class': 'server.App',
+                'Implementation-Title': 'Gradle')
     }
     task fatJar(type: Jar) {
         manifest {
@@ -84,14 +82,12 @@ project(':client') {
 
     javafx {
         version = '17.0.11'
-        modules = [ 'javafx.base', 'javafx.controls', 'javafx.fxml' ]
+        modules = ['javafx.base', 'javafx.controls', 'javafx.fxml']
     }
 
     jar {
-        manifest.attributes(
-            'Main-Class': 'client.App',
-            'Implementation-Title': 'Gradle'
-        )
+        manifest.attributes('Main-Class': 'client.App',
+                'Implementation-Title': 'Gradle')
     }
 
     task fatJar(type: Jar) {

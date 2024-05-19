@@ -1,6 +1,7 @@
 package server.commands;
 
 public interface Describable {
-  String getName();
-  String getDescription();
+    String getName();
+
+    String getDescription();
 }

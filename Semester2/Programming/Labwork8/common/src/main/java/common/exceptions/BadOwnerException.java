@@ -1,3 +1,4 @@
 package common.exceptions;
 
-public class BadOwnerException extends Exception {}
+public class BadOwnerException extends Exception {
+}

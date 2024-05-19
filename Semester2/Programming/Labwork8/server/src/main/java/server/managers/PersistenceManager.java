@@ -1,147 +1,147 @@
 package server.managers;
 
-import common.domain.*;
+import common.domain.Organization;
+import common.domain.Product;
 import common.user.User;
 import org.apache.logging.log4j.Logger;
-
 import org.hibernate.SessionFactory;
 import server.App;
 import server.dao.OrganizationDAO;
 import server.dao.ProductDAO;
 import server.dao.UserDAO;
 
-import java.util.*;
+import java.util.List;
 
 public class PersistenceManager {
-  private final SessionFactory sessionFactory;
-  private final Logger logger = App.logger;
+    private final SessionFactory sessionFactory;
+    private final Logger logger = App.logger;
 
-  public PersistenceManager(SessionFactory sessionFactory) {
-    this.sessionFactory = sessionFactory;
-  }
-
-  public int add(User user, Product product) {
-    logger.info("Добавление нового продукта " + product.getName());
-    OrganizationDAO newOrg = null;
-    if (product.getManufacturer() != null) {
-      newOrg = addOrganization(user, product.getManufacturer());
+    public PersistenceManager(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
-    var dao = new ProductDAO(product);
-    dao.setManufacturer(newOrg);
-    dao.setCreator(new UserDAO(user));
+    public int add(User user, Product product) {
+        logger.info("Добавление нового продукта " + product.getName());
+        OrganizationDAO newOrg = null;
+        if (product.getManufacturer() != null) {
+            newOrg = addOrganization(user, product.getManufacturer());
+        }
 
-    var session = sessionFactory.openSession();
-    session.beginTransaction();
-    session.persist(dao);
-    session.getTransaction().commit();
-    session.close();
+        var dao = new ProductDAO(product);
+        dao.setManufacturer(newOrg);
+        dao.setCreator(new UserDAO(user));
 
-    logger.info("Добавление продукта успешно выполнено.");
+        var session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.persist(dao);
+        session.getTransaction().commit();
+        session.close();
 
-    var newId = dao.getId();
-    logger.info("Новый id продукта это " + newId);
-    return newId;
-  }
+        logger.info("Добавление продукта успешно выполнено.");
 
-  public OrganizationDAO addOrganization(User user, Organization organization) {
-    logger.info("Добавление новой организации " + organization.getName());
-
-    var dao = new OrganizationDAO(organization);
-    dao.setCreator(new UserDAO(user));
-
-    var session = sessionFactory.openSession();
-    session.beginTransaction();
-    session.persist(dao);
-    session.getTransaction().commit();
-
-    logger.info("Добавление организации успешно выполнено.");
-
-    logger.info("Новый id организации это " + dao.getId());
-    return dao;
-  }
-
-  public int update(User user, Product product) {
-    logger.info("Обновление продукта id#" + product.getId());
-    var session = sessionFactory.openSession();
-
-    session.beginTransaction();
-    var productDAO = session.get(ProductDAO.class, product.getId());
-
-    int ordDaoId = -1;
-    if (product.getManufacturer() != null) {
-      ordDaoId = updateOrganization(user, product.getManufacturer()).getId();
-    } else {
-      productDAO.setManufacturer(null);
+        var newId = dao.getId();
+        logger.info("Новый id продукта это " + newId);
+        return newId;
     }
-    productDAO.update(product);
-    session.update(productDAO);
 
-    session.getTransaction().commit();
-    session.close();
-    logger.info("Обновление продукта выполнено!");
+    public OrganizationDAO addOrganization(User user, Organization organization) {
+        logger.info("Добавление новой организации " + organization.getName());
 
-    return ordDaoId;
-  }
+        var dao = new OrganizationDAO(organization);
+        dao.setCreator(new UserDAO(user));
 
-  public OrganizationDAO updateOrganization(User user, Organization organization) {
-    logger.info("Обновление организации id#" + organization.getId());
+        var session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.persist(dao);
+        session.getTransaction().commit();
 
-    var session = sessionFactory.openSession();
-    session.beginTransaction();
-    var organizationDAO = session.get(OrganizationDAO.class, organization.getId());
-    organizationDAO.update(organization);
+        logger.info("Добавление организации успешно выполнено.");
 
-    session.update(organizationDAO);
-    session.getTransaction().commit();
-    session.close();
-    logger.info("Обновление организации выполнено!");
+        logger.info("Новый id организации это " + dao.getId());
+        return dao;
+    }
 
-    return organizationDAO;
-  }
+    public int update(User user, Product product) {
+        logger.info("Обновление продукта id#" + product.getId());
+        var session = sessionFactory.openSession();
 
-  public void clear(User user) {
-    logger.info("Очищение продуктов пользователя id#" + user.getId() + " из базы данных.");
+        session.beginTransaction();
+        var productDAO = session.get(ProductDAO.class, product.getId());
 
-    var session = sessionFactory.openSession();
-    session.beginTransaction();
-    var query = session.createQuery("DELETE FROM products WHERE creator.id = :creator");
-    query.setParameter("creator", user.getId());
-    var deletedSize = query.executeUpdate();
-    session.getTransaction().commit();
-    session.close();
-    logger.info("Удалено " + deletedSize + " продуктов.");
-  }
+        int ordDaoId = -1;
+        if (product.getManufacturer() != null) {
+            ordDaoId = updateOrganization(user, product.getManufacturer()).getId();
+        } else {
+            productDAO.setManufacturer(null);
+        }
+        productDAO.update(product);
+        session.update(productDAO);
 
-  public int remove(User user, int id) {
-    logger.info("Удаление продукта №" + id + " пользователя id#" + user.getId() + ".");
+        session.getTransaction().commit();
+        session.close();
+        logger.info("Обновление продукта выполнено!");
 
-    var session = sessionFactory.openSession();
-    session.beginTransaction();
+        return ordDaoId;
+    }
 
-    var query = session.createQuery("DELETE FROM products WHERE creator.id = :creator AND id = :id");
-    query.setParameter("creator", user.getId());
-    query.setParameter("id", id);
+    public OrganizationDAO updateOrganization(User user, Organization organization) {
+        logger.info("Обновление организации id#" + organization.getId());
 
-    var deletedSize = query.executeUpdate();
-    session.getTransaction().commit();
-    session.close();
-    logger.info("Удалено " + deletedSize + " продуктов.");
+        var session = sessionFactory.openSession();
+        session.beginTransaction();
+        var organizationDAO = session.get(OrganizationDAO.class, organization.getId());
+        organizationDAO.update(organization);
 
-    return deletedSize;
-  }
+        session.update(organizationDAO);
+        session.getTransaction().commit();
+        session.close();
+        logger.info("Обновление организации выполнено!");
 
-  public List<ProductDAO> loadProducts() {
-    var session = sessionFactory.openSession();
-    session.beginTransaction();
+        return organizationDAO;
+    }
 
-    var cq = session.getCriteriaBuilder().createQuery(ProductDAO.class);
-    var rootEntry = cq.from(ProductDAO.class);
-    var all = cq.select(rootEntry);
+    public void clear(User user) {
+        logger.info("Очищение продуктов пользователя id#" + user.getId() + " из базы данных.");
 
-    var result = session.createQuery(all).getResultList();
-    session.getTransaction().commit();
-    session.close();
-    return result;
-  }
+        var session = sessionFactory.openSession();
+        session.beginTransaction();
+        var query = session.createQuery("DELETE FROM products WHERE creator.id = :creator");
+        query.setParameter("creator", user.getId());
+        var deletedSize = query.executeUpdate();
+        session.getTransaction().commit();
+        session.close();
+        logger.info("Удалено " + deletedSize + " продуктов.");
+    }
+
+    public int remove(User user, int id) {
+        logger.info("Удаление продукта №" + id + " пользователя id#" + user.getId() + ".");
+
+        var session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        var query = session.createQuery("DELETE FROM products WHERE creator.id = :creator AND id = :id");
+        query.setParameter("creator", user.getId());
+        query.setParameter("id", id);
+
+        var deletedSize = query.executeUpdate();
+        session.getTransaction().commit();
+        session.close();
+        logger.info("Удалено " + deletedSize + " продуктов.");
+
+        return deletedSize;
+    }
+
+    public List<ProductDAO> loadProducts() {
+        var session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        var cq = session.getCriteriaBuilder().createQuery(ProductDAO.class);
+        var rootEntry = cq.from(ProductDAO.class);
+        var all = cq.select(rootEntry);
+
+        var result = session.createQuery(all).getResultList();
+        session.getTransaction().commit();
+        session.close();
+        return result;
+    }
 }

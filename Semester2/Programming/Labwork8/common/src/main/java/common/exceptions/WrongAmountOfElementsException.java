@@ -1,3 +1,4 @@
 package common.exceptions;
 
-public class WrongAmountOfElementsException extends Exception {}
+public class WrongAmountOfElementsException extends Exception {
+}

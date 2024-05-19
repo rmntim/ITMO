@@ -1,36 +1,38 @@
 package server.commands;
 
 import common.exceptions.BadOwnerException;
-import common.network.requests.*;
-import common.network.responses.*;
+import common.network.requests.RemoveByIdRequest;
+import common.network.requests.Request;
+import common.network.responses.RemoveByIdResponse;
+import common.network.responses.Response;
 import server.repositories.ProductRepository;
 
 public class RemoveById extends Command {
-  private final ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
-  public RemoveById(ProductRepository productRepository) {
-    super("remove_by_id <ID>", "удалить элемент из коллекции по ID");
-    this.productRepository = productRepository;
-  }
-
-  @Override
-  public Response apply(Request request) {
-    var req = (RemoveByIdRequest) request;
-
-    try {
-      if (!productRepository.checkExist(req.id)) {
-        return new RemoveByIdResponse("Продукта с таким ID в коллекции нет!");
-      }
-
-      var removedCount = productRepository.remove(req.getUser(), req.id);
-      if (removedCount <= 0) {
-        return new RemoveByIdResponse("Ничего не удалено!");
-      }
-      return new RemoveByIdResponse(null);
-    } catch (BadOwnerException e) {
-      return new RemoveByIdResponse("Зафиксирована попытка удалить чужой продукт!");
-    } catch (Exception e) {
-      return new RemoveByIdResponse(e.toString());
+    public RemoveById(ProductRepository productRepository) {
+        super("remove_by_id <ID>", "удалить элемент из коллекции по ID");
+        this.productRepository = productRepository;
     }
-  }
+
+    @Override
+    public Response apply(Request request) {
+        var req = (RemoveByIdRequest) request;
+
+        try {
+            if (!productRepository.checkExist(req.id)) {
+                return new RemoveByIdResponse("Продукта с таким ID в коллекции нет!");
+            }
+
+            var removedCount = productRepository.remove(req.getUser(), req.id);
+            if (removedCount <= 0) {
+                return new RemoveByIdResponse("Ничего не удалено!");
+            }
+            return new RemoveByIdResponse(null);
+        } catch (BadOwnerException e) {
+            return new RemoveByIdResponse("Зафиксирована попытка удалить чужой продукт!");
+        } catch (Exception e) {
+            return new RemoveByIdResponse(e.toString());
+        }
+    }
 }

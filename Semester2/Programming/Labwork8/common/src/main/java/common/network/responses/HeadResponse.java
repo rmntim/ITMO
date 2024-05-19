@@ -4,10 +4,10 @@ import common.domain.Product;
 import common.utility.Commands;
 
 public class HeadResponse extends Response {
-  public final Product product;
+    public final Product product;
 
-  public HeadResponse(Product product, String error) {
-    super(Commands.HEAD, error);
-    this.product = product;
-  }
+    public HeadResponse(Product product, String error) {
+        super(Commands.HEAD, error);
+        this.product = product;
+    }
 }

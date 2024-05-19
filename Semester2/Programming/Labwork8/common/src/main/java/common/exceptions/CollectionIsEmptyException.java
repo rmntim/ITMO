@@ -1,3 +1,4 @@
 package common.exceptions;
 
-public class CollectionIsEmptyException extends Exception {}
+public class CollectionIsEmptyException extends Exception {
+}
