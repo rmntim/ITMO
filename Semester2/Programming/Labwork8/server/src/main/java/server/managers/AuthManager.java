@@ -13,7 +13,6 @@ import java.util.List;
 
 public class AuthManager {
     private final SessionFactory sessionFactory;
-    private final int SALT_LENGTH = 10;
     private final String pepper;
 
     private final Logger logger = App.logger;
@@ -24,7 +23,7 @@ public class AuthManager {
     }
 
     public int registerUser(String login, String password) throws SQLException {
-        logger.info("Создание нового пользователя " + login);
+        logger.info("Создание нового пользователя {}", login);
 
         var salt = generateSalt();
         var passwordHash = generatePasswordHash(password, salt);
@@ -41,22 +40,22 @@ public class AuthManager {
         session.close();
 
         var newId = dao.getId();
-        logger.info("Пользователь успешно создан, id#" + newId);
+        logger.info("Пользователь успешно создан, id#{}", newId);
         return newId;
     }
 
     public int authenticateUser(String login, String password) throws SQLException {
-        logger.info("Аутентификация пользователя " + login);
+        logger.info("Аутентификация пользователя {}", login);
         var session = sessionFactory.openSession();
         session.beginTransaction();
 
         var query = session.createQuery("SELECT u FROM users u WHERE u.name = :name");
         query.setParameter("name", login);
 
-        List<UserDAO> result = (List<UserDAO>) query.list();
+        var result = (List<UserDAO>) query.list();
 
         if (result.isEmpty()) {
-            logger.warn("Неправильный пароль для пользователя " + login);
+            logger.warn("Неправильный пароль для пользователя {}", login);
             return 0;
         }
 
@@ -71,18 +70,16 @@ public class AuthManager {
         var actualHashedPassword = generatePasswordHash(password, salt);
         if (expectedHashedPassword.equals(actualHashedPassword)) {
             ;
-            logger.info("Пользователь " + login + " аутентифицирован c id#" + id);
+            logger.info("Пользователь {} аутентифицирован c id#{}", login, id);
             return id;
         }
 
-        logger.warn(
-                "Неправильный пароль для пользователя " + login +
-                        ". Ожидалось '" + expectedHashedPassword + "', получено '" + actualHashedPassword + "'"
-        );
+        logger.warn("Неправильный пароль для пользователя {}. Ожидалось '{}', получено '{}'", login, expectedHashedPassword, actualHashedPassword);
         return 0;
     }
 
     private String generateSalt() {
+        int SALT_LENGTH = 10;
         return RandomStringUtils.randomAlphanumeric(SALT_LENGTH);
     }
 
