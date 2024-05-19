@@ -1,0 +1,108 @@
+plugins {
+    id 'org.flywaydb.flyway' version '9.8.1' apply false
+    id 'org.openjfx.javafxplugin' version '0.0.13' apply false
+}
+
+subprojects {
+    apply plugin: 'java'
+    repositories {
+        mavenCentral()
+    }
+}
+
+project(':server') {
+    apply plugin: 'application'
+    apply plugin: 'org.flywaydb.flyway'
+    mainClassName = 'server.App'
+    dependencies {
+        implementation project(':common')
+        implementation 'com.google.guava:guava:31.1-jre'
+        implementation 'org.apache.commons:commons-lang3:3.12.0'
+
+        runtimeOnly 'org.flywaydb:flyway-gradle-plugin:9.16.1'
+
+        implementation 'org.postgresql:postgresql:42.5.4'
+
+        implementation 'javax.persistence:javax.persistence-api:2.2'
+        implementation 'org.hibernate:hibernate-core:6.1.5.Final'
+        implementation 'org.hibernate:hibernate-validator:7.0.5.Final'
+
+        implementation 'io.github.cdimascio:dotenv-java:2.3.2'
+
+        implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
+        implementation 'org.apache.logging.log4j:log4j-api:2.20.0'
+
+        implementation 'org.slf4j:slf4j-api:2.0.6'
+        implementation 'org.slf4j:slf4j-simple:2.0.6'
+    }
+
+    flyway {
+        locations = ["filesystem:./sql/migration"]
+        url = "jdbc:postgresql://127.0.0.1:5432/studs"
+        user = "s367081"
+        password = "s367081"
+        schemas = ['public']
+    }
+
+    flywayMigrate.dependsOn classes
+
+    jar {
+        manifest.attributes(
+            'Main-Class': 'server.App',
+            'Implementation-Title': 'Gradle'
+        )
+    }
+    task fatJar(type: Jar) {
+        manifest {
+            attributes 'Main-Class': 'server.App'
+        }
+        archiveClassifier = "all"
+        from {
+            configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        }
+        duplicatesStrategy "exclude"
+        with jar
+    }
+}
+
+project(':client') {
+    apply plugin: 'application'
+    apply plugin: 'org.openjfx.javafxplugin'
+    mainClassName = 'client.App'
+    dependencies {
+        implementation project(':common')
+        implementation 'org.apache.commons:commons-lang3:3.12.0'
+        implementation 'commons-validator:commons-validator:1.7'
+        implementation 'com.google.guava:guava:31.1-jre'
+
+        implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
+        implementation 'org.apache.logging.log4j:log4j-api:2.20.0'
+    }
+    run {
+        standardInput = System.in
+    }
+
+    javafx {
+        version = '17.0.11'
+        modules = [ 'javafx.base', 'javafx.controls', 'javafx.fxml' ]
+    }
+
+    jar {
+        manifest.attributes(
+            'Main-Class': 'client.App',
+            'Implementation-Title': 'Gradle'
+        )
+    }
+
+    task fatJar(type: Jar) {
+        manifest {
+            attributes 'Main-Class': 'client.App'
+        }
+        archiveClassifier = "all"
+        from {
+            configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        }
+        duplicatesStrategy "exclude"
+        with jar
+    }
+}

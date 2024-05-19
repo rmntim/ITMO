@@ -1,17 +1,10 @@
-version: '3'
-
+version: "3.9"
 services:
-  db:
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: lab
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-
-volumes:
-  pgdata:
+    postgres:
+        image: postgres:14.2
+        environment:
+            POSTGRES_DB: "studs"
+            POSTGRES_USER: "s367081"
+            POSTGRES_PASSWORD: "s367081"
+        ports:
+            - "5432:5432"
