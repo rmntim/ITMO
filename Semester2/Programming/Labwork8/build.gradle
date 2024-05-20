@@ -29,18 +29,16 @@ project(':server') {
 
         implementation 'io.github.cdimascio:dotenv-java:2.3.2'
 
-        implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
-        implementation 'org.apache.logging.log4j:log4j-api:2.20.0'
-
-        implementation 'org.slf4j:slf4j-api:2.0.6'
-        implementation 'org.slf4j:slf4j-simple:2.0.6'
+        implementation 'ch-qos.logback:logback-classic:1.5.3'
+        implementation 'ch.qos.logback:logback-core:1.5.3'
+        implementation 'org.slf4j:slf4j-api:2.0.12'
     }
 
     flyway {
         locations = ["filesystem:./sql/migration"]
         url = "jdbc:postgresql://127.0.0.1:5432/studs"
-        user = "s367081"
-        password = "s367081"
+        user = "s409682"
+        password = "d8eurYEUJ6AkmTbf"
         schemas = ['public']
     }
 
@@ -58,7 +56,7 @@ project(':server') {
         from {
             configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
         }
-        duplicatesStrategy "exclude"
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         with jar
     }
 }
@@ -72,9 +70,6 @@ project(':client') {
         implementation 'org.apache.commons:commons-lang3:3.12.0'
         implementation 'commons-validator:commons-validator:1.7'
         implementation 'com.google.guava:guava:31.1-jre'
-
-        implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
-        implementation 'org.apache.logging.log4j:log4j-api:2.20.0'
     }
     run {
         standardInput = System.in
@@ -98,7 +93,7 @@ project(':client') {
         from {
             configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
         }
-        duplicatesStrategy "exclude"
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         with jar
     }
 }
