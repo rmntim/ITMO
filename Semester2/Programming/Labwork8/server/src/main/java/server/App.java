@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import server.commands.*;
 import server.handlers.CommandHandler;
 import server.managers.AuthManager;
-import server.managers.CommandManager;
+import server.managers.CommandManagerBuilder;
 import server.managers.PersistenceManager;
 import server.network.UDPDatagramServer;
 import server.repositories.ProductRepository;
@@ -18,6 +18,7 @@ import server.utils.HibernateUtil;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Map;
 
 public class App {
     public static final int PORT = 23586;
@@ -33,13 +34,13 @@ public class App {
         var authManager = new AuthManager(sessionFactory, dotenv.get("PEPPER"));
 
         var repository = new ProductRepository(persistenceManager);
-        var commandManager = initializeCommandManager(repository, authManager);
+        var commands = initializeCommands(repository, authManager);
 
         try {
             var server = new UDPDatagramServer(
                     InetAddress.getLocalHost(),
                     PORT,
-                    new CommandHandler(commandManager, authManager)
+                    new CommandHandler(commands, authManager)
             );
             server.run();
         } catch (SocketException e) {
@@ -63,24 +64,23 @@ public class App {
         return HibernateUtil.getSessionFactory(url, user, password);
     }
 
-    private static CommandManager initializeCommandManager(ProductRepository repository, AuthManager authManager) {
-        return new CommandManager() {{
-            register(Commands.REGISTER, new Register(authManager));
-            register(Commands.AUTHENTICATE, new Authenticate(authManager));
-            register(Commands.HELP, new Help(this));
-            register(Commands.INFO, new Info(repository));
-            register(Commands.SHOW, new Show(repository));
-            register(Commands.ADD, new Add(repository));
-            register(Commands.UPDATE, new Update(repository));
-            register(Commands.REMOVE_BY_ID, new RemoveById(repository));
-            register(Commands.CLEAR, new Clear(repository));
-            register(Commands.HEAD, new Head(repository));
-            register(Commands.ADD_IF_MAX, new AddIfMax(repository));
-            register(Commands.ADD_IF_MIN, new AddIfMin(repository));
-            register(Commands.SUM_OF_PRICE, new SumOfPrice(repository));
-            register(Commands.FILTER_BY_PRICE, new FilterByPrice(repository));
-            register(Commands.FILTER_CONTAINS_PART_NUMBER, new FilterContainsPartNumber(repository));
-        }};
+    private static Map<String, Command> initializeCommands(ProductRepository repository, AuthManager authManager) {
+        return new CommandManagerBuilder().
+                register(Commands.REGISTER, new Register(authManager))
+                .register(Commands.AUTHENTICATE, new Authenticate(authManager))
+                .register(Commands.INFO, new Info(repository))
+                .register(Commands.SHOW, new Show(repository))
+                .register(Commands.ADD, new Add(repository))
+                .register(Commands.UPDATE, new Update(repository))
+                .register(Commands.REMOVE_BY_ID, new RemoveById(repository))
+                .register(Commands.CLEAR, new Clear(repository))
+                .register(Commands.HEAD, new Head(repository))
+                .register(Commands.ADD_IF_MAX, new AddIfMax(repository))
+                .register(Commands.ADD_IF_MIN, new AddIfMin(repository))
+                .register(Commands.SUM_OF_PRICE, new SumOfPrice(repository))
+                .register(Commands.FILTER_BY_PRICE, new FilterByPrice(repository))
+                .register(Commands.FILTER_CONTAINS_PART_NUMBER, new FilterContainsPartNumber(repository))
+                .build();
     }
 
     private static void loadEnv() {

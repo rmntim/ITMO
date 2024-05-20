@@ -7,19 +7,20 @@ import common.network.responses.NoSuchCommandResponse;
 import common.network.responses.Response;
 import org.slf4j.Logger;
 import server.App;
+import server.commands.Command;
 import server.managers.AuthManager;
-import server.managers.CommandManager;
 
 import java.sql.SQLException;
+import java.util.Map;
 
 public class CommandHandler {
-    private final CommandManager manager;
+    private final Map<String, Command> commands;
     private final AuthManager authManager;
 
     private final Logger logger = App.logger;
 
-    public CommandHandler(CommandManager manager, AuthManager authManager) {
-        this.manager = manager;
+    public CommandHandler(Map<String, Command> commands, AuthManager authManager) {
+        this.commands = commands;
         this.authManager = authManager;
     }
 
@@ -36,7 +37,7 @@ public class CommandHandler {
             }
         }
 
-        var command = manager.getCommands().get(request.getName());
+        var command = commands.get(request.getName());
         if (command == null) return new NoSuchCommandResponse(request.getName());
         return command.apply(request);
     }
