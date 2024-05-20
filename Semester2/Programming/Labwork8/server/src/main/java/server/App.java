@@ -21,7 +21,7 @@ import java.net.UnknownHostException;
 import java.util.Map;
 
 public class App {
-    public static final int PORT = 23586;
+    public static final int PORT = 8080;
 
     public static final Logger logger = LoggerFactory.getLogger("ServerLogger");
     public static Dotenv dotenv;

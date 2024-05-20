@@ -9,3 +9,12 @@ services:
       POSTGRES_PASSWORD: "s409682"
     ports:
       - "5432:5432"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
