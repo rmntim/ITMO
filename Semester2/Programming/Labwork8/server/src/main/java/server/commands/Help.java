@@ -17,9 +17,7 @@ public class Help extends Command {
     @Override
     public Response apply(Request request) {
         var helpMessage = new StringBuilder();
-
         commands.values().forEach(command -> helpMessage.append(" %-35s%-1s%n".formatted(command.getName(), command.getDescription())));
-
         return new HelpResponse(helpMessage.toString(), null);
     }
 }

@@ -55,7 +55,7 @@ public class PersistenceManager {
         }
     }
 
-    public int update(User user, Product product) {
+    public int update(Product product) {
         logger.info("Updating product with id={}", product.getId());
         try (var session = sessionFactory.openSession()) {
             session.beginTransaction();
@@ -63,7 +63,7 @@ public class PersistenceManager {
 
             var ordDaoId = -1;
             if (product.getManufacturer() != null) {
-                ordDaoId = updateOrganization(user, product.getManufacturer()).getId();
+                ordDaoId = updateOrganization(product.getManufacturer()).getId();
             } else {
                 productDAO.setManufacturer(null);
             }
@@ -76,7 +76,7 @@ public class PersistenceManager {
         }
     }
 
-    public OrganizationDAO updateOrganization(User user, Organization organization) {
+    public OrganizationDAO updateOrganization(Organization organization) {
         logger.info("Updating organization with id={}", organization.getId());
 
         try (var session = sessionFactory.openSession()) {

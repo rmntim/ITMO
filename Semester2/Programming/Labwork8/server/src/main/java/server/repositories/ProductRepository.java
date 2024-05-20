@@ -117,7 +117,7 @@ public class ProductRepository {
         } else if (product.getCreatorId() == user.getId()) {
             logger.info("Updating product with id={}.", product.getId());
 
-            var orgId = persistenceManager.update(user, element);
+            var orgId = persistenceManager.update(element);
 
             if (orgId != -1) element.getManufacturer().setId(orgId);
             getById(element.getId()).update(element);
