@@ -4,7 +4,7 @@ import com.google.common.primitives.Bytes;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 import server.App;
 import server.handlers.CommandHandler;
 
@@ -15,7 +15,6 @@ import java.util.Arrays;
 
 public class UDPDatagramServer extends UDPServer {
     private final int PACKET_SIZE = 1024;
-    private final int DATA_SIZE = PACKET_SIZE - 1;
 
     private final DatagramSocket datagramSocket;
 
@@ -40,12 +39,12 @@ public class UDPDatagramServer extends UDPServer {
             datagramSocket.receive(dp);
 
             addr = dp.getSocketAddress();
-            logger.info("Получено \"" + new String(data) + "\" от " + dp.getAddress());
-            logger.info("Последний байт: " + data[data.length - 1]);
+            logger.info("Got \"{}\" from {}", new String(data), dp.getAddress());
+            logger.info("Last byte: {}", data[data.length - 1]);
 
             if (data[data.length - 1] == 1) {
                 received = true;
-                logger.info("Получение данных от " + dp.getAddress() + " окончено");
+                logger.info("Received all data from {}", dp.getAddress());
             }
             result = Bytes.concat(result, Arrays.copyOf(data, data.length - 1));
         }
@@ -54,6 +53,7 @@ public class UDPDatagramServer extends UDPServer {
 
     @Override
     public void sendData(byte[] data, SocketAddress addr) throws IOException {
+        int DATA_SIZE = PACKET_SIZE - 1;
         byte[][] ret = new byte[(int) Math.ceil(data.length / (double) DATA_SIZE)][DATA_SIZE];
 
         int start = 0;
@@ -62,7 +62,7 @@ public class UDPDatagramServer extends UDPServer {
             start += DATA_SIZE;
         }
 
-        logger.info("Отправляется " + ret.length + " чанков...");
+        logger.info("Sending {} chunks", ret.length);
 
         for (int i = 0; i < ret.length; i++) {
             var chunk = ret[i];
@@ -70,15 +70,15 @@ public class UDPDatagramServer extends UDPServer {
                 var lastChunk = Bytes.concat(chunk, new byte[]{1});
                 var dp = new DatagramPacket(lastChunk, PACKET_SIZE, addr);
                 datagramSocket.send(dp);
-                logger.info("Последний чанк размером " + chunk.length + " отправлен на сервер.");
+                logger.info("Last chunk of size {} sent.", chunk.length);
             } else {
                 var dp = new DatagramPacket(ByteBuffer.allocate(PACKET_SIZE).put(chunk).array(), PACKET_SIZE, addr);
                 datagramSocket.send(dp);
-                logger.info("Чанк размером " + chunk.length + " отправлен на сервер.");
+                logger.info("Chunk of size {} sent.", chunk.length);
             }
         }
 
-        logger.info("Отправка данных завершена");
+        logger.info("Finished sending data");
     }
 
     @Override

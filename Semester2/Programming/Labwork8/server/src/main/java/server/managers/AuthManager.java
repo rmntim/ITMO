@@ -2,28 +2,27 @@ package server.managers;
 
 import com.google.common.hash.Hashing;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.logging.log4j.Logger;
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
 import server.App;
 import server.dao.UserDAO;
 
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.List;
 
 public class AuthManager {
+    private static final int SALT_LENGTH = 10;
+    private final Logger logger = App.logger;
     private final SessionFactory sessionFactory;
     private final String pepper;
-
-    private final Logger logger = App.logger;
 
     public AuthManager(SessionFactory sessionFactory, String pepper) {
         this.sessionFactory = sessionFactory;
         this.pepper = pepper;
     }
 
-    public int registerUser(String login, String password) throws SQLException {
-        logger.info("Создание нового пользователя {}", login);
+    public int registerUser(String login, String password) {
+        logger.info("Creating new user with username {}", login);
 
         var salt = generateSalt();
         var passwordHash = generatePasswordHash(password, salt);
@@ -33,58 +32,55 @@ public class AuthManager {
         dao.setPasswordDigest(passwordHash);
         dao.setSalt(salt);
 
-        var session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.persist(dao);
-        session.getTransaction().commit();
-        session.close();
+        try (var session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.persist(dao);
+            session.getTransaction().commit();
+        }
 
         var newId = dao.getId();
-        logger.info("Пользователь успешно создан, id#{}", newId);
+        logger.info("User created successfully, id={}", newId);
         return newId;
     }
 
     public int authenticateUser(String login, String password) throws SQLException {
-        logger.info("Аутентификация пользователя {}", login);
-        var session = sessionFactory.openSession();
-        session.beginTransaction();
+        logger.info("Authenticating user {}", login);
+        try (var session = sessionFactory.openSession()) {
+            session.beginTransaction();
 
-        var query = session.createQuery("SELECT u FROM users u WHERE u.name = :name");
-        query.setParameter("name", login);
+            var query = session.createQuery("SELECT u FROM users u WHERE u.name = :name", UserDAO.class);
+            query.setParameter("name", login);
 
-        var result = (List<UserDAO>) query.list();
+            var result = query.list();
+            if (result.isEmpty()) {
+                logger.warn("Wrong password for {}", login);
+                return 0;
+            }
 
-        if (result.isEmpty()) {
-            logger.warn("Неправильный пароль для пользователя {}", login);
+            var user = result.get(0);
+            session.getTransaction().commit();
+
+            var id = user.getId();
+            var salt = user.getSalt();
+            var expectedHashedPassword = user.getPasswordDigest();
+
+            var actualHashedPassword = generatePasswordHash(password, salt);
+            if (expectedHashedPassword.equals(actualHashedPassword)) {
+                logger.info("User {} authenticated successfully", login);
+                return id;
+            }
+
             return 0;
         }
-
-        var user = result.get(0);
-        session.getTransaction().commit();
-        session.close();
-
-        var id = user.getId();
-        var salt = user.getSalt();
-        var expectedHashedPassword = user.getPasswordDigest();
-
-        var actualHashedPassword = generatePasswordHash(password, salt);
-        if (expectedHashedPassword.equals(actualHashedPassword)) {
-            ;
-            logger.info("Пользователь {} аутентифицирован c id#{}", login, id);
-            return id;
-        }
-
-        logger.warn("Неправильный пароль для пользователя {}. Ожидалось '{}', получено '{}'", login, expectedHashedPassword, actualHashedPassword);
-        return 0;
     }
 
     private String generateSalt() {
-        int SALT_LENGTH = 10;
         return RandomStringUtils.randomAlphanumeric(SALT_LENGTH);
     }
 
     private String generatePasswordHash(String password, String salt) {
-        return Hashing.sha256()
+        //noinspection deprecation
+        return Hashing.md5()
                 .hashString(pepper + password + salt, StandardCharsets.UTF_8)
                 .toString();
     }

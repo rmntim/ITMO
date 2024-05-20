@@ -2,10 +2,10 @@ package server;
 
 import common.utility.Commands;
 import io.github.cdimascio.dotenv.Dotenv;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.internal.SessionFactoryImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import server.commands.*;
 import server.handlers.CommandHandler;
 import server.managers.AuthManager;
@@ -22,12 +22,11 @@ import java.net.UnknownHostException;
 public class App {
     public static final int PORT = 23586;
 
-    public static final Logger logger = LogManager.getLogger("ServerLogger");
+    public static final Logger logger = LoggerFactory.getLogger("ServerLogger");
     public static Dotenv dotenv;
 
     public static void main(String[] args) {
         SessionFactoryImpl sessionFactory = (SessionFactoryImpl) getHibernateSessionFactory();
-        var session = sessionFactory.openSession();
         Runtime.getRuntime().addShutdownHook(new Thread(sessionFactory::close));
 
         var persistenceManager = new PersistenceManager(sessionFactory);
@@ -44,9 +43,9 @@ public class App {
             );
             server.run();
         } catch (SocketException e) {
-            logger.fatal("Случилась ошибка сокета", e);
+            logger.error("Socket error", e);
         } catch (UnknownHostException e) {
-            logger.fatal("Неизвестный хост", e);
+            logger.error("Unknown host", e);
         }
     }
 
@@ -57,7 +56,7 @@ public class App {
         var password = dotenv.get("DB_PASSWORD");
 
         if (url == null || url.isEmpty() || user == null || user.isEmpty() || password == null || password.isEmpty()) {
-            System.out.println("В .env файле не обнаружены данные для подключения к базе данных");
+            System.out.println(".env file must contain DB_URL, DB_USER and DB_PASSWORD");
             System.exit(1);
         }
 

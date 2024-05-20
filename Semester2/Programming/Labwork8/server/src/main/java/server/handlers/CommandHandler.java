@@ -5,7 +5,7 @@ import common.network.responses.BadCredentialsResponse;
 import common.network.responses.ErrorResponse;
 import common.network.responses.NoSuchCommandResponse;
 import common.network.responses.Response;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 import server.App;
 import server.managers.AuthManager;
 import server.managers.CommandManager;
@@ -28,11 +28,11 @@ public class CommandHandler {
             var user = request.getUser();
             try {
                 if (user == null || authManager.authenticateUser(user.getName(), user.getPassword()) <= 0) {
-                    return new BadCredentialsResponse("Неверные учетные данные. Пожалуйста, войдите в свой аккаунт.");
+                    return new BadCredentialsResponse("Bad credentials. Please login again.");
                 }
             } catch (SQLException e) {
-                logger.error("Невозможно выполнить запрос к БД о аутентификации пользователя.", e);
-                return new ErrorResponse("sql_error", "Невозможно выполнить запрос к БД о аутентификации пользователя.");
+                logger.error("Error while authenticating.", e);
+                return new ErrorResponse("sql_error", "Error while authenticating.");
             }
         }
 

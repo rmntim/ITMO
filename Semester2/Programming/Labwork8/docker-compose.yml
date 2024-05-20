@@ -1,10 +1,11 @@
-version: "3.9"
+version: "3"
+
 services:
-    postgres:
-        image: postgres:14.2
-        environment:
-            POSTGRES_DB: "studs"
-            POSTGRES_USER: "s367081"
-            POSTGRES_PASSWORD: "s367081"
-        ports:
-            - "5432:5432"
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_DB: "studs"
+      POSTGRES_USER: "s409682"
+      POSTGRES_PASSWORD: "s409682"
+    ports:
+      - "5432:5432"

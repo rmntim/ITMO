@@ -7,17 +7,12 @@ import common.domain.Product;
 import common.exceptions.BadOwnerException;
 import common.user.User;
 import common.utility.ProductComparator;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 import server.App;
 import server.managers.PersistenceManager;
 
-import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ProductRepository {
@@ -28,8 +23,6 @@ public class ProductRepository {
     private LocalDateTime lastSaveTime;
     private final PersistenceManager persistenceManager;
 
-    private final ReentrantLock lock = new ReentrantLock();
-
     public ProductRepository(PersistenceManager persistenceManager) {
         this.lastInitTime = null;
         this.lastSaveTime = null;
@@ -38,12 +31,12 @@ public class ProductRepository {
         try {
             load();
         } catch (Exception e) {
-            logger.fatal("Ошибка загрузки продуктов из базы данных!", e);
+            logger.error("Error loading data from DB!", e);
             System.exit(3);
         }
 
         if (!validateAll()) {
-            logger.fatal("Невалидные продукты в загруженном файле!");
+            logger.error("Invalid elements!");
             System.exit(2);
         }
     }
@@ -51,67 +44,45 @@ public class ProductRepository {
     public boolean validateAll() {
         for (var product : new ArrayList<>(get())) {
             if (!product.validate()) {
-                logger.warn("Продукт с id=" + product.getId() + " имеет невалидные поля.");
+                logger.warn("Product with id={} is invalid.", product.getId());
                 return false;
             }
             if (product.getManufacturer() != null) {
                 if (!product.getManufacturer().validate()) {
-                    logger.warn("Производитель продукта с id=" + product.getId() + " имеет невалидные поля.");
+                    logger.warn("Manufacturer with id={} is invalid.", product.getId());
                     return false;
                 }
             }
         }
-        ;
-        logger.info("! Загруженные продукты валидны.");
+        logger.info("All products are valid.");
         return true;
     }
 
-    /**
-     * @return коллекция.
-     */
     public Queue<Product> get() {
         return collection;
     }
 
-    /**
-     * @return Последнее время инициализации.
-     */
     public LocalDateTime getLastInitTime() {
         return lastInitTime;
     }
 
-    /**
-     * @return Последнее время сохранения.
-     */
     public LocalDateTime getLastSaveTime() {
         return lastSaveTime;
     }
 
-    /**
-     * @return Имя типа коллекции.
-     */
     public String type() {
         return collection.getClass().getName();
     }
 
-    /**
-     * @return Размер коллекции.
-     */
     public int size() {
         return collection.size();
     }
 
-    /**
-     * @return Первый элемент коллекции (null если коллекция пустая).
-     */
     public Product first() {
         if (collection.isEmpty()) return null;
         return sorted().get(0);
     }
 
-    /**
-     * @return Отсортированная коллекция.
-     */
     public List<Product> sorted() {
         return new ArrayList<>(collection)
                 .stream()
@@ -119,10 +90,6 @@ public class ProductRepository {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * @param id ID элемента.
-     * @return Элемент по его ID или null, если не найдено.
-     */
     public Product getById(int id) {
         for (Product element : collection) {
             if (element.getId() == id) return element;
@@ -130,107 +97,67 @@ public class ProductRepository {
         return null;
     }
 
-    /**
-     * @param id ID элемента.
-     * @return Проверяет, существует ли элемент с таким ID.
-     */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean checkExist(int id) {
         return getById(id) != null;
     }
 
-    /**
-     * Добавляет элемент в коллекцию
-     *
-     * @param element Элемент для добавления.
-     * @return id нового элемента
-     */
-    public int add(User user, Product element) throws SQLException {
+    public synchronized int add(User user, Product element) {
         var newId = persistenceManager.add(user, element);
-        logger.info("Новый продукт добавлен в БД.");
-
-        lock.lock();
         collection.add(element.copy(newId, user.withoutPassword()));
         lastSaveTime = LocalDateTime.now();
-        lock.unlock();
-
-        logger.info("Продукт добавлен!");
-
+        logger.info("New product added successfully.");
         return newId;
     }
 
-    /**
-     * Обновляет элемент в коллекции.
-     *
-     * @param user    Пользователь.
-     * @param element Элемент для обновления.
-     */
-    public void update(User user, Product element) throws SQLException, BadOwnerException {
+    public synchronized void update(User user, Product element) throws BadOwnerException {
         var product = getById(element.getId());
         if (product == null) {
             add(user, element);
         } else if (product.getCreatorId() == user.getId()) {
-            logger.info("Обновление продукта id#" + product.getId() + " в БД.");
+            logger.info("Updating product with id={}.", product.getId());
 
             var orgId = persistenceManager.update(user, element);
 
-            lock.lock();
             if (orgId != -1) element.getManufacturer().setId(orgId);
             getById(element.getId()).update(element);
             lastSaveTime = LocalDateTime.now();
-            lock.unlock();
 
-            logger.info("Продукт успешно обновлен!ё");
+            logger.info("Product added successfully");
         } else {
-            logger.warn("Другой владелец. Исключение.");
+            logger.warn("Wrong owner for product with id={}.", product.getId());
             throw new BadOwnerException();
         }
     }
 
-    /**
-     * Удаляет элемент из коллекции.
-     *
-     * @param id ID элемента для удаления.
-     * @return количество удаленных продуктов.
-     */
-    public int remove(User user, int id) throws SQLException, BadOwnerException {
+    public synchronized int remove(User user, int id) throws BadOwnerException {
         if (getById(id).getCreatorId() != user.getId()) {
-            logger.warn("Другой владелец. Исключение.");
+            logger.warn("Wrong owner for product with id={}.", id);
             throw new BadOwnerException();
         }
 
         var removedCount = persistenceManager.remove(user, id);
         if (removedCount == 0) {
-            logger.warn("Ничего не было удалено.");
+            logger.warn("No elements were removed");
             return 0;
         }
 
-        lock.lock();
         collection.removeIf(product -> product.getId() == id && product.getCreatorId() == user.getId());
         lastSaveTime = LocalDateTime.now();
-        lock.unlock();
 
         return removedCount;
     }
 
-    /**
-     * Очищает коллекцию.
-     */
-    public void clear(User user) throws SQLException {
+    public synchronized void clear(User user) {
         persistenceManager.clear(user);
 
-        lock.lock();
         collection.removeIf(product -> product.getCreatorId() == user.getId());
         lastSaveTime = LocalDateTime.now();
-        lock.unlock();
     }
 
-    /**
-     * Загружает коллекцию из базы данных.
-     */
-    private void load() {
-        logger.info("Загрузка начата...");
+    private synchronized void load() {
+        logger.info("Loading data");
 
-        lock.lock();
         collection = new PriorityQueue<>();
         var daos = persistenceManager.loadProducts();
 
@@ -256,24 +183,22 @@ public class ProductRepository {
                     manufacturer,
                     new User(dao.getCreator().getId(), dao.getCreator().getName(), "")
             );
-        }).collect(Collectors.toList());
+        }).toList();
 
         collection.addAll(products);
         lastInitTime = LocalDateTime.now();
-        lock.unlock();
 
-        logger.info("Загрузка завершена!");
+        logger.info("Data loaded");
     }
 
     @Override
     public String toString() {
-        if (collection.isEmpty()) return "Коллекция пуста!";
+        if (collection.isEmpty()) return "Collection is empty!";
 
-        var info = new StringBuilder();
+        var info = new StringJoiner("\n\n");
         for (Product product : collection) {
-            info.append(product);
-            info.append("\n\n");
+            info.add(product.toString());
         }
-        return info.substring(0, info.length() - 2);
+        return info.toString();
     }
 }

@@ -4,11 +4,13 @@ import common.network.requests.RegisterRequest;
 import common.network.requests.Request;
 import common.network.responses.RegisterResponse;
 import common.network.responses.Response;
-import org.postgresql.util.PSQLException;
 import server.managers.AuthManager;
+
+import javax.persistence.PersistenceException;
 
 public class Register extends Command {
     private final AuthManager authManager;
+    @SuppressWarnings("FieldCanBeLocal")
     private final int MAX_USERNAME_LENGTH = 40;
 
     public Register(AuthManager authManager) {
@@ -32,13 +34,7 @@ public class Register extends Command {
             } else {
                 return new RegisterResponse(user.copy(newUserId), null);
             }
-        } catch (PSQLException e) {
-            var message = "Ошибка PostgreSQL: " + e.getMessage();
-            if (e.getMessage().contains("duplicate key value violates unique constraint \"users_name_key\"")) {
-                message = "Неуникальное имя пользователя! Попробуйте другое.";
-            }
-            return new RegisterResponse(user, message);
-        } catch (Exception e) {
+        } catch (IllegalStateException | PersistenceException e) {
             return new RegisterResponse(user, e.toString());
         }
     }

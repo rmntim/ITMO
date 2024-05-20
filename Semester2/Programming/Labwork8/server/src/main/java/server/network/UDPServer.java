@@ -7,7 +7,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.SerializationException;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 import server.App;
 import server.handlers.CommandHandler;
 
@@ -17,37 +17,32 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 
 abstract class UDPServer {
     private static final int READ_POOL_SIZE = 4;
 
     private final InetSocketAddress addr;
     private final CommandHandler commandHandler;
-    private final ExecutorService service;
+    private final ExecutorService service = Executors.newFixedThreadPool(READ_POOL_SIZE);
+    private final ForkJoinPool pool = ForkJoinPool.commonPool();
 
     private final Logger logger = App.logger;
 
+    @SuppressWarnings("FieldMayBeFinal")
     private boolean running = true;
 
     public UDPServer(InetSocketAddress addr, CommandHandler commandHandler) {
         this.addr = addr;
         this.commandHandler = commandHandler;
-        this.service = Executors.newFixedThreadPool(READ_POOL_SIZE);
     }
 
     public InetSocketAddress getAddr() {
         return addr;
     }
 
-    /**
-     * Получает данные с клиента.
-     * Возвращает пару из данных и адреса клиента
-     */
     public abstract Pair<Byte[], SocketAddress> receiveData() throws IOException;
 
-    /**
-     * Отправляет данные клиенту
-     */
     public abstract void sendData(byte[] data, SocketAddress addr) throws IOException;
 
     public abstract void connectToClient(SocketAddress addr) throws SocketException;
@@ -57,15 +52,15 @@ abstract class UDPServer {
     public abstract void close();
 
     public void run() {
-        logger.info("Сервер запущен по адресу " + addr);
+        logger.info("Server listening on {}", addr);
 
-        service.submit(() -> {
+        pool.submit(() -> {
             while (running) {
                 Pair<Byte[], SocketAddress> dataPair;
                 try {
                     dataPair = receiveData();
                 } catch (Exception e) {
-                    logger.error("Ошибка получения данных : " + e.toString(), e);
+                    logger.error("Error while receiving data", e);
                     disconnectFromClient();
                     continue;
                 }
@@ -75,52 +70,47 @@ abstract class UDPServer {
 
                 try {
                     connectToClient(clientAddr);
-                    logger.info("Соединено с " + clientAddr);
+                    logger.info("Connected to {}", clientAddr);
                 } catch (Exception e) {
-                    logger.error("Ошибка соединения с клиентом : " + e.toString(), e);
+                    logger.error("Error while connecting", e);
                 }
 
                 Request request;
                 try {
                     request = SerializationUtils.deserialize(ArrayUtils.toPrimitive(dataFromClient));
-                    logger.info("Обработка " + request + " из " + clientAddr);
+                    logger.info("Evaluating {} from {}", request, clientAddr);
                 } catch (SerializationException e) {
-                    logger.error("Невозможно десериализовать объект запроса.", e);
+                    logger.error("Serialization error", e);
                     disconnectFromClient();
                     continue;
                 }
 
-                new Thread(() -> {
+                pool.submit(() -> {
                     Response response = null;
                     try {
                         response = commandHandler.handle(request);
                     } catch (Exception e) {
-                        logger.error("Ошибка выполнения команды : " + e.toString(), e);
+                        logger.error("Ошибка выполнения команды", e);
                     }
                     if (response == null) response = new NoSuchCommandResponse(request.getName());
 
                     var data = SerializationUtils.serialize(response);
-                    logger.info("Ответ: " + response);
+                    logger.info("Response: {}", response);
 
-                    new Thread(() -> {
+                    service.submit(() -> {
                         try {
                             sendData(data, clientAddr);
-                            logger.info("Отправлен ответ клиенту " + clientAddr);
-                        } catch (Exception e) {
-                            logger.error("Ошибка ввода-вывода : " + e.toString(), e);
+                            logger.info("Sent response to {}", clientAddr);
+                        } catch (IOException e) {
+                            logger.error("IO error", e);
                         }
-                    }).start();
-                }).start();
+                    });
+                });
 
                 disconnectFromClient();
-                logger.info("Отключение от клиента " + clientAddr);
-                logger.info("Активные треды: " + Thread.activeCount());
+                logger.info("Disconnected from {}", clientAddr);
             }
             close();
         });
-    }
-
-    public void stop() {
-        running = false;
     }
 }

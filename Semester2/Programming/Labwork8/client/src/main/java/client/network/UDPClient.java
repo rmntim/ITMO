@@ -7,7 +7,7 @@ import common.network.requests.Request;
 import common.network.responses.ErrorResponse;
 import common.network.responses.Response;
 import org.apache.commons.lang3.SerializationUtils;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -19,7 +19,6 @@ import java.util.Arrays;
 
 public class UDPClient {
     private final int PACKET_SIZE = 1024;
-    private final int DATA_SIZE = PACKET_SIZE - 1;
 
     private final DatagramChannel client;
     private final InetSocketAddress addr;
@@ -30,7 +29,7 @@ public class UDPClient {
         this.addr = new InetSocketAddress(address, port);
         this.client = DatagramChannel.open().bind(null).connect(addr);
         this.client.configureBlocking(false);
-        logger.info("DatagramChannel подключен к " + addr);
+        logger.info("DatagramChannel connected to {}", addr);
     }
 
     public Response sendAndReceiveCommand(Request request) throws IOException, ErrorResponseException {
@@ -38,7 +37,7 @@ public class UDPClient {
         var responseBytes = sendAndReceiveData(data);
 
         Response response = SerializationUtils.deserialize(responseBytes);
-        logger.info("Получен ответ от сервера:  " + response);
+        logger.info("Got a response from server:  {}", response);
         if (response.isErrorResponse()) {
             throw new ErrorResponseException((ErrorResponse) response);
         }
@@ -46,6 +45,7 @@ public class UDPClient {
     }
 
     private void sendData(byte[] data) throws IOException {
+        int DATA_SIZE = PACKET_SIZE - 1;
         byte[][] ret = new byte[(int) Math.ceil(data.length / (double) DATA_SIZE)][DATA_SIZE];
 
         int start = 0;
@@ -54,22 +54,22 @@ public class UDPClient {
             start += DATA_SIZE;
         }
 
-        logger.info("Отправляется " + ret.length + " чанков...");
+        logger.info("Sending {} chunks...", ret.length);
 
         for (int i = 0; i < ret.length; i++) {
             var chunk = ret[i];
             if (i == ret.length - 1) {
                 var lastChunk = Bytes.concat(chunk, new byte[]{1});
                 client.send(ByteBuffer.wrap(lastChunk), addr);
-                logger.info("Последний чанк размером " + lastChunk.length + " отправлен на сервер.");
+                logger.info("Last chunk of size {} sent.", lastChunk.length);
             } else {
                 var answer = Bytes.concat(chunk, new byte[]{0});
                 client.send(ByteBuffer.wrap(answer), addr);
-                logger.info("Чанк размером " + answer.length + " отправлен на сервер.");
+                logger.info("Chunk of size {} sent.", answer.length);
             }
         }
 
-        logger.info("Отправка данных завершена.");
+        logger.info("Finished sending data.");
     }
 
     private byte[] receiveData() throws IOException {
@@ -78,12 +78,12 @@ public class UDPClient {
 
         while (!received) {
             var data = receiveData(PACKET_SIZE);
-            logger.info("Получено \"" + new String(data) + "\"");
-            logger.info("Последний байт: " + data[data.length - 1]);
+            logger.info("Got \"{}\"", new String(data));
+            logger.info("Last byte: {}", data[data.length - 1]);
 
             if (data[data.length - 1] == 1) {
                 received = true;
-                logger.info("Получение данных окончено");
+                logger.info("Finished receiving data.");
             }
             result = Bytes.concat(result, Arrays.copyOf(data, data.length - 1));
         }
@@ -91,7 +91,7 @@ public class UDPClient {
         return result;
     }
 
-    private byte[] receiveData(int bufferSize) throws IOException {
+    private byte[] receiveData(@SuppressWarnings("SameParameterValue") int bufferSize) throws IOException {
         var buffer = ByteBuffer.allocate(bufferSize);
         SocketAddress address = null;
         while (address == null) {

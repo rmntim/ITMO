@@ -10,8 +10,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
 
 public class App extends Application {
     private static final int PORT = 23586;
-    public static final Logger logger = LogManager.getLogger("ClientLogger");
+    public static final Logger logger = LoggerFactory.getLogger("ClientLogger");
     public static UDPClient client;
 
     private Stage mainStage;
@@ -31,8 +31,7 @@ public class App extends Application {
             client = new UDPClient(InetAddress.getLocalHost(), PORT);
             launch(args);
         } catch (IOException e) {
-            logger.info("Невозможно подключиться к серверу.", e);
-            System.err.println("Невозможно подключиться к серверу!");
+            logger.info("Can't connect to server.", e);
         }
     }
 
@@ -73,7 +72,7 @@ public class App extends Application {
 
     private void authStage() {
         var authLoader = new FXMLLoader(getClass().getResource("/auth.fxml"));
-        Parent authRoot = loadFxml(authLoader);
+        var authRoot = loadFxml(authLoader);
         AuthController authController = authLoader.getController();
         authController.setCallback(this::startMain);
         authController.setClient(client);
@@ -90,13 +89,9 @@ public class App extends Application {
         try {
             parent = loader.load();
         } catch (IOException e) {
-            logger.error("Can't load " + loader.toString(), e);
+            logger.error("Can't load {}", loader, e);
             System.exit(1);
         }
         return parent;
-    }
-
-    public Stage getMainStage() {
-        return mainStage;
     }
 }
