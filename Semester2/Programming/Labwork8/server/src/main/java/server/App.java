@@ -28,22 +28,24 @@ public class App {
     public static Dotenv dotenv;
 
     public static void main(String[] args) {
-        SessionFactoryImpl sessionFactory = (SessionFactoryImpl) getHibernateSessionFactory();
-        Runtime.getRuntime().addShutdownHook(new Thread(sessionFactory::close));
-
-        var persistenceManager = new PersistenceManager(sessionFactory);
-        var authManager = new AuthManager(sessionFactory, dotenv.get("PEPPER"));
-
-        var repository = new ProductRepository(persistenceManager);
-        var commands = initializeCommands(repository, authManager);
-
         try {
+            var sessionFactory = (SessionFactoryImpl) getHibernateSessionFactory();
+            Runtime.getRuntime().addShutdownHook(new Thread(sessionFactory::close));
+
+            var persistenceManager = new PersistenceManager(sessionFactory);
+            var authManager = new AuthManager(sessionFactory, dotenv.get("PEPPER"));
+
+            var repository = new ProductRepository(persistenceManager);
+            var commands = initializeCommands(repository, authManager);
+
             var server = new UDPDatagramServer(InetAddress.getLocalHost(), PORT, new CommandHandler(commands, authManager));
             server.run();
         } catch (SocketException e) {
             logger.error("Socket error", e);
         } catch (UnknownHostException e) {
             logger.error("Unknown host", e);
+        } catch (ExceptionInInitializerError e) {
+            logger.error("Error initializing Hibernate", e);
         }
     }
 

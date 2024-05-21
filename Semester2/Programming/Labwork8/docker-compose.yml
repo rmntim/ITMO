@@ -7,6 +7,8 @@ services:
       POSTGRES_DB: "studs"
       POSTGRES_USER: "s409682"
       POSTGRES_PASSWORD: "s409682"
+    volumes:
+      - ./server/sql/schema.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
 
