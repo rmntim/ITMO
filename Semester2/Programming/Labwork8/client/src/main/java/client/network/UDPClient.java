@@ -1,13 +1,11 @@
 package client.network;
 
-import client.App;
 import com.google.common.primitives.Bytes;
 import common.exceptions.ErrorResponseException;
 import common.network.requests.Request;
 import common.network.responses.ErrorResponse;
 import common.network.responses.Response;
 import org.apache.commons.lang3.SerializationUtils;
-import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -23,13 +21,11 @@ public class UDPClient {
     private final DatagramChannel client;
     private final InetSocketAddress addr;
 
-    private final Logger logger = App.logger;
 
     public UDPClient(InetAddress address, int port) throws IOException {
         this.addr = new InetSocketAddress(address, port);
         this.client = DatagramChannel.open().bind(null).connect(addr);
         this.client.configureBlocking(false);
-        logger.info("DatagramChannel connected to {}", addr);
     }
 
     public Response sendAndReceiveCommand(Request request) throws IOException, ErrorResponseException {
@@ -37,7 +33,6 @@ public class UDPClient {
         var responseBytes = sendAndReceiveData(data);
 
         Response response = SerializationUtils.deserialize(responseBytes);
-        logger.info("Got a response from server:  {}", response);
         if (response.isErrorResponse()) {
             throw new ErrorResponseException((ErrorResponse) response);
         }
@@ -54,22 +49,17 @@ public class UDPClient {
             start += DATA_SIZE;
         }
 
-        logger.info("Sending {} chunks...", ret.length);
-
         for (int i = 0; i < ret.length; i++) {
             var chunk = ret[i];
             if (i == ret.length - 1) {
                 var lastChunk = Bytes.concat(chunk, new byte[]{1});
                 client.send(ByteBuffer.wrap(lastChunk), addr);
-                logger.info("Last chunk of size {} sent.", lastChunk.length);
             } else {
                 var answer = Bytes.concat(chunk, new byte[]{0});
                 client.send(ByteBuffer.wrap(answer), addr);
-                logger.info("Chunk of size {} sent.", answer.length);
             }
         }
 
-        logger.info("Finished sending data.");
     }
 
     private byte[] receiveData() throws IOException {
@@ -78,12 +68,9 @@ public class UDPClient {
 
         while (!received) {
             var data = receiveData(PACKET_SIZE);
-            logger.info("Got \"{}\"", new String(data));
-            logger.info("Last byte: {}", data[data.length - 1]);
 
             if (data[data.length - 1] == 1) {
                 received = true;
-                logger.info("Finished receiving data.");
             }
             result = Bytes.concat(result, Arrays.copyOf(data, data.length - 1));
         }

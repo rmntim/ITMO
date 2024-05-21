@@ -10,8 +10,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -20,7 +18,6 @@ import java.util.ResourceBundle;
 
 public class App extends Application {
     private static final int PORT = 23586;
-    public static final Logger logger = LoggerFactory.getLogger("ClientLogger");
     public static UDPClient client;
 
     private Stage mainStage;
@@ -31,7 +28,7 @@ public class App extends Application {
             client = new UDPClient(InetAddress.getLocalHost(), PORT);
             launch(args);
         } catch (IOException e) {
-            logger.info("Can't connect to server.", e);
+            System.err.println("Error creating client " + e.getMessage());
         }
     }
 
@@ -89,7 +86,7 @@ public class App extends Application {
         try {
             parent = loader.load();
         } catch (IOException e) {
-            logger.error("Can't load {}", loader, e);
+            System.err.println("Can't load fxml: " + e.getMessage());
             System.exit(1);
         }
         return parent;
