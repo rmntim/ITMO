@@ -1,6 +1,5 @@
 package server.commands;
 
-import common.domain.Product;
 import common.network.requests.FilterByPriceRequest;
 import common.network.requests.Request;
 import common.network.responses.FilterByPriceResponse;

@@ -6,7 +6,6 @@ import client.script.ScriptExecutor;
 import client.ui.DialogManager;
 import client.utility.Localizator;
 import client.utility.ProductPresenter;
-import common.domain.Product;
 import common.exceptions.*;
 import common.network.requests.*;
 import common.network.responses.*;

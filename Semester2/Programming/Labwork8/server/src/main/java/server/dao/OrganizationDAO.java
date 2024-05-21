@@ -1,7 +1,5 @@
 package server.dao;
 
-import common.domain.Organization;
-import common.domain.OrganizationType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

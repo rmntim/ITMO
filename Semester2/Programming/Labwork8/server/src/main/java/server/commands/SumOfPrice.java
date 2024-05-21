@@ -1,8 +1,8 @@
 package server.commands;
 
-import common.domain.Product;
 import common.network.requests.Request;
-import common.network.responses.*;
+import common.network.responses.Response;
+import common.network.responses.SumOfPriceResponse;
 import server.repositories.ProductRepository;
 
 public class SumOfPrice extends Command {

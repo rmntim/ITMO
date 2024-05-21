@@ -1,8 +1,5 @@
 package client.utility;
 
-import common.domain.Organization;
-import common.domain.Product;
-
 public class ProductPresenter {
     private final Localizator localizator;
 

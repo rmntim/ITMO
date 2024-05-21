@@ -1,9 +1,6 @@
 package server.repositories;
 
-import common.domain.Address;
 import common.domain.Coordinates;
-import common.domain.Organization;
-import common.domain.Product;
 import common.exceptions.BadOwnerException;
 import common.user.User;
 import org.slf4j.Logger;

@@ -1,7 +1,5 @@
 package server.managers;
 
-import common.domain.Organization;
-import common.domain.Product;
 import common.user.User;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;

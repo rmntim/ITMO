@@ -1,6 +1,5 @@
 package common.network.responses;
 
-import common.domain.Product;
 import common.utility.CommandName;
 
 import java.util.List;

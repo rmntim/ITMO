@@ -1,7 +1,5 @@
 package server.dao;
 
-import common.domain.Product;
-import common.domain.UnitOfMeasure;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
