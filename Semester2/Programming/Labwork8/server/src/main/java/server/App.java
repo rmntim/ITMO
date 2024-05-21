@@ -22,6 +22,7 @@ import java.util.Map;
 
 public class App {
     public static final int PORT = 8080;
+    private static final String ENV_FILE = ".env";
 
     public static final Logger logger = LoggerFactory.getLogger("ServerLogger");
     public static Dotenv dotenv;
@@ -37,11 +38,7 @@ public class App {
         var commands = initializeCommands(repository, authManager);
 
         try {
-            var server = new UDPDatagramServer(
-                    InetAddress.getLocalHost(),
-                    PORT,
-                    new CommandHandler(commands, authManager)
-            );
+            var server = new UDPDatagramServer(InetAddress.getLocalHost(), PORT, new CommandHandler(commands, authManager));
             server.run();
         } catch (SocketException e) {
             logger.error("Socket error", e);
@@ -84,16 +81,6 @@ public class App {
     }
 
     private static void loadEnv() {
-        var environmentFile = ".env.dev";
-        var isProduction = System.getenv("PROD");
-        if (isProduction != null && isProduction.equals("true")) {
-            environmentFile = ".env";
-        }
-
-        dotenv = Dotenv.configure()
-                .filename(environmentFile)
-                .ignoreIfMalformed()
-                .ignoreIfMissing()
-                .load();
+        dotenv = Dotenv.configure().filename(ENV_FILE).ignoreIfMalformed().ignoreIfMissing().load();
     }
 }

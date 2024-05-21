@@ -8,6 +8,6 @@ EXPOSE 8080
 WORKDIR /app
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/spring-boot-application.jar
 COPY --from=build /app/server/build/libs/server-all.jar /app/server.jar
-COPY server/.env.dev /app/.env
+COPY server/.env /app/.env
 
 ENTRYPOINT ["java","-jar","/app/server.jar"]
