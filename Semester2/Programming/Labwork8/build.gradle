@@ -19,8 +19,6 @@ project(':server') {
         implementation 'com.google.guava:guava:31.1-jre'
         implementation 'org.apache.commons:commons-lang3:3.12.0'
 
-        runtimeOnly 'org.flywaydb:flyway-gradle-plugin:9.16.1'
-
         implementation 'org.postgresql:postgresql:42.5.4'
 
         implementation 'javax.persistence:javax.persistence-api:2.2'
@@ -33,16 +31,6 @@ project(':server') {
         implementation 'ch.qos.logback:logback-core:1.5.3'
         implementation 'org.slf4j:slf4j-api:2.0.12'
     }
-
-    flyway {
-        locations = ["filesystem:./sql/migration"]
-        url = "jdbc:postgresql://127.0.0.1:5432/studs"
-        user = "s409682"
-        password = "d8eurYEUJ6AkmTbf"
-        schemas = ['public']
-    }
-
-    flywayMigrate.dependsOn classes
 
     jar {
         manifest.attributes('Main-Class': 'server.App',
