@@ -28,7 +28,7 @@ public class CommandHandler {
         if (!request.isAuth()) {
             var user = request.getUser();
             try {
-                if (user == null || authManager.authenticateUser(user.getName(), user.getPassword()) <= 0) {
+                if (user == null || authManager.authenticateUser(user.name(), user.password()) <= 0) {
                     return new BadCredentialsResponse("Bad credentials. Please login again.");
                 }
             } catch (SQLException e) {

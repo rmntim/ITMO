@@ -1,6 +1,6 @@
 package common.network.responses;
 
-import common.utility.Commands;
+import common.utility.CommandName;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +11,7 @@ public class InfoResponse extends Response {
     public final LocalDateTime lastInitTime;
 
     public InfoResponse(String type, String size, LocalDateTime lastSaveTime, LocalDateTime lastInitTime, String error) {
-        super(Commands.INFO, error);
+        super(CommandName.INFO, error);
         this.type = type;
         this.size = size;
         this.lastSaveTime = lastSaveTime;

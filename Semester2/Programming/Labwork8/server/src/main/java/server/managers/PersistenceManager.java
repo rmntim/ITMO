@@ -92,12 +92,12 @@ public class PersistenceManager {
     }
 
     public void clear(User user) {
-        logger.info("Removing all products for user id={}.", user.getId());
+        logger.info("Removing all products for user id={}.", user.id());
 
         try (var session = sessionFactory.openSession()) {
             session.beginTransaction();
             var query = session.createQuery("DELETE FROM products WHERE creator.id = :creator", Void.class);
-            query.setParameter("creator", user.getId());
+            query.setParameter("creator", user.id());
             var deletedSize = query.executeUpdate();
             session.getTransaction().commit();
             logger.info("Cleared {} product(s).", deletedSize);
@@ -105,13 +105,13 @@ public class PersistenceManager {
     }
 
     public int remove(User user, int id) {
-        logger.info("Removing product with id={} for user id={}.", id, user.getId());
+        logger.info("Removing product with id={} for user id={}.", id, user.id());
 
         try (var session = sessionFactory.openSession()) {
             session.beginTransaction();
 
             var query = session.createQuery("DELETE FROM products WHERE creator.id = :creator AND id = :id", Void.class);
-            query.setParameter("creator", user.getId());
+            query.setParameter("creator", user.id());
             query.setParameter("id", id);
 
             var deletedSize = query.executeUpdate();

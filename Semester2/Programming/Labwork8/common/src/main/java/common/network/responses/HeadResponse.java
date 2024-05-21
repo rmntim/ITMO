@@ -1,13 +1,13 @@
 package common.network.responses;
 
 import common.domain.Product;
-import common.utility.Commands;
+import common.utility.CommandName;
 
 public class HeadResponse extends Response {
     public final Product product;
 
     public HeadResponse(Product product, String error) {
-        super(Commands.HEAD, error);
+        super(CommandName.HEAD, error);
         this.product = product;
     }
 }

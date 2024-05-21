@@ -152,8 +152,8 @@ public class MainController {
         ownerColumn.setCellValueFactory(product -> new SimpleStringProperty(product.getValue().getCreator().toString()));
         idColumn.setCellValueFactory(product -> new SimpleIntegerProperty(product.getValue().getId()).asObject());
         nameColumn.setCellValueFactory(product -> new SimpleStringProperty(product.getValue().getName()));
-        xColumn.setCellValueFactory(product -> new SimpleIntegerProperty(product.getValue().getCoordinates().getX()).asObject());
-        yColumn.setCellValueFactory(product -> new SimpleLongProperty(product.getValue().getCoordinates().getY()).asObject());
+        xColumn.setCellValueFactory(product -> new SimpleIntegerProperty(product.getValue().getCoordinates().x()).asObject());
+        yColumn.setCellValueFactory(product -> new SimpleLongProperty(product.getValue().getCoordinates().y()).asObject());
         dateColumn.setCellValueFactory(product -> new SimpleStringProperty(localizator.getDate(product.getValue().getCreationDate())));
         priceColumn.setCellValueFactory(product -> new SimpleLongProperty(product.getValue().getPrice()).asObject());
         partNumberColumn.setCellValueFactory(product -> new SimpleStringProperty(product.getValue().getPartNumber()));
@@ -193,14 +193,14 @@ public class MainController {
 
         manufacturerStreetColumn.setCellValueFactory(product -> {
             if (product.getValue().getManufacturer() != null) {
-                return new SimpleStringProperty(product.getValue().getManufacturer().getPostalAddress().getStreet());
+                return new SimpleStringProperty(product.getValue().getManufacturer().getPostalAddress().street());
             }
             return null;
         });
 
         manufacturerZipCodeColumn.setCellValueFactory(product -> {
             if (product.getValue().getManufacturer() != null) {
-                return new SimpleStringProperty(product.getValue().getManufacturer().getPostalAddress().getZipCode());
+                return new SimpleStringProperty(product.getValue().getManufacturer().getPostalAddress().zipCode());
             }
             return null;
         });
@@ -293,7 +293,7 @@ public class MainController {
     @FXML
     public void update() {
         Optional<String> input = DialogManager.createDialog(localizator.getKeyString("Update"), "ID:");
-        if (input.isPresent() && !input.get().equals("")) {
+        if (input.isPresent() && !input.get().isEmpty()) {
             try {
                 var id = Integer.parseInt(input.orElse(""));
                 var product = collection.stream()
@@ -301,7 +301,7 @@ public class MainController {
                         .findAny()
                         .orElse(null);
                 if (product == null) throw new NotFoundException();
-                if (product.getCreatorId() != SessionHandler.getCurrentUser().getId()) throw new BadOwnerException();
+                if (product.getCreatorId() != SessionHandler.getCurrentUser().id()) throw new BadOwnerException();
                 doubleClickUpdate(product, false);
             } catch (NumberFormatException e) {
                 DialogManager.alert("NumberFormatException", localizator);
@@ -316,7 +316,7 @@ public class MainController {
     @FXML
     public void removeById() {
         Optional<String> input = DialogManager.createDialog(localizator.getKeyString("RemoveByID"), "ID: ");
-        if (input.isPresent() && !input.get().equals("")) {
+        if (input.isPresent() && !input.get().isEmpty()) {
             try {
                 var id = Integer.parseInt(input.orElse(""));
                 var product = collection.stream()
@@ -324,7 +324,7 @@ public class MainController {
                         .findAny()
                         .orElse(null);
                 if (product == null) throw new NotFoundException();
-                if (product.getCreatorId() != SessionHandler.getCurrentUser().getId()) throw new BadOwnerException();
+                if (product.getCreatorId() != SessionHandler.getCurrentUser().id()) throw new BadOwnerException();
 
                 var response = (RemoveByIdResponse) client.sendAndReceiveCommand(new RemoveByIdRequest(id, SessionHandler.getCurrentUser()));
                 if (response.getError() != null && !response.getError().isEmpty()) {
@@ -489,7 +489,7 @@ public class MainController {
         dialogPrice.setContentText(localizator.getKeyString("DialogPrice"));
         var price = dialogPrice.showAndWait();
 
-        if (price.isPresent() && !price.get().trim().equals("")) {
+        if (price.isPresent() && !price.get().trim().isEmpty()) {
             try {
                 var response = (FilterByPriceResponse) client.sendAndReceiveCommand(new FilterByPriceRequest(Long.parseLong(price.orElse("")), SessionHandler.getCurrentUser()));
                 if (response.getError() != null && !response.getError().isEmpty()) {
@@ -497,9 +497,7 @@ public class MainController {
                 }
 
                 var result = new StringBuilder();
-                response.filteredProducts.forEach(product -> {
-                    result.append(new ProductPresenter(localizator).describe(product)).append("\n\n");
-                });
+                response.filteredProducts.forEach(product -> result.append(new ProductPresenter(localizator).describe(product)).append("\n\n"));
 
                 DialogManager.createAlert(
                         localizator.getKeyString("FilterByPrice"),
@@ -525,7 +523,7 @@ public class MainController {
         dialogPartNumber.setContentText(localizator.getKeyString("PartNumber") + ": ");
 
         var partNumber = dialogPartNumber.showAndWait();
-        if (partNumber.isPresent() && !partNumber.get().trim().equals("")) {
+        if (partNumber.isPresent() && !partNumber.get().trim().isEmpty()) {
             try {
                 var response = (FilterContainsPartNumberResponse) client.sendAndReceiveCommand(
                         new FilterContainsPartNumberRequest(partNumber.get().trim(), SessionHandler.getCurrentUser())
@@ -535,9 +533,7 @@ public class MainController {
                 }
 
                 var result = new StringBuilder();
-                response.filteredProducts.forEach(product -> {
-                    result.append(new ProductPresenter(localizator).describe(product)).append("\n\n");
-                });
+                response.filteredProducts.forEach(product -> result.append(new ProductPresenter(localizator).describe(product)).append("\n\n"));
 
                 DialogManager.createAlert(
                         localizator.getKeyString("FilterContainsPartNumber"),
@@ -576,7 +572,7 @@ public class MainController {
         infoMap.clear();
 
         for (var product : tableTable.getItems()) {
-            var creatorName = product.getCreator().getName();
+            var creatorName = product.getCreator().name();
 
             if (!colorMap.containsKey(creatorName)) {
                 var r = random.nextDouble();
@@ -593,11 +589,11 @@ public class MainController {
             var size = Math.min(125, Math.max(75, product.getPrice() * 2) / 2);
 
             var circle = new Circle(size, colorMap.get(creatorName));
-            double x = Math.abs(product.getCoordinates().getX());
+            double x = Math.abs(product.getCoordinates().x());
             while (x >= 720) {
                 x = x / 10;
             }
-            double y = Math.abs(product.getCoordinates().getY());
+            double y = Math.abs(product.getCoordinates().y());
             while (y >= 370) {
                 y = y / 3;
             }
@@ -694,7 +690,7 @@ public class MainController {
     }
 
     private void doubleClickUpdate(Product product, boolean ignoreAnotherUser) {
-        if (ignoreAnotherUser && product.getCreatorId() != SessionHandler.getCurrentUser().getId()) return;
+        if (ignoreAnotherUser && product.getCreatorId() != SessionHandler.getCurrentUser().id()) return;
 
         editController.fill(product);
         editController.show();
@@ -737,7 +733,7 @@ public class MainController {
     }
 
     public void changeLanguage() {
-        userLabel.setText(localizator.getKeyString("UserLabel") + " " + SessionHandler.getCurrentUser().getName());
+        userLabel.setText(localizator.getKeyString("UserLabel") + " " + SessionHandler.getCurrentUser().name());
 
         exitButton.setText(localizator.getKeyString("Exit"));
         logoutButton.setText(localizator.getKeyString("LogOut"));
@@ -795,7 +791,7 @@ public class MainController {
         localizator.setBundle(ResourceBundle.getBundle("locales/gui", localeMap.get(SessionHandler.getCurrentLanguage())));
         changeLanguage();
 
-        userLabel.setText(localizator.getKeyString("UserLabel") + " " + SessionHandler.getCurrentUser().getName());
+        userLabel.setText(localizator.getKeyString("UserLabel") + " " + SessionHandler.getCurrentUser().name());
     }
 
     public boolean isRefreshing() {

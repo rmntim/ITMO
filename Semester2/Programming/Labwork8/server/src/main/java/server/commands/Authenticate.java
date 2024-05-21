@@ -19,7 +19,7 @@ public class Authenticate extends Command {
         var req = (AuthenticateRequest) request;
         var user = req.getUser();
         try {
-            var userId = authManager.authenticateUser(user.getName(), user.getPassword());
+            var userId = authManager.authenticateUser(user.name(), user.password());
 
             if (userId <= 0) {
                 return new AuthenticateResponse(user, "Нет такого пользователя.");

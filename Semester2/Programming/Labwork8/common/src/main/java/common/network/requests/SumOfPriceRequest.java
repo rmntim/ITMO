@@ -1,10 +1,10 @@
 package common.network.requests;
 
 import common.user.User;
-import common.utility.Commands;
+import common.utility.CommandName;
 
 public class SumOfPriceRequest extends Request {
     public SumOfPriceRequest(User user) {
-        super(Commands.SUM_OF_PRICE, user);
+        super(CommandName.SUM_OF_PRICE, user);
     }
 }

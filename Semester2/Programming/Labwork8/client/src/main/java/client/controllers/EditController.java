@@ -76,15 +76,11 @@ public class EditController {
     @FXML
     void initialize() {
         cancelButton.setOnAction(event -> stage.close());
-        var orgTypes = FXCollections.observableArrayList(
-                Arrays.stream(OrganizationType.values()).map(Enum::toString).collect(Collectors.toList())
-        );
+        var orgTypes = FXCollections.observableArrayList(Arrays.stream(OrganizationType.values()).map(Enum::toString).collect(Collectors.toList()));
         mTypeBox.setItems(orgTypes);
         mTypeBox.setStyle("-fx-font: 12px \"Sergoe UI\";");
 
-        var unitOfMeasures = FXCollections.observableArrayList(
-                Arrays.stream(UnitOfMeasure.values()).map(Enum::toString).collect(Collectors.toList())
-        );
+        var unitOfMeasures = FXCollections.observableArrayList(Arrays.stream(UnitOfMeasure.values()).map(Enum::toString).collect(Collectors.toList()));
         unitOfMeasureBox.setItems(unitOfMeasures);
         unitOfMeasureBox.setStyle("-fx-font: 12px \"Sergoe UI\";");
 
@@ -94,11 +90,7 @@ public class EditController {
         hasManufacturerBox.setStyle("-fx-font: 12px \"Sergoe UI\";");
 
 
-        Arrays.asList(mNameField, mEmployeesCountField, mStreetField, mZipCodeField, mTypeBox).forEach(field -> {
-            field.disableProperty().bind(
-                    hasManufacturerBox.getSelectionModel().selectedItemProperty().isEqualTo("FALSE")
-            );
-        });
+        Arrays.asList(mNameField, mEmployeesCountField, mStreetField, mZipCodeField, mTypeBox).forEach(field -> field.disableProperty().bind(hasManufacturerBox.getSelectionModel().selectedItemProperty().isEqualTo("FALSE")));
 
         xField.textProperty().addListener((observableValue, oldValue, newValue) -> {
             if (!newValue.matches("[-\\d]{0,11}")) {
@@ -106,10 +98,7 @@ public class EditController {
             } else {
                 if (newValue.matches(".+-.*")) {
                     Platform.runLater(() -> xField.clear());
-                } else if (
-                        newValue.length() == 10 && Long.parseLong(newValue) > Integer.MAX_VALUE
-                                || newValue.length() == 11 && Long.parseLong(newValue) < Integer.MIN_VALUE
-                ) {
+                } else if (newValue.length() == 10 && Long.parseLong(newValue) > Integer.MAX_VALUE || newValue.length() == 11 && Long.parseLong(newValue) < Integer.MIN_VALUE) {
                     xField.setText(oldValue);
                 }
             }
@@ -121,32 +110,24 @@ public class EditController {
             } else {
                 if (newValue.matches(".+-.*")) {
                     Platform.runLater(() -> yField.clear());
-                } else if (!newValue.isEmpty() && (
-                        newValue.length() == 19 && new BigInteger(newValue).compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0
-                                || newValue.length() == 20 && new BigInteger(newValue).compareTo(BigInteger.valueOf(Long.MIN_VALUE)) < 0
-                )) {
+                } else if (!newValue.isEmpty() && (newValue.length() == 19 && new BigInteger(newValue).compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0 || newValue.length() == 20 && new BigInteger(newValue).compareTo(BigInteger.valueOf(Long.MIN_VALUE)) < 0)) {
                     yField.setText(oldValue);
                 }
             }
         });
 
-        Arrays.asList(priceField, mEmployeesCountField).forEach(field -> {
-            field.textProperty().addListener((observableValue, oldValue, newValue) -> {
-                if (!field.isDisabled()) {
-                    if (!newValue.matches("\\d{0,19}")) {
+        Arrays.asList(priceField, mEmployeesCountField).forEach(field -> field.textProperty().addListener((observableValue, oldValue, newValue) -> {
+            if (!field.isDisabled()) {
+                if (!newValue.matches("\\d{0,19}")) {
+                    field.setText(oldValue);
+                } else {
+                    if (!newValue.isEmpty() && (new BigInteger(newValue).compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0 || new BigInteger(newValue).compareTo(new BigInteger(String.valueOf(0))) <= 0)) {
                         field.setText(oldValue);
-                    } else {
-                        if (!newValue.isEmpty() && (
-                                new BigInteger(newValue).compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0
-                                        || new BigInteger(newValue).compareTo(new BigInteger(String.valueOf(0))) <= 0
-                        )) {
-                            field.setText(oldValue);
-                        }
                     }
-
                 }
-            });
-        });
+
+            }
+        }));
     }
 
     @FXML
@@ -161,12 +142,10 @@ public class EditController {
 
         Organization organization = null;
         if (hasManufacturerBox.getValue().equals("TRUE")) {
-            if (mNameField.getText().isEmpty()) errors.add(
-                    "- " + localizator.getKeyString("ManufacturerName") + " " + localizator.getKeyString("CannotBeEmpty")
-            );
-            if (mStreetField.getText().isEmpty()) errors.add(
-                    "- " + localizator.getKeyString("ManufacturerStreet") + " " + localizator.getKeyString("CannotBeEmpty")
-            );
+            if (mNameField.getText().isEmpty())
+                errors.add("- " + localizator.getKeyString("ManufacturerName") + " " + localizator.getKeyString("CannotBeEmpty"));
+            if (mStreetField.getText().isEmpty())
+                errors.add("- " + localizator.getKeyString("ManufacturerStreet") + " " + localizator.getKeyString("CannotBeEmpty"));
 
             String zipCode = mZipCodeField.getText();
             if (mZipCodeField.getText().isEmpty()) {
@@ -182,21 +161,11 @@ public class EditController {
                 errors.add("- " + localizator.getKeyString("ManufacturerType") + " " + localizator.getKeyString("CannotBeEmpty"));
             }
 
-            organization = new Organization(
-                    -1,
-                    mNameField.getText(),
-                    Long.parseLong(mEmployeesCountField.getText()),
-                    organizationType,
-                    new Address(
-                            mStreetField.getText(),
-                            zipCode
-                    )
-            );
+            organization = new Organization(-1, mNameField.getText(), Long.parseLong(mEmployeesCountField.getText()), organizationType, new Address(mStreetField.getText(), zipCode));
         }
 
-        if (nameField.getText().isEmpty()) errors.add(
-                "- " + localizator.getKeyString("Name") + " " + localizator.getKeyString("CannotBeEmpty")
-        );
+        if (nameField.getText().isEmpty())
+            errors.add("- " + localizator.getKeyString("Name") + " " + localizator.getKeyString("CannotBeEmpty"));
 
         var partNumber = partNumberField.getText();
         if (partNumberField.getText().isEmpty()) partNumber = null;
@@ -207,17 +176,7 @@ public class EditController {
         if (!errors.isEmpty()) {
             DialogManager.createAlert(localizator.getKeyString("Error"), String.join("\n", errors), Alert.AlertType.ERROR, false);
         } else {
-            var newProduct = new Product(
-                    -1,
-                    nameField.getText(),
-                    new Coordinates(Integer.parseInt(xField.getText()), Long.parseLong(yField.getText())),
-                    LocalDate.now(),
-                    Long.parseLong(priceField.getText()),
-                    partNumber,
-                    unitOfMeasure,
-                    organization,
-                    SessionHandler.getCurrentUser()
-            );
+            var newProduct = new Product(-1, nameField.getText(), new Coordinates(Integer.parseInt(xField.getText()), Long.parseLong(yField.getText())), LocalDate.now(), Long.parseLong(priceField.getText()), partNumber, unitOfMeasure, organization, SessionHandler.getCurrentUser());
             if (!newProduct.validate()) {
                 DialogManager.alert("InvalidProduct", localizator);
             } else {
@@ -251,8 +210,8 @@ public class EditController {
 
     public void fill(Product product) {
         nameField.setText(product.getName());
-        xField.setText(Integer.toString(product.getCoordinates().getX()));
-        yField.setText(Long.toString(product.getCoordinates().getY()));
+        xField.setText(Integer.toString(product.getCoordinates().x()));
+        yField.setText(Long.toString(product.getCoordinates().y()));
         priceField.setText(Long.toString(product.getPrice()));
         partNumberField.setText(product.getPartNumber());
         unitOfMeasureBox.setValue(product.getUnitOfMeasure() == null ? null : product.getUnitOfMeasure().toString());
@@ -263,8 +222,8 @@ public class EditController {
             mNameField.setText(manufacturer.getName());
             mEmployeesCountField.setText(Long.toString(manufacturer.getEmployeesCount()));
             mTypeBox.setValue(manufacturer.getType().toString());
-            mStreetField.setText(manufacturer.getPostalAddress().getStreet());
-            mZipCodeField.setText(manufacturer.getPostalAddress().getZipCode());
+            mStreetField.setText(manufacturer.getPostalAddress().street());
+            mZipCodeField.setText(manufacturer.getPostalAddress().zipCode());
         } else {
             mNameField.clear();
             mEmployeesCountField.clear();

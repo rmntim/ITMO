@@ -14,8 +14,8 @@ public class UserDAO implements Serializable {
     }
 
     public UserDAO(User user) {
-        this.id = user.getId();
-        this.passwordDigest = user.getPassword();
+        this.id = user.id();
+        this.passwordDigest = user.password();
     }
 
     @Id

@@ -1,13 +1,13 @@
 package common.domain;
 
 import common.user.User;
-import common.utility.Element;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Product extends Element {
+public class Product implements Comparable<Product>, Serializable {
     @Serial
     private static final long serialVersionUID = 2L;
 
@@ -41,12 +41,6 @@ public class Product extends Element {
         );
     }
 
-    /**
-     * Валидирует правильность полей.
-     *
-     * @return true, если все верно, иначе false
-     */
-    @Override
     public boolean validate() {
         if (name == null || name.isEmpty()) return false;
         if (coordinates == null) return false;
@@ -66,7 +60,6 @@ public class Product extends Element {
         this.manufacturer = product.manufacturer;
     }
 
-    @Override
     public int getId() {
         return id;
     }
@@ -100,24 +93,16 @@ public class Product extends Element {
     }
 
     public int getCreatorId() {
-        return creator.getId();
+        return creator.id();
     }
 
     public User getCreator() {
         return creator;
     }
 
-    public void setCreator(User creator) {
-        this.creator = creator;
-    }
-
     @Override
-    public int compareTo(Element element) {
-        return (this.id - element.getId());
-    }
-
     public int compareTo(Product product) {
-        return this.price.compareTo(product.price);
+        return (this.id - product.getId());
     }
 
     @Override

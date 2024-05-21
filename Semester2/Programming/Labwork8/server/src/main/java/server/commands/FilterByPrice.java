@@ -5,7 +5,6 @@ import common.network.requests.FilterByPriceRequest;
 import common.network.requests.Request;
 import common.network.responses.FilterByPriceResponse;
 import common.network.responses.Response;
-import common.utility.ProductComparator;
 import server.repositories.ProductRepository;
 
 import java.util.List;
@@ -32,7 +31,7 @@ public class FilterByPrice extends Command {
     private List<Product> filterByPrice(Long price) {
         return productRepository.get().stream()
                 .filter(product -> (product.getPrice().equals(price)))
-                .sorted(new ProductComparator())
+                .sorted()
                 .collect(Collectors.toList());
     }
 }

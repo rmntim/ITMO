@@ -17,8 +17,8 @@ public class ProductDAO implements Serializable {
 
     public ProductDAO(Product product) {
         this.name = product.getName();
-        this.x = product.getCoordinates().getX();
-        this.y = product.getCoordinates().getY();
+        this.x = product.getCoordinates().x();
+        this.y = product.getCoordinates().y();
         this.creationDate = product.getCreationDate();
         this.price = product.getPrice();
         this.partNumber = product.getPartNumber();
@@ -27,8 +27,8 @@ public class ProductDAO implements Serializable {
 
     public void update(Product product) {
         this.name = product.getName();
-        this.x = product.getCoordinates().getX();
-        this.y = product.getCoordinates().getY();
+        this.x = product.getCoordinates().x();
+        this.y = product.getCoordinates().y();
         this.creationDate = product.getCreationDate();
         this.price = product.getPrice();
         this.partNumber = product.getPartNumber();

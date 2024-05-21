@@ -16,8 +16,8 @@ public class ProductPresenter {
         info += "\n " + localizator.getKeyString("Name") + ": " + product.getName();
         info += "\n " + localizator.getKeyString("Owner") + ": " + product.getCreator().toString();
         info += "\n " + localizator.getKeyString("CreationDate") + ": " + localizator.getDate(product.getCreationDate());
-        info += "\n X: " + product.getCoordinates().getX();
-        info += "\n Y: " + product.getCoordinates().getY();
+        info += "\n X: " + product.getCoordinates().x();
+        info += "\n Y: " + product.getCoordinates().y();
         info += "\n " + localizator.getKeyString("Price") + ": " + product.getPrice();
         info += "\n " + localizator.getKeyString("PartNumber") + ": " + product.getPartNumber();
         info += "\n " + localizator.getKeyString("UnitOfMeasure") + ": " + product.getUnitOfMeasure();
@@ -35,8 +35,8 @@ public class ProductPresenter {
         info += "\n    " + localizator.getKeyString("ManufacturerName") + ": " + organization.getName();
         info += "\n    " + localizator.getKeyString("ManufacturerEmployeesCount") + ": " + organization.getEmployeesCount();
         info += "\n    " + localizator.getKeyString("ManufacturerType") + ": " + organization.getType();
-        info += "\n    " + localizator.getKeyString("ManufacturerStreet") + ": " + organization.getPostalAddress().getStreet();
-        info += "\n    " + localizator.getKeyString("ManufacturerZipCode") + ": " + organization.getPostalAddress().getZipCode();
+        info += "\n    " + localizator.getKeyString("ManufacturerStreet") + ": " + organization.getPostalAddress().street();
+        info += "\n    " + localizator.getKeyString("ManufacturerZipCode") + ": " + organization.getPostalAddress().zipCode();
 
         return info;
     }

@@ -1,40 +1,18 @@
 package common.user;
 
-import common.utility.Element;
+import java.io.Serializable;
 
-public class User extends Element {
-    private final int id;
-    private final String name;
-    private final String password;
-
-    public User(int id, String name, String password) {
-        this.id = id;
-        this.name = name;
-        this.password = password;
-    }
-
+public record User(int id, String name, String password) implements Comparable<User>, Serializable {
     public boolean validate() {
-        return getName().length() < 40;
+        return name().length() < 40;
     }
 
     public User copy(int id) {
-        return new User(id, getName(), getPassword());
+        return new User(id, name(), password());
     }
 
     public User withoutPassword() {
-        return new User(this.getId(), this.getName(), "");
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPassword() {
-        return password;
+        return new User(this.id(), this.name(), "");
     }
 
     @Override
@@ -43,7 +21,7 @@ public class User extends Element {
     }
 
     @Override
-    public int compareTo(Element element) {
-        return this.getId() - element.getId();
+    public int compareTo(User user) {
+        return this.id() - user.id();
     }
 }

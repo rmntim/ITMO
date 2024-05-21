@@ -5,7 +5,6 @@ import common.network.requests.FilterContainsPartNumberRequest;
 import common.network.requests.Request;
 import common.network.responses.FilterContainsPartNumberResponse;
 import common.network.responses.Response;
-import common.utility.ProductComparator;
 import server.repositories.ProductRepository;
 
 import java.util.List;
@@ -32,7 +31,7 @@ public class FilterContainsPartNumber extends Command {
     private List<Product> filterByPartNumber(String partNumberSubstring) {
         return productRepository.get().stream()
                 .filter(product -> (product.getPartNumber() != null && product.getPartNumber().contains(partNumberSubstring)))
-                .sorted(new ProductComparator())
+                .sorted()
                 .collect(Collectors.toList());
     }
 }

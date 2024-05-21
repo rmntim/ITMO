@@ -1,5 +1,7 @@
 package common.network.responses;
 
+import common.utility.CommandName;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -9,6 +11,11 @@ public abstract class Response implements Serializable {
 
     public Response(String name, String error) {
         this.name = name;
+        this.error = error;
+    }
+
+    public Response(CommandName commandName, String error) {
+        this.name = commandName.getCommandName();
         this.error = error;
     }
 

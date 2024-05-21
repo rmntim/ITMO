@@ -21,16 +21,16 @@ public class OrganizationDAO implements Serializable {
         this.name = organization.getName();
         this.employeesCount = organization.getEmployeesCount();
         this.type = organization.getType();
-        this.street = organization.getPostalAddress().getStreet();
-        this.zipCode = organization.getPostalAddress().getZipCode();
+        this.street = organization.getPostalAddress().street();
+        this.zipCode = organization.getPostalAddress().zipCode();
     }
 
     public void update(Organization organization) {
         this.name = organization.getName();
         this.employeesCount = organization.getEmployeesCount();
         this.type = organization.getType();
-        this.street = organization.getPostalAddress().getStreet();
-        this.zipCode = organization.getPostalAddress().getZipCode();
+        this.street = organization.getPostalAddress().street();
+        this.zipCode = organization.getPostalAddress().zipCode();
     }
 
     @Id
@@ -60,7 +60,7 @@ public class OrganizationDAO implements Serializable {
 
     @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JoinColumn(name = "manufacturer_id")
-    private List<ProductDAO> products = new ArrayList<ProductDAO>();
+    private List<ProductDAO> products = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "creator_id", nullable = false)

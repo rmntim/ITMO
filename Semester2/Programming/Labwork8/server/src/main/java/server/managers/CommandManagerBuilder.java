@@ -1,6 +1,6 @@
 package server.managers;
 
-import common.utility.Commands;
+import common.utility.CommandName;
 import server.commands.Command;
 import server.commands.Help;
 
@@ -10,8 +10,8 @@ import java.util.Map;
 public class CommandManagerBuilder {
     private final Map<String, Command> commands = new HashMap<>();
 
-    public CommandManagerBuilder register(String commandName, Command command) {
-        commands.put(commandName, command);
+    public CommandManagerBuilder register(CommandName commandName, Command command) {
+        commands.put(commandName.getCommandName(), command);
         return this;
     }
 
@@ -20,7 +20,7 @@ public class CommandManagerBuilder {
     }
 
     public Map<String, Command> build() {
-        register(Commands.HELP, new Help(getCommands()));
+        register(CommandName.HELP, new Help(getCommands()));
         return getCommands();
     }
 }

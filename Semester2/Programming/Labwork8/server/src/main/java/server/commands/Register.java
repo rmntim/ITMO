@@ -22,12 +22,12 @@ public class Register extends Command {
     public Response apply(Request request) {
         var req = (RegisterRequest) request;
         var user = req.getUser();
-        if (user.getName().length() >= MAX_USERNAME_LENGTH) {
+        if (user.name().length() >= MAX_USERNAME_LENGTH) {
             return new RegisterResponse(user, "Длина имени пользователя должна быть < " + MAX_USERNAME_LENGTH);
         }
 
         try {
-            var newUserId = authManager.registerUser(user.getName(), user.getPassword());
+            var newUserId = authManager.registerUser(user.name(), user.password());
 
             if (newUserId <= 0) {
                 return new RegisterResponse(user, "Не удалось создать пользователя.");

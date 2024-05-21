@@ -1,6 +1,7 @@
 package common.network.requests;
 
 import common.user.User;
+import common.utility.CommandName;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -11,6 +12,11 @@ public abstract class Request implements Serializable {
 
     public Request(String name, User user) {
         this.name = name;
+        this.user = user;
+    }
+
+    public Request(CommandName name, User user) {
+        this.name = name.getCommandName();
         this.user = user;
     }
 

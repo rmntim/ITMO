@@ -6,7 +6,6 @@ import common.domain.Organization;
 import common.domain.Product;
 import common.exceptions.BadOwnerException;
 import common.user.User;
-import common.utility.ProductComparator;
 import org.slf4j.Logger;
 import server.App;
 import server.managers.PersistenceManager;
@@ -86,7 +85,7 @@ public class ProductRepository {
     public List<Product> sorted() {
         return new ArrayList<>(collection)
                 .stream()
-                .sorted(new ProductComparator())
+                .sorted()
                 .collect(Collectors.toList());
     }
 
@@ -114,7 +113,7 @@ public class ProductRepository {
         var product = getById(element.getId());
         if (product == null) {
             add(user, element);
-        } else if (product.getCreatorId() == user.getId()) {
+        } else if (product.getCreatorId() == user.id()) {
             logger.info("Updating product with id={}.", product.getId());
 
             var orgId = persistenceManager.update(element);
@@ -131,7 +130,7 @@ public class ProductRepository {
     }
 
     public synchronized int remove(User user, int id) throws BadOwnerException {
-        if (getById(id).getCreatorId() != user.getId()) {
+        if (getById(id).getCreatorId() != user.id()) {
             logger.warn("Wrong owner for product with id={}.", id);
             throw new BadOwnerException();
         }
@@ -142,7 +141,7 @@ public class ProductRepository {
             return 0;
         }
 
-        collection.removeIf(product -> product.getId() == id && product.getCreatorId() == user.getId());
+        collection.removeIf(product -> product.getId() == id && product.getCreatorId() == user.id());
         lastSaveTime = LocalDateTime.now();
 
         return removedCount;
@@ -151,7 +150,7 @@ public class ProductRepository {
     public synchronized void clear(User user) {
         persistenceManager.clear(user);
 
-        collection.removeIf(product -> product.getCreatorId() == user.getId());
+        collection.removeIf(product -> product.getCreatorId() == user.id());
         lastSaveTime = LocalDateTime.now();
     }
 

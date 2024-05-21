@@ -1,11 +1,10 @@
 package common.domain;
 
-import common.utility.Element;
-
 import java.io.Serial;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Organization extends Element {
+public class Organization implements Comparable<Organization>, Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -14,8 +13,6 @@ public class Organization extends Element {
     private final long employeesCount; // Значение поля должно быть больше 0
     private final OrganizationType type; // Поле не может быть null
     private final Address postalAddress; // Поле не может быть null
-
-    private int creatorId;
 
     public Organization(Integer id, String name, long employeesCount, OrganizationType type, Address postalAddress) {
         this.id = id;
@@ -29,12 +26,6 @@ public class Organization extends Element {
         this.id = id;
     }
 
-    /**
-     * Валидирует правильность полей.
-     *
-     * @return true, если все верно, иначе false
-     */
-    @Override
     public boolean validate() {
         if (name == null || name.isEmpty()) return false;
         if (employeesCount <= 0) return false;
@@ -62,17 +53,9 @@ public class Organization extends Element {
         return postalAddress;
     }
 
-    public int getCreatorId() {
-        return creatorId;
-    }
-
-    public void setCreatorId(int creatorId) {
-        this.creatorId = creatorId;
-    }
-
     @Override
-    public int compareTo(Element element) {
-        return (this.id - element.getId());
+    public int compareTo(Organization organization) {
+        return (this.id - organization.getId());
     }
 
     @Override

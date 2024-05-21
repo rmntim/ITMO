@@ -1,10 +1,10 @@
 package common.network.requests;
 
 import common.user.User;
-import common.utility.Commands;
+import common.utility.CommandName;
 
 public class HeadRequest extends Request {
     public HeadRequest(User user) {
-        super(Commands.HEAD, user);
+        super(CommandName.HEAD, user);
     }
 }

@@ -1,6 +1,6 @@
 package server;
 
-import common.utility.Commands;
+import common.utility.CommandName;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.hibernate.SessionFactory;
 import org.hibernate.internal.SessionFactoryImpl;
@@ -65,21 +65,21 @@ public class App {
     }
 
     private static Map<String, Command> initializeCommands(ProductRepository repository, AuthManager authManager) {
-        return new CommandManagerBuilder().
-                register(Commands.REGISTER, new Register(authManager))
-                .register(Commands.AUTHENTICATE, new Authenticate(authManager))
-                .register(Commands.INFO, new Info(repository))
-                .register(Commands.SHOW, new Show(repository))
-                .register(Commands.ADD, new Add(repository))
-                .register(Commands.UPDATE, new Update(repository))
-                .register(Commands.REMOVE_BY_ID, new RemoveById(repository))
-                .register(Commands.CLEAR, new Clear(repository))
-                .register(Commands.HEAD, new Head(repository))
-                .register(Commands.ADD_IF_MAX, new AddIfMax(repository))
-                .register(Commands.ADD_IF_MIN, new AddIfMin(repository))
-                .register(Commands.SUM_OF_PRICE, new SumOfPrice(repository))
-                .register(Commands.FILTER_BY_PRICE, new FilterByPrice(repository))
-                .register(Commands.FILTER_CONTAINS_PART_NUMBER, new FilterContainsPartNumber(repository))
+        return new CommandManagerBuilder()
+                .register(CommandName.REGISTER, new Register(authManager))
+                .register(CommandName.AUTHENTICATE, new Authenticate(authManager))
+                .register(CommandName.INFO, new Info(repository))
+                .register(CommandName.SHOW, new Show(repository))
+                .register(CommandName.ADD, new Add(repository))
+                .register(CommandName.UPDATE, new Update(repository))
+                .register(CommandName.REMOVE_BY_ID, new RemoveById(repository))
+                .register(CommandName.CLEAR, new Clear(repository))
+                .register(CommandName.HEAD, new Head(repository))
+                .register(CommandName.ADD_IF_MAX, new AddIfMax(repository))
+                .register(CommandName.ADD_IF_MIN, new AddIfMin(repository))
+                .register(CommandName.SUM_OF_PRICE, new SumOfPrice(repository))
+                .register(CommandName.FILTER_BY_PRICE, new FilterByPrice(repository))
+                .register(CommandName.FILTER_CONTAINS_PART_NUMBER, new FilterContainsPartNumber(repository))
                 .build();
     }
 

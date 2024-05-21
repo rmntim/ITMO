@@ -1,11 +1,11 @@
 package common.network.requests;
 
 import common.user.User;
-import common.utility.Commands;
+import common.utility.CommandName;
 
 public class HelpRequest extends Request {
     public HelpRequest(User user) {
-        super(Commands.HELP, user);
+        super(CommandName.HELP, user);
     }
 
     @Override
