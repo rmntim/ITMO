@@ -34,11 +34,11 @@ public class UserDAO implements Serializable {
 
     @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JoinColumn(name = "creator_id")
-    private List<OrganizationDAO> organizations = new ArrayList<>();
+    private List<DragonDAO> dragons = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JoinColumn(name = "creator_id")
-    private List<ProductDAO> products = new ArrayList<>();
+    private List<DragonHeadDAO> heads = new ArrayList<>();
 
     public int getId() {
         return id;
@@ -72,19 +72,19 @@ public class UserDAO implements Serializable {
         this.salt = salt;
     }
 
-    public List<OrganizationDAO> getOrganizations() {
-        return organizations;
+    public List<DragonHeadDAO> getHeads() {
+        return heads;
     }
 
-    public void setOrganizations(List<OrganizationDAO> organizations) {
-        this.organizations = organizations;
+    public void setHeads(List<DragonHeadDAO> organizations) {
+        this.heads = organizations;
     }
 
-    public List<ProductDAO> getProducts() {
-        return products;
+    public List<DragonDAO> getDragons() {
+        return dragons;
     }
 
-    public void setProducts(List<ProductDAO> products) {
-        this.products = products;
+    public void setDragons(List<DragonDAO> dragons) {
+        this.dragons = dragons;
     }
 }

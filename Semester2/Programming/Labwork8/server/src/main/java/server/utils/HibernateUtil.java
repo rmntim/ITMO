@@ -6,8 +6,8 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import server.App;
-import server.dao.OrganizationDAO;
-import server.dao.ProductDAO;
+import server.dao.DragonDAO;
+import server.dao.DragonHeadDAO;
 import server.dao.UserDAO;
 
 import java.util.Properties;
@@ -23,8 +23,8 @@ public class HibernateUtil {
 
             configuration.addPackage("server.dao");
             configuration.addAnnotatedClass(UserDAO.class);
-            configuration.addAnnotatedClass(OrganizationDAO.class);
-            configuration.addAnnotatedClass(ProductDAO.class);
+            configuration.addAnnotatedClass(DragonHeadDAO.class);
+            configuration.addAnnotatedClass(DragonDAO.class);
 
             var serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
             logger.info("Hibernate Java Config serviceRegistry created");

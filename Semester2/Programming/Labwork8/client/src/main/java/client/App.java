@@ -17,7 +17,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class App extends Application {
-    private static final int PORT = 23586;
+    private static final int PORT = 8080;
     public static UDPClient client;
 
     private Stage mainStage;
@@ -50,7 +50,7 @@ public class App extends Application {
         var editStage = new Stage();
         editStage.setScene(editScene);
         editStage.setResizable(false);
-        editStage.setTitle("Products");
+        editStage.setTitle("Dragons");
         EditController editController = editLoader.getController();
 
         editController.setStage(editStage);
@@ -76,7 +76,7 @@ public class App extends Application {
         authController.setLocalizator(localizator);
 
         mainStage.setScene(new Scene(authRoot));
-        mainStage.setTitle("Products");
+        mainStage.setTitle("Dragons");
         mainStage.setResizable(false);
         mainStage.show();
     }

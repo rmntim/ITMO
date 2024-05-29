@@ -5,14 +5,14 @@ import common.network.requests.RemoveByIdRequest;
 import common.network.requests.Request;
 import common.network.responses.RemoveByIdResponse;
 import common.network.responses.Response;
-import server.repositories.ProductRepository;
+import server.repositories.DragonRepository;
 
 public class RemoveById extends Command {
-    private final ProductRepository productRepository;
+    private final DragonRepository dragonRepository;
 
-    public RemoveById(ProductRepository productRepository) {
+    public RemoveById(DragonRepository dragonRepository) {
         super("remove_by_id <ID>", "удалить элемент из коллекции по ID");
-        this.productRepository = productRepository;
+        this.dragonRepository = dragonRepository;
     }
 
     @Override
@@ -20,11 +20,11 @@ public class RemoveById extends Command {
         var req = (RemoveByIdRequest) request;
 
         try {
-            if (!productRepository.checkExist(req.id)) {
+            if (!dragonRepository.checkExist(req.id)) {
                 return new RemoveByIdResponse("Продукта с таким ID в коллекции нет!");
             }
 
-            var removedCount = productRepository.remove(req.getUser(), req.id);
+            var removedCount = dragonRepository.remove(req.getUser(), req.id);
             if (removedCount <= 0) {
                 return new RemoveByIdResponse("Ничего не удалено!");
             }

@@ -4,8 +4,9 @@ import client.auth.SessionHandler;
 import client.network.UDPClient;
 import client.script.ScriptExecutor;
 import client.ui.DialogManager;
+import client.utility.DragonPresenter;
 import client.utility.Localizator;
-import client.utility.ProductPresenter;
+import common.domain.Dragon;
 import common.exceptions.*;
 import common.network.requests.*;
 import common.network.responses.*;
@@ -13,9 +14,7 @@ import javafx.animation.FillTransition;
 import javafx.animation.PathTransition;
 import javafx.animation.SequentialTransition;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleLongProperty;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -33,6 +32,7 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class MainController {
     private Localizator localizator;
@@ -41,18 +41,13 @@ public class MainController {
     private Runnable authCallback;
     private volatile boolean isRefreshing = false;
 
-    private List<Product> collection;
+    private List<Dragon> collection;
 
-    private final HashMap<String, Locale> localeMap = new HashMap<>() {{
-        put("Русский", new Locale("ru", "RU"));
-        put("English(IN)", new Locale("en", "IN"));
-        put("Íslenska", new Locale("is", "IS"));
-        put("Svenska", new Locale("sv", "SE"));
-    }};
+    private final HashMap<String, Locale> localeMap = new HashMap<>();
 
-    private HashMap<String, Color> colorMap;
-    private HashMap<Integer, Label> infoMap;
-    private Random random;
+    private final HashMap<String, Color> colorMap = new HashMap<>();
+    private final HashMap<Integer, Label> infoMap = new HashMap<>();
+    private final Random random = new Random();
 
     private EditController editController;
     private Stage stage;
@@ -77,17 +72,9 @@ public class MainController {
     @FXML
     private Button executeScriptButton;
     @FXML
-    private Button headButton;
-    @FXML
     private Button addIfMaxButton;
     @FXML
     private Button addIfMinButton;
-    @FXML
-    private Button sumOfPriceButton;
-    @FXML
-    private Button filterByPriceButton;
-    @FXML
-    private Button filterContainsPartNumberButton;
     @FXML
     private Button exitButton;
     @FXML
@@ -96,39 +83,31 @@ public class MainController {
     @FXML
     private Tab tableTab;
     @FXML
-    private TableView<Product> tableTable;
+    private TableView<Dragon> tableTable;
 
     @FXML
-    private TableColumn<Product, String> ownerColumn;
+    private TableColumn<Dragon, String> ownerColumn;
     @FXML
-    private TableColumn<Product, Integer> idColumn;
+    private TableColumn<Dragon, Integer> idColumn;
     @FXML
-    private TableColumn<Product, String> nameColumn;
+    private TableColumn<Dragon, String> nameColumn;
     @FXML
-    private TableColumn<Product, Integer> xColumn;
+    private TableColumn<Dragon, Float> xColumn;
     @FXML
-    private TableColumn<Product, Long> yColumn;
+    private TableColumn<Dragon, Float> yColumn;
     @FXML
-    private TableColumn<Product, String> dateColumn;
+    private TableColumn<Dragon, String> dateColumn;
     @FXML
-    private TableColumn<Product, Long> priceColumn;
+    private TableColumn<Dragon, Long> ageColumn;
     @FXML
-    private TableColumn<Product, String> partNumberColumn;
+    private TableColumn<Dragon, String> colorColumn;
     @FXML
-    private TableColumn<Product, String> unitOfMeasureColumn;
+    private TableColumn<Dragon, String> typeColumn;
+    @FXML
+    private TableColumn<Dragon, String> characterColumn;
 
     @FXML
-    private TableColumn<Product, Integer> manufacturerIdColumn;
-    @FXML
-    private TableColumn<Product, String> manufacturerNameColumn;
-    @FXML
-    private TableColumn<Product, Long> manufacturerEmployeesCountColumn;
-    @FXML
-    private TableColumn<Product, String> manufacturerTypeColumn;
-    @FXML
-    private TableColumn<Product, String> manufacturerStreetColumn;
-    @FXML
-    private TableColumn<Product, String> manufacturerZipCodeColumn;
+    private TableColumn<Dragon, Double> headEyeCountColumn;
 
     @FXML
     private Tab visualTab;
@@ -137,9 +116,10 @@ public class MainController {
 
     @FXML
     public void initialize() {
-        colorMap = new HashMap<>();
-        infoMap = new HashMap<>();
-        random = new Random();
+        localeMap.put("Русский", new Locale("ru_RU"));
+        localeMap.put("English(AU)", new Locale("en_AU"));
+        localeMap.put("Eesti", new Locale("et_EE"));
+        localeMap.put("Polski", new Locale("pl_PL"));
 
         languageComboBox.setItems(FXCollections.observableArrayList(localeMap.keySet()));
         languageComboBox.setStyle("-fx-font: 13px \"Sergoe UI\";");
@@ -148,64 +128,26 @@ public class MainController {
             changeLanguage();
         });
 
-        ownerColumn.setCellValueFactory(product -> new SimpleStringProperty(product.getValue().getCreator().toString()));
-        idColumn.setCellValueFactory(product -> new SimpleIntegerProperty(product.getValue().getId()).asObject());
-        nameColumn.setCellValueFactory(product -> new SimpleStringProperty(product.getValue().getName()));
-        xColumn.setCellValueFactory(product -> new SimpleIntegerProperty(product.getValue().getCoordinates().x()).asObject());
-        yColumn.setCellValueFactory(product -> new SimpleLongProperty(product.getValue().getCoordinates().y()).asObject());
-        dateColumn.setCellValueFactory(product -> new SimpleStringProperty(localizator.getDate(product.getValue().getCreationDate())));
-        priceColumn.setCellValueFactory(product -> new SimpleLongProperty(product.getValue().getPrice()).asObject());
-        partNumberColumn.setCellValueFactory(product -> new SimpleStringProperty(product.getValue().getPartNumber()));
-        unitOfMeasureColumn.setCellValueFactory(
-                product -> new SimpleStringProperty(
-                        product.getValue().getUnitOfMeasure() != null ? product.getValue().getUnitOfMeasure().toString() : null
-                )
-        );
+        ownerColumn.setCellValueFactory(dragon -> new SimpleStringProperty(dragon.getValue().creator().toString()));
+        idColumn.setCellValueFactory(dragon -> new SimpleIntegerProperty(dragon.getValue().id()).asObject());
+        nameColumn.setCellValueFactory(dragon -> new SimpleStringProperty(dragon.getValue().name()));
+        xColumn.setCellValueFactory(dragon -> new SimpleFloatProperty(dragon.getValue().coordinates().x()).asObject());
+        yColumn.setCellValueFactory(dragon -> new SimpleFloatProperty(dragon.getValue().coordinates().y()).asObject());
+        dateColumn.setCellValueFactory(dragon -> new SimpleStringProperty(localizator.getDate(dragon.getValue().creationDate())));
+        ageColumn.setCellValueFactory(dragon -> new SimpleLongProperty(dragon.getValue().age()).asObject());
+        colorColumn.setCellValueFactory(dragon -> new SimpleStringProperty(dragon.getValue().color().toString()));
+        typeColumn.setCellValueFactory(dragon -> new SimpleStringProperty(dragon.getValue().type().toString()));
+        characterColumn.setCellValueFactory(dragon -> new SimpleStringProperty(dragon.getValue().character().toString()));
 
-        manufacturerIdColumn.setCellValueFactory(product -> {
-            if (product.getValue().getManufacturer() != null) {
-                return new SimpleIntegerProperty(product.getValue().getManufacturer().getId()).asObject();
-            }
-            return null;
-        });
-
-        manufacturerNameColumn.setCellValueFactory(product -> {
-            if (product.getValue().getManufacturer() != null) {
-                return new SimpleStringProperty(product.getValue().getManufacturer().getName());
-            }
-            return null;
-        });
-
-        manufacturerEmployeesCountColumn.setCellValueFactory(product -> {
-            if (product.getValue().getManufacturer() != null) {
-                return new SimpleLongProperty(product.getValue().getManufacturer().getEmployeesCount()).asObject();
-            }
-            return null;
-        });
-
-        manufacturerTypeColumn.setCellValueFactory(product -> {
-            if (product.getValue().getManufacturer() != null) {
-                return new SimpleStringProperty(product.getValue().getManufacturer().getType().toString());
-            }
-            return null;
-        });
-
-        manufacturerStreetColumn.setCellValueFactory(product -> {
-            if (product.getValue().getManufacturer() != null) {
-                return new SimpleStringProperty(product.getValue().getManufacturer().getPostalAddress().street());
-            }
-            return null;
-        });
-
-        manufacturerZipCodeColumn.setCellValueFactory(product -> {
-            if (product.getValue().getManufacturer() != null) {
-                return new SimpleStringProperty(product.getValue().getManufacturer().getPostalAddress().zipCode());
+        headEyeCountColumn.setCellValueFactory(dragon -> {
+            if (dragon.getValue().head() != null) {
+                return new SimpleDoubleProperty(dragon.getValue().head().eyesCount()).asObject();
             }
             return null;
         });
 
         tableTable.setRowFactory(tableView -> {
-            var row = new TableRow<Product>();
+            var row = new TableRow<Dragon>();
             row.setOnMouseClicked(mouseEvent -> {
                 if (mouseEvent.getClickCount() == 2 && !row.isEmpty()) {
                     doubleClickUpdate(row.getItem());
@@ -252,13 +194,7 @@ public class MainController {
                 throw new APIException(response.getError());
             }
 
-            var formatted = MessageFormat.format(
-                    localizator.getKeyString("InfoResult"),
-                    response.type,
-                    response.size,
-                    localizator.getDate(response.lastSaveTime),
-                    localizator.getDate(response.lastInitTime)
-            );
+            var formatted = MessageFormat.format(localizator.getKeyString("InfoResult"), response.type, response.size, localizator.getDate(response.lastSaveTime), localizator.getDate(response.lastInitTime));
             DialogManager.createAlert(localizator.getKeyString("Info"), formatted, Alert.AlertType.INFORMATION, true);
         } catch (APIException | ErrorResponseException | IOException e) {
             DialogManager.alert("UnavailableError", localizator);
@@ -269,12 +205,12 @@ public class MainController {
     public void add() {
         editController.clear();
         editController.show();
-        var product = editController.getProduct();
-        if (product != null) {
-            product = product.copy(product.getId(), SessionHandler.getCurrentUser());
+        var dragon = editController.getDragon();
+        if (dragon != null) {
+            dragon = dragon.copy(dragon.id(), SessionHandler.getCurrentUser());
 
             try {
-                var response = (AddResponse) client.sendAndReceiveCommand(new AddRequest(product, SessionHandler.getCurrentUser()));
+                var response = (AddResponse) client.sendAndReceiveCommand(new AddRequest(dragon, SessionHandler.getCurrentUser()));
                 if (response.getError() != null && !response.getError().isEmpty()) {
                     throw new APIException(response.getError());
                 }
@@ -294,14 +230,8 @@ public class MainController {
         Optional<String> input = DialogManager.createDialog(localizator.getKeyString("Update"), "ID:");
         if (input.isPresent() && !input.get().isEmpty()) {
             try {
-                var id = Integer.parseInt(input.orElse(""));
-                var product = collection.stream()
-                        .filter(p -> p.getId() == id)
-                        .findAny()
-                        .orElse(null);
-                if (product == null) throw new NotFoundException();
-                if (product.getCreatorId() != SessionHandler.getCurrentUser().id()) throw new BadOwnerException();
-                doubleClickUpdate(product, false);
+                var dragon = getDragon(input.orElse(""));
+                doubleClickUpdate(dragon, false);
             } catch (NumberFormatException e) {
                 DialogManager.alert("NumberFormatException", localizator);
             } catch (BadOwnerException e) {
@@ -312,28 +242,27 @@ public class MainController {
         }
     }
 
+    private Dragon getDragon(String input) throws NotFoundException, BadOwnerException {
+        var id = Integer.parseInt(input);
+        var dragon = collection.stream().filter(d -> d.id() == id).findAny().orElse(null);
+        if (dragon == null) throw new NotFoundException();
+        if (dragon.creator().id() != SessionHandler.getCurrentUser().id()) throw new BadOwnerException();
+        return dragon;
+    }
+
     @FXML
     public void removeById() {
         Optional<String> input = DialogManager.createDialog(localizator.getKeyString("RemoveByID"), "ID: ");
         if (input.isPresent() && !input.get().isEmpty()) {
             try {
-                var id = Integer.parseInt(input.orElse(""));
-                var product = collection.stream()
-                        .filter(p -> p.getId() == id)
-                        .findAny()
-                        .orElse(null);
-                if (product == null) throw new NotFoundException();
-                if (product.getCreatorId() != SessionHandler.getCurrentUser().id()) throw new BadOwnerException();
-
+                var id = getDragon(input.orElse("")).id();
                 var response = (RemoveByIdResponse) client.sendAndReceiveCommand(new RemoveByIdRequest(id, SessionHandler.getCurrentUser()));
                 if (response.getError() != null && !response.getError().isEmpty()) {
                     throw new APIException(response.getError());
                 }
 
                 loadCollection();
-                DialogManager.createAlert(
-                        localizator.getKeyString("RemoveByID"), localizator.getKeyString("RemoveByIDSuc"), Alert.AlertType.INFORMATION, false
-                );
+                DialogManager.createAlert(localizator.getKeyString("RemoveByID"), localizator.getKeyString("RemoveByIDSuc"), Alert.AlertType.INFORMATION, false);
             } catch (APIException | ErrorResponseException e) {
                 DialogManager.alert("RemoveByIDErr", localizator);
             } catch (IOException e) {
@@ -357,9 +286,7 @@ public class MainController {
             }
 
             loadCollection();
-            DialogManager.createAlert(
-                    localizator.getKeyString("Clear"), localizator.getKeyString("ClearSuc"), Alert.AlertType.INFORMATION, false
-            );
+            DialogManager.createAlert(localizator.getKeyString("Clear"), localizator.getKeyString("ClearSuc"), Alert.AlertType.INFORMATION, false);
         } catch (APIException | ErrorResponseException e) {
             DialogManager.alert("ClearErr", localizator);
         } catch (IOException e) {
@@ -383,33 +310,12 @@ public class MainController {
     }
 
     @FXML
-    public void head() {
-        try {
-            var response = (HeadResponse) client.sendAndReceiveCommand(new HeadRequest(SessionHandler.getCurrentUser()));
-            if (response.getError() != null && !response.getError().isEmpty()) {
-                throw new APIException(response.getError());
-            }
-
-            DialogManager.createAlert(
-                    localizator.getKeyString("Head"),
-                    localizator.getKeyString("HeadResult") + (new ProductPresenter(localizator)).describe(response.product),
-                    Alert.AlertType.INFORMATION,
-                    false
-            );
-        } catch (APIException | ErrorResponseException e) {
-            DialogManager.alert("HeadError", localizator);
-        } catch (IOException e) {
-            DialogManager.alert("UnavailableError", localizator);
-        }
-    }
-
-    @FXML
     public void addIfMax() {
         editController.clear();
         editController.show();
-        var product = editController.getProduct();
+        var product = editController.getDragon();
         if (product != null) {
-            product = product.copy(product.getId(), SessionHandler.getCurrentUser());
+            product = product.copy(product.id(), SessionHandler.getCurrentUser());
 
             try {
                 var response = (AddIfMaxResponse) client.sendAndReceiveCommand(new AddIfMaxRequest(product, SessionHandler.getCurrentUser()));
@@ -435,9 +341,9 @@ public class MainController {
     public void addIfMin() {
         editController.clear();
         editController.show();
-        var product = editController.getProduct();
+        var product = editController.getDragon();
         if (product != null) {
-            product = product.copy(product.getId(), SessionHandler.getCurrentUser());
+            product = product.copy(product.id(), SessionHandler.getCurrentUser());
 
             try {
                 var response = (AddIfMinResponse) client.sendAndReceiveCommand(new AddIfMinRequest(product, SessionHandler.getCurrentUser()));
@@ -459,104 +365,12 @@ public class MainController {
         }
     }
 
-    @FXML
-    public void sumOfPrice() {
-        try {
-            var response = (SumOfPriceResponse) client.sendAndReceiveCommand(new SumOfPriceRequest(SessionHandler.getCurrentUser()));
-            if (response.getError() != null && !response.getError().isEmpty()) {
-                throw new APIException(response.getError());
-            }
-
-            DialogManager.createAlert(
-                    localizator.getKeyString("SumOfPrice"),
-                    MessageFormat.format(localizator.getKeyString("SumOfPriceResult"), String.valueOf(response.sum)),
-                    Alert.AlertType.INFORMATION,
-                    false
-            );
-        } catch (APIException | ErrorResponseException e) {
-            DialogManager.alert("SumOfPriceError", localizator);
-        } catch (IOException e) {
-            DialogManager.alert("UnavailableError", localizator);
-        }
-    }
-
-    @FXML
-    public void filterByPrice() {
-        var dialogPrice = new TextInputDialog();
-        dialogPrice.setTitle(localizator.getKeyString("FilterByPrice"));
-        dialogPrice.setHeaderText(null);
-        dialogPrice.setContentText(localizator.getKeyString("DialogPrice"));
-        var price = dialogPrice.showAndWait();
-
-        if (price.isPresent() && !price.get().trim().isEmpty()) {
-            try {
-                var response = (FilterByPriceResponse) client.sendAndReceiveCommand(new FilterByPriceRequest(Long.parseLong(price.orElse("")), SessionHandler.getCurrentUser()));
-                if (response.getError() != null && !response.getError().isEmpty()) {
-                    throw new APIException(response.getError());
-                }
-
-                var result = new StringBuilder();
-                response.filteredProducts.forEach(product -> result.append(new ProductPresenter(localizator).describe(product)).append("\n\n"));
-
-                DialogManager.createAlert(
-                        localizator.getKeyString("FilterByPrice"),
-                        MessageFormat.format(localizator.getKeyString("FilterByPriceResult"), String.valueOf(response.filteredProducts.size())) + result,
-                        Alert.AlertType.INFORMATION,
-                        true
-                );
-            } catch (APIException | ErrorResponseException e) {
-                DialogManager.alert("FilterByPriceError", localizator);
-            } catch (IOException e) {
-                DialogManager.alert("UnavailableError", localizator);
-            } catch (NumberFormatException e) {
-                DialogManager.alert("NumberFormatException", localizator);
-            }
-        }
-    }
-
-    @FXML
-    public void filterContainsPartNumber() {
-        var dialogPartNumber = new TextInputDialog();
-        dialogPartNumber.setTitle(localizator.getKeyString("FilterContainsPartNumber"));
-        dialogPartNumber.setHeaderText(null);
-        dialogPartNumber.setContentText(localizator.getKeyString("PartNumber") + ": ");
-
-        var partNumber = dialogPartNumber.showAndWait();
-        if (partNumber.isPresent() && !partNumber.get().trim().isEmpty()) {
-            try {
-                var response = (FilterContainsPartNumberResponse) client.sendAndReceiveCommand(
-                        new FilterContainsPartNumberRequest(partNumber.get().trim(), SessionHandler.getCurrentUser())
-                );
-                if (response.getError() != null && !response.getError().isEmpty()) {
-                    throw new APIException(response.getError());
-                }
-
-                var result = new StringBuilder();
-                response.filteredProducts.forEach(product -> result.append(new ProductPresenter(localizator).describe(product)).append("\n\n"));
-
-                DialogManager.createAlert(
-                        localizator.getKeyString("FilterContainsPartNumber"),
-                        MessageFormat.format(
-                                localizator.getKeyString("FilterContainsPartNumberResult"),
-                                String.valueOf(response.filteredProducts.size())
-                        ) + result,
-                        Alert.AlertType.INFORMATION,
-                        true
-                );
-            } catch (APIException | ErrorResponseException e) {
-                DialogManager.alert("FilterContainsPartNumberError", localizator);
-            } catch (IOException e) {
-                DialogManager.alert("UnavailableError", localizator);
-            }
-        }
-    }
-
     public void refresh() {
-        Thread refresher = new Thread(() -> {
+        var refresher = new Thread(() -> {
             while (isRefreshing()) {
                 Platform.runLater(this::loadCollection);
                 try {
-                    Thread.sleep(10_000);
+                    TimeUnit.SECONDS.sleep(5);
                 } catch (InterruptedException ignored) {
                     Thread.currentThread().interrupt();
                     System.out.println("Thread was interrupted, Failed to complete operation");
@@ -570,8 +384,8 @@ public class MainController {
         visualPane.getChildren().clear();
         infoMap.clear();
 
-        for (var product : tableTable.getItems()) {
-            var creatorName = product.getCreator().name();
+        for (var dragon : tableTable.getItems()) {
+            var creatorName = dragon.creator().name();
 
             if (!colorMap.containsKey(creatorName)) {
                 var r = random.nextDouble();
@@ -585,26 +399,26 @@ public class MainController {
                 colorMap.put(creatorName, Color.color(r, g, b));
             }
 
-            var size = Math.min(125, Math.max(75, product.getPrice() * 2) / 2);
+            var size = Math.min(125, Math.max(75, dragon.age() * 2) / 2);
 
             var circle = new Circle(size, colorMap.get(creatorName));
-            double x = Math.abs(product.getCoordinates().x());
+            double x = Math.abs(dragon.coordinates().x());
             while (x >= 720) {
                 x = x / 10;
             }
-            double y = Math.abs(product.getCoordinates().y());
+            double y = Math.abs(dragon.coordinates().y());
             while (y >= 370) {
                 y = y / 3;
             }
             if (y < 100) y += 125;
 
-            var id = new Text('#' + String.valueOf(product.getId()));
-            var info = new Label(new ProductPresenter(localizator).describe(product));
+            var id = new Text('#' + String.valueOf(dragon.id()));
+            var info = new Label(new DragonPresenter(localizator).describe(dragon));
 
             info.setVisible(false);
             circle.setOnMouseClicked(mouseEvent -> {
                 if (mouseEvent.getClickCount() == 2) {
-                    doubleClickUpdate(product);
+                    doubleClickUpdate(dragon);
                 }
             });
 
@@ -627,7 +441,7 @@ public class MainController {
             visualPane.getChildren().add(circle);
             visualPane.getChildren().add(id);
 
-            infoMap.put(product.getId(), info);
+            infoMap.put(dragon.id(), info);
             if (!refresh) {
                 var path = new Path();
                 path.getElements().add(new MoveTo(-500, -150));
@@ -673,7 +487,7 @@ public class MainController {
                 throw new APIException(response.getError());
             }
 
-            setCollection(response.products);
+            setCollection(response.dragons);
             visualise(true);
         } catch (SocketTimeoutException e) {
             DialogManager.alert("RefreshLost", localizator);
@@ -684,28 +498,28 @@ public class MainController {
         }
     }
 
-    private void doubleClickUpdate(Product product) {
-        doubleClickUpdate(product, true);
+    private void doubleClickUpdate(Dragon dragon) {
+        doubleClickUpdate(dragon, true);
     }
 
-    private void doubleClickUpdate(Product product, boolean ignoreAnotherUser) {
-        if (ignoreAnotherUser && product.getCreatorId() != SessionHandler.getCurrentUser().id()) return;
+    private void doubleClickUpdate(Dragon dragon, boolean ignoreAnotherUser) {
+        if (ignoreAnotherUser && dragon.creator().id() != SessionHandler.getCurrentUser().id()) return;
 
-        editController.fill(product);
+        editController.fill(dragon);
         editController.show();
 
-        var updatedProduct = editController.getProduct();
-        if (updatedProduct != null) {
-            updatedProduct = updatedProduct.copy(product.getId(), SessionHandler.getCurrentUser());
+        var updatedDragon = editController.getDragon();
+        if (updatedDragon != null) {
+            updatedDragon = updatedDragon.copy(dragon.id(), SessionHandler.getCurrentUser());
 
-            if (product.getManufacturer() != null && updatedProduct.getManufacturer() != null) {
-                updatedProduct.getManufacturer().setId(product.getManufacturer().getId());
+            if (dragon.head() != null && updatedDragon.head() != null) {
+                updatedDragon.head().setEyesCount(dragon.head().eyesCount());
             }
 
             try {
-                if (!updatedProduct.validate()) throw new InvalidFormException();
+                if (!updatedDragon.validate()) throw new InvalidFormException();
 
-                var response = (UpdateResponse) client.sendAndReceiveCommand(new UpdateRequest(product.getId(), updatedProduct, SessionHandler.getCurrentUser()));
+                var response = (UpdateResponse) client.sendAndReceiveCommand(new UpdateRequest(dragon.id(), updatedDragon, SessionHandler.getCurrentUser()));
                 if (response.getError() != null && !response.getError().isEmpty()) {
                     if (response.getError().contains("BAD_OWNER")) {
                         throw new BadOwnerException();
@@ -714,17 +528,13 @@ public class MainController {
                 }
 
                 loadCollection();
-                DialogManager.createAlert(
-                        localizator.getKeyString("Update"), localizator.getKeyString("UpdateSuc"), Alert.AlertType.INFORMATION, false
-                );
+                DialogManager.createAlert(localizator.getKeyString("Update"), localizator.getKeyString("UpdateSuc"), Alert.AlertType.INFORMATION, false);
             } catch (APIException | ErrorResponseException e) {
                 DialogManager.createAlert(localizator.getKeyString("Error"), localizator.getKeyString("UpdateErr"), Alert.AlertType.ERROR, false);
             } catch (IOException e) {
                 DialogManager.alert("UnavailableError", localizator);
             } catch (InvalidFormException e) {
-                DialogManager.createAlert(
-                        localizator.getKeyString("Update"), localizator.getKeyString("InvalidProduct"), Alert.AlertType.INFORMATION, false
-                );
+                DialogManager.createAlert(localizator.getKeyString("Update"), localizator.getKeyString("InvalidDragon"), Alert.AlertType.INFORMATION, false);
             } catch (BadOwnerException e) {
                 DialogManager.alert("BadOwnerError", localizator);
             }
@@ -743,12 +553,8 @@ public class MainController {
         removeByIdButton.setText(localizator.getKeyString("RemoveByID"));
         clearButton.setText(localizator.getKeyString("Clear"));
         executeScriptButton.setText(localizator.getKeyString("ExecuteScript"));
-        headButton.setText(localizator.getKeyString("Head"));
         addIfMaxButton.setText(localizator.getKeyString("AddIfMax"));
         addIfMinButton.setText(localizator.getKeyString("AddIfMin"));
-        sumOfPriceButton.setText(localizator.getKeyString("SumOfPrice"));
-        filterByPriceButton.setText(localizator.getKeyString("FilterByPrice"));
-        filterContainsPartNumberButton.setText(localizator.getKeyString("FilterContainsPartNumber"));
 
         tableTab.setText(localizator.getKeyString("TableTab"));
         visualTab.setText(localizator.getKeyString("VisualTab"));
@@ -756,23 +562,19 @@ public class MainController {
         ownerColumn.setText(localizator.getKeyString("Owner"));
         nameColumn.setText(localizator.getKeyString("Name"));
         dateColumn.setText(localizator.getKeyString("CreationDate"));
-        priceColumn.setText(localizator.getKeyString("Price"));
-        partNumberColumn.setText(localizator.getKeyString("PartNumber"));
-        unitOfMeasureColumn.setText(localizator.getKeyString("UnitOfMeasure"));
+        ageColumn.setText(localizator.getKeyString("Age"));
+        colorColumn.setText(localizator.getKeyString("Color"));
+        typeColumn.setText(localizator.getKeyString("DragonType"));
+        characterColumn.setText(localizator.getKeyString("DragonCharacter"));
 
-        manufacturerIdColumn.setText(localizator.getKeyString("ManufacturerId"));
-        manufacturerNameColumn.setText(localizator.getKeyString("ManufacturerName"));
-        manufacturerEmployeesCountColumn.setText(localizator.getKeyString("ManufacturerEmployeesCount"));
-        manufacturerTypeColumn.setText(localizator.getKeyString("ManufacturerType"));
-        manufacturerStreetColumn.setText(localizator.getKeyString("ManufacturerStreet"));
-        manufacturerZipCodeColumn.setText(localizator.getKeyString("ManufacturerZipCode"));
+        headEyeCountColumn.setText(localizator.getKeyString("DragonHeadEyesCount"));
 
         editController.changeLanguage();
 
         loadCollection();
     }
 
-    public void setCollection(List<Product> collection) {
+    public void setCollection(List<Dragon> collection) {
         this.collection = collection;
         tableTable.setItems(FXCollections.observableArrayList(collection));
     }

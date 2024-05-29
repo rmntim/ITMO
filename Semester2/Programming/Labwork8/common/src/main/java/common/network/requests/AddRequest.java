@@ -1,13 +1,14 @@
 package common.network.requests;
 
+import common.domain.Dragon;
 import common.user.User;
 import common.utility.CommandName;
 
 public class AddRequest extends Request {
-    public final Product product;
+    public final Dragon dragon;
 
-    public AddRequest(Product product, User user) {
+    public AddRequest(Dragon dragon, User user) {
         super(CommandName.ADD, user);
-        this.product = product;
+        this.dragon = dragon;
     }
 }

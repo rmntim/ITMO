@@ -11,14 +11,15 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.math.BigInteger;
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 public class EditController {
     private Stage stage;
-    private Product product;
+    private Dragon dragon;
     private Localizator localizator;
 
     @FXML
@@ -26,23 +27,17 @@ public class EditController {
     @FXML
     private Label nameLabel;
     @FXML
-    private Label priceLabel;
+    private Label ageLabel;
     @FXML
-    private Label partNumberLabel;
+    private Label colorsLabel;
     @FXML
-    private Label unitOfMeasureLabel;
+    private Label typesLabel;
     @FXML
-    private Label hasManufacturer;
+    private Label charactersLabel;
     @FXML
-    private Label mNameLabel;
+    private Label hasHead;
     @FXML
-    private Label mEmployeesCountLabel;
-    @FXML
-    private Label mTypeLabel;
-    @FXML
-    private Label mStreetLabel;
-    @FXML
-    private Label mZipCodeLabel;
+    private Label headEyeCountLabel;
 
     @FXML
     private TextField nameField;
@@ -51,24 +46,18 @@ public class EditController {
     @FXML
     private TextField yField;
     @FXML
-    private TextField priceField;
+    private TextField ageField;
     @FXML
-    private TextField partNumberField;
+    private ChoiceBox<String> colorsBox;
     @FXML
-    private TextField mNameField;
+    private ChoiceBox<String> typesBox;
     @FXML
-    private TextField mEmployeesCountField;
+    private ChoiceBox<String> charactersBox;
     @FXML
-    private TextField mStreetField;
-    @FXML
-    private TextField mZipCodeField;
+    private TextField headEyeCount;
 
     @FXML
-    private ChoiceBox<String> unitOfMeasureBox;
-    @FXML
-    private ChoiceBox<String> hasManufacturerBox;
-    @FXML
-    private ChoiceBox<String> mTypeBox;
+    private ChoiceBox<String> hasHeadBox;
 
     @FXML
     private Button cancelButton;
@@ -76,21 +65,24 @@ public class EditController {
     @FXML
     void initialize() {
         cancelButton.setOnAction(event -> stage.close());
-        var orgTypes = FXCollections.observableArrayList(Arrays.stream(OrganizationType.values()).map(Enum::toString).collect(Collectors.toList()));
-        mTypeBox.setItems(orgTypes);
-        mTypeBox.setStyle("-fx-font: 12px \"Sergoe UI\";");
+        var colors = FXCollections.observableArrayList(Arrays.stream(Color.values()).map(Enum::toString).collect(Collectors.toList()));
+        colorsBox.setItems(colors);
+        colorsBox.setStyle("-fx-font: 12px \"Segoe UI\";");
 
-        var unitOfMeasures = FXCollections.observableArrayList(Arrays.stream(UnitOfMeasure.values()).map(Enum::toString).collect(Collectors.toList()));
-        unitOfMeasureBox.setItems(unitOfMeasures);
-        unitOfMeasureBox.setStyle("-fx-font: 12px \"Sergoe UI\";");
+        var types = FXCollections.observableArrayList(Arrays.stream(DragonType.values()).map(Enum::toString).collect(Collectors.toList()));
+        typesBox.setItems(types);
+        typesBox.setStyle("-fx-font: 12px \"Segoe UI\";");
 
-        var hasManufacturer = FXCollections.observableArrayList("TRUE", "FALSE");
-        hasManufacturerBox.setItems(hasManufacturer);
-        hasManufacturerBox.setValue("FALSE");
-        hasManufacturerBox.setStyle("-fx-font: 12px \"Sergoe UI\";");
+        var characters = FXCollections.observableArrayList(Arrays.stream(DragonCharacter.values()).map(Enum::toString).collect(Collectors.toList()));
+        charactersBox.setItems(characters);
+        charactersBox.setStyle("-fx-font: 12px \"Segoe UI\";");
 
+        var hasHead = FXCollections.observableArrayList("TRUE", "FALSE");
+        hasHeadBox.setItems(hasHead);
+        hasHeadBox.setValue("FALSE");
+        hasHeadBox.setStyle("-fx-font: 12px \"Sergoe UI\";");
 
-        Arrays.asList(mNameField, mEmployeesCountField, mStreetField, mZipCodeField, mTypeBox).forEach(field -> field.disableProperty().bind(hasManufacturerBox.getSelectionModel().selectedItemProperty().isEqualTo("FALSE")));
+        Collections.singletonList(headEyeCount).forEach(field -> field.disableProperty().bind(hasHeadBox.getSelectionModel().selectedItemProperty().isEqualTo("FALSE")));
 
         xField.textProperty().addListener((observableValue, oldValue, newValue) -> {
             if (!newValue.matches("[-\\d]{0,11}")) {
@@ -116,7 +108,7 @@ public class EditController {
             }
         });
 
-        Arrays.asList(priceField, mEmployeesCountField).forEach(field -> field.textProperty().addListener((observableValue, oldValue, newValue) -> {
+        Collections.singletonList(ageField).forEach(field -> field.textProperty().addListener((observableValue, oldValue, newValue) -> {
             if (!field.isDisabled()) {
                 if (!newValue.matches("\\d{0,19}")) {
                     field.setText(oldValue);
@@ -133,118 +125,89 @@ public class EditController {
     @FXML
     public void ok() {
         nameField.setText(nameField.getText().trim());
-        partNumberField.setText(partNumberField.getText().trim());
-        mNameField.setText(mNameField.getText().trim());
-        mStreetField.setText(mStreetField.getText().trim());
-        mZipCodeField.setText(mZipCodeField.getText().trim());
-
         var errors = new ArrayList<String>();
 
-        Organization organization = null;
-        if (hasManufacturerBox.getValue().equals("TRUE")) {
-            if (mNameField.getText().isEmpty())
-                errors.add("- " + localizator.getKeyString("ManufacturerName") + " " + localizator.getKeyString("CannotBeEmpty"));
-            if (mStreetField.getText().isEmpty())
-                errors.add("- " + localizator.getKeyString("ManufacturerStreet") + " " + localizator.getKeyString("CannotBeEmpty"));
-
-            String zipCode = mZipCodeField.getText();
-            if (mZipCodeField.getText().isEmpty()) {
-                zipCode = null;
-            } else if (zipCode.length() < 6) {
-                errors.add("- " + localizator.getKeyString("ZipCodeLength"));
-            }
-
-            OrganizationType organizationType = null;
-            if (mTypeBox.getValue() != null) {
-                organizationType = OrganizationType.valueOf(mTypeBox.getValue());
-            } else {
-                errors.add("- " + localizator.getKeyString("ManufacturerType") + " " + localizator.getKeyString("CannotBeEmpty"));
-            }
-
-            organization = new Organization(-1, mNameField.getText(), Long.parseLong(mEmployeesCountField.getText()), organizationType, new Address(mStreetField.getText(), zipCode));
+        DragonHead head = null;
+        if (hasHeadBox.getValue().equals("TRUE")) {
+            head = new DragonHead(Double.parseDouble(headEyeCount.getText()));
         }
 
-        if (nameField.getText().isEmpty())
+        if (nameField.getText().isEmpty()) {
             errors.add("- " + localizator.getKeyString("Name") + " " + localizator.getKeyString("CannotBeEmpty"));
+        }
 
-        var partNumber = partNumberField.getText();
-        if (partNumberField.getText().isEmpty()) partNumber = null;
+        Color color = null;
+        if (colorsBox.getValue() != null) {
+            color = Color.valueOf(colorsBox.getValue());
+        }
 
-        UnitOfMeasure unitOfMeasure = null;
-        if (unitOfMeasureBox.getValue() != null) unitOfMeasure = UnitOfMeasure.valueOf(unitOfMeasureBox.getValue());
+        DragonType type = null;
+        if (typesBox.getValue() != null) {
+            type = DragonType.valueOf(typesBox.getValue());
+        }
+
+        DragonCharacter character = null;
+        if (charactersBox.getValue() != null) {
+            character = DragonCharacter.valueOf(charactersBox.getValue());
+        }
 
         if (!errors.isEmpty()) {
             DialogManager.createAlert(localizator.getKeyString("Error"), String.join("\n", errors), Alert.AlertType.ERROR, false);
         } else {
-            var newProduct = new Product(-1, nameField.getText(), new Coordinates(Integer.parseInt(xField.getText()), Long.parseLong(yField.getText())), LocalDate.now(), Long.parseLong(priceField.getText()), partNumber, unitOfMeasure, organization, SessionHandler.getCurrentUser());
-            if (!newProduct.validate()) {
-                DialogManager.alert("InvalidProduct", localizator);
+            var newDragon = new Dragon(-1, nameField.getText(), new Coordinates(Float.parseFloat(xField.getText()), Float.parseFloat(yField.getText())), ZonedDateTime.now(), Long.parseLong(ageField.getText()), color, type, character, head, SessionHandler.getCurrentUser());
+            if (!newDragon.validate()) {
+                DialogManager.alert("InvalidDragon", localizator);
             } else {
-                product = newProduct;
+                dragon = newDragon;
                 stage.close();
             }
         }
     }
 
-    public Product getProduct() {
-        var tmpProduct = product;
-        product = null;
-        return tmpProduct;
+    public Dragon getDragon() {
+        var tmpDragon = dragon;
+        dragon = null;
+        return tmpDragon;
     }
 
     public void clear() {
         nameField.clear();
         xField.clear();
         yField.clear();
-        priceField.clear();
-        partNumberField.clear();
-        unitOfMeasureBox.valueProperty().setValue(null);
-        hasManufacturerBox.valueProperty().setValue("FALSE");
+        ageField.clear();
+        colorsBox.valueProperty().setValue(null);
+        typesBox.valueProperty().setValue(null);
+        charactersBox.valueProperty().setValue(null);
+        hasHeadBox.valueProperty().setValue("FALSE");
 
-        mNameField.clear();
-        mEmployeesCountField.clear();
-        mTypeBox.valueProperty().setValue(null);
-        mStreetField.clear();
-        mZipCodeField.clear();
+        headEyeCount.clear();
     }
 
-    public void fill(Product product) {
-        nameField.setText(product.getName());
-        xField.setText(Integer.toString(product.getCoordinates().x()));
-        yField.setText(Long.toString(product.getCoordinates().y()));
-        priceField.setText(Long.toString(product.getPrice()));
-        partNumberField.setText(product.getPartNumber());
-        unitOfMeasureBox.setValue(product.getUnitOfMeasure() == null ? null : product.getUnitOfMeasure().toString());
-        hasManufacturerBox.setValue(product.getManufacturer() == null ? "FALSE" : "TRUE");
-
-        if (product.getManufacturer() != null) {
-            var manufacturer = product.getManufacturer();
-            mNameField.setText(manufacturer.getName());
-            mEmployeesCountField.setText(Long.toString(manufacturer.getEmployeesCount()));
-            mTypeBox.setValue(manufacturer.getType().toString());
-            mStreetField.setText(manufacturer.getPostalAddress().street());
-            mZipCodeField.setText(manufacturer.getPostalAddress().zipCode());
+    public void fill(Dragon dragon) {
+        nameField.setText(dragon.name());
+        xField.setText(Float.toString(dragon.coordinates().x()));
+        yField.setText(Float.toString(dragon.coordinates().y()));
+        ageField.setText(Long.toString(dragon.age()));
+        colorsBox.setValue(dragon.color().toString());
+        typesBox.setValue(dragon.type().toString());
+        charactersBox.setValue(dragon.character().toString());
+        hasHeadBox.setValue(dragon.head() == null ? "FALSE" : "TRUE");
+        if (dragon.head() != null) {
+            headEyeCount.setText(dragon.head().eyesCount().toString());
         } else {
-            mNameField.clear();
-            mEmployeesCountField.clear();
-            mTypeBox.valueProperty().setValue(null);
-            mStreetField.clear();
-            mZipCodeField.clear();
+            headEyeCount.clear();
         }
     }
 
     public void changeLanguage() {
         titleLabel.setText(localizator.getKeyString("EditTitle"));
         nameLabel.setText(localizator.getKeyString("Name"));
-        priceLabel.setText(localizator.getKeyString("Price"));
-        partNumberLabel.setText(localizator.getKeyString("PartNumber"));
-        unitOfMeasureLabel.setText(localizator.getKeyString("UnitOfMeasure"));
-        hasManufacturer.setText(localizator.getKeyString("HasManufacturer"));
-        mNameLabel.setText(localizator.getKeyString("ManufacturerName"));
-        mEmployeesCountLabel.setText(localizator.getKeyString("ManufacturerEmployeesCount"));
-        mTypeLabel.setText(localizator.getKeyString("ManufacturerType"));
-        mStreetLabel.setText(localizator.getKeyString("ManufacturerStreet"));
-        mZipCodeLabel.setText(localizator.getKeyString("ManufacturerZipCode"));
+        ageLabel.setText(localizator.getKeyString("Age"));
+        colorsLabel.setText(localizator.getKeyString("Color"));
+        typesLabel.setText(localizator.getKeyString("DragonType"));
+        charactersLabel.setText(localizator.getKeyString("DragonCharacter"));
+        hasHead.setText(localizator.getKeyString("DragonHead"));
+        headEyeCountLabel.setText(localizator.getKeyString("DragonHeadEyesCount"));
 
         cancelButton.setText(localizator.getKeyString("CancelButton"));
     }

@@ -25,12 +25,7 @@ public class AuthController {
     private Runnable callback;
     private Localizator localizator;
     private UDPClient client;
-    private final HashMap<String, Locale> localeMap = new HashMap<>() {{
-        put("Русский", new Locale("ru", "RU"));
-        put("English(IN)", new Locale("en", "IN"));
-        put("Íslenska", new Locale("is", "IS"));
-        put("Svenska", new Locale("sv", "SE"));
-    }};
+    private final HashMap<String, Locale> localeMap = new HashMap<>();
 
     @FXML
     private Label titleLabel;
@@ -47,6 +42,11 @@ public class AuthController {
 
     @FXML
     void initialize() {
+        localeMap.put("Русский", new Locale("ru_RU"));
+        localeMap.put("English(AU)", new Locale("en_AU"));
+        localeMap.put("Eesti", new Locale("et_EE"));
+        localeMap.put("Polski", new Locale("pl_PL"));
+
         languageComboBox.setItems(FXCollections.observableArrayList(localeMap.keySet()));
 
         languageComboBox.setValue(SessionHandler.getCurrentLanguage());
@@ -80,7 +80,7 @@ public class AuthController {
 
     public void register() {
         try {
-            if (loginField.getText().length() < 1 || loginField.getText().length() > 40 || passwordField.getText().length() < 1) {
+            if (loginField.getText().isEmpty() || loginField.getText().length() > 40 || passwordField.getText().isEmpty()) {
                 throw new InvalidFormException();
             }
 
@@ -165,7 +165,7 @@ public class AuthController {
 
     public void authenticate() {
         try {
-            if (loginField.getText().length() < 1 || loginField.getText().length() > 40 || passwordField.getText().length() < 1) {
+            if (loginField.getText().isEmpty() || loginField.getText().length() > 40 || passwordField.getText().isEmpty()) {
                 throw new InvalidFormException();
             }
 

@@ -3,20 +3,20 @@ package server.commands;
 import common.network.requests.Request;
 import common.network.responses.InfoResponse;
 import common.network.responses.Response;
-import server.repositories.ProductRepository;
+import server.repositories.DragonRepository;
 
 public class Info extends Command {
-    private final ProductRepository productRepository;
+    private final DragonRepository dragonRepository;
 
-    public Info(ProductRepository productRepository) {
+    public Info(DragonRepository dragonRepository) {
         super("info", "вывести информацию о коллекции");
-        this.productRepository = productRepository;
+        this.dragonRepository = dragonRepository;
     }
 
     @Override
     public Response apply(Request request) {
-        var lastInitTime = productRepository.getLastInitTime();
-        var lastSaveTime = productRepository.getLastSaveTime();
-        return new InfoResponse(productRepository.type(), String.valueOf(productRepository.size()), lastSaveTime, lastInitTime, null);
+        var lastInitTime = dragonRepository.getLastInitTime();
+        var lastSaveTime = dragonRepository.getLastSaveTime();
+        return new InfoResponse(dragonRepository.type(), String.valueOf(dragonRepository.size()), lastSaveTime, lastInitTime, null);
     }
 }

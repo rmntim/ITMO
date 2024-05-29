@@ -1,7 +1,7 @@
 package client.utility;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ResourceBundle;
@@ -21,15 +21,15 @@ public class Localizator {
         return bundle.getString(key);
     }
 
-    public String getDate(LocalDate date) {
+    public String getDate(ZonedDateTime date) {
         if (date == null) return "null";
-        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(bundle.getLocale());
+        var formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(bundle.getLocale());
         return date.format(formatter);
     }
 
     public String getDate(LocalDateTime date) {
         if (date == null) return "null";
-        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(bundle.getLocale());
+        var formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(bundle.getLocale());
         return date.format(formatter);
     }
 }

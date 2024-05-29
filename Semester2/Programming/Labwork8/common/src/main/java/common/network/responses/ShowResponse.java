@@ -1,14 +1,15 @@
 package common.network.responses;
 
+import common.domain.Dragon;
 import common.utility.CommandName;
 
 import java.util.List;
 
 public class ShowResponse extends Response {
-    public final List<Product> products;
+    public final List<Dragon> dragons;
 
-    public ShowResponse(List<Product> products, String error) {
+    public ShowResponse(List<Dragon> dragons, String error) {
         super(CommandName.SHOW, error);
-        this.products = products;
+        this.dragons = dragons;
     }
 }

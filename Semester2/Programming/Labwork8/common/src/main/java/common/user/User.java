@@ -17,7 +17,7 @@ public record User(int id, String name, String password) implements Comparable<U
 
     @Override
     public String toString() {
-        return name + ", id#" + id;
+        return name + ", id=" + id;
     }
 
     @Override

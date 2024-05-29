@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
@@ -26,6 +27,7 @@ abstract class UDPServer {
     private final CommandHandler commandHandler;
     private final ExecutorService service = Executors.newFixedThreadPool(READ_POOL_SIZE);
     private final ForkJoinPool pool = ForkJoinPool.commonPool();
+    private final CountDownLatch latch = new CountDownLatch(1);
 
     private final Logger logger = App.logger;
 
@@ -51,7 +53,7 @@ abstract class UDPServer {
 
     public abstract void close();
 
-    public void run() {
+    public void run() throws InterruptedException {
         logger.info("Server listening on {}", addr);
 
         pool.submit(() -> {
@@ -111,6 +113,8 @@ abstract class UDPServer {
                 logger.info("Disconnected from {}", clientAddr);
             }
             close();
+            latch.countDown();
         });
+        latch.await();
     }
 }

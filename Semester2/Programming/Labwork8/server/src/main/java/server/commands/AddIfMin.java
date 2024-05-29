@@ -1,26 +1,27 @@
 package server.commands;
 
+import common.domain.Dragon;
 import common.network.requests.AddIfMinRequest;
 import common.network.requests.Request;
 import common.network.responses.AddIfMinResponse;
 import common.network.responses.Response;
-import server.repositories.ProductRepository;
+import server.repositories.DragonRepository;
 
 public class AddIfMin extends Command {
-    private final ProductRepository productRepository;
+    private final DragonRepository dragonRepository;
 
-    public AddIfMin(ProductRepository productRepository) {
-        super("add_if_min {element}", "добавить новый элемент в коллекцию, если его цена меньше минимальной цены этой коллекции");
-        this.productRepository = productRepository;
+    public AddIfMin(DragonRepository dragonRepository) {
+        super("add_if_min {element}", "добавить новый элемент в коллекцию, если его возраст меньше минимальной цены этой коллекции");
+        this.dragonRepository = dragonRepository;
     }
 
     @Override
     public Response apply(Request request) {
         try {
             var req = (AddIfMinRequest) request;
-            var minPrice = minPrice();
-            if (req.product.getPrice() < minPrice) {
-                var newId = productRepository.add(req.getUser(), req.product);
+            var minAge = minAge();
+            if (req.dragon.age() < minAge) {
+                var newId = dragonRepository.add(req.getUser(), req.dragon);
                 return new AddIfMinResponse(true, newId, null);
             }
             return new AddIfMinResponse(false, -1, null);
@@ -29,11 +30,10 @@ public class AddIfMin extends Command {
         }
     }
 
-    private Long minPrice() {
-        return productRepository.get().stream()
-                .map(Product::getPrice)
-                .mapToLong(Long::longValue)
-                .min()
+    private Long minAge() {
+        return dragonRepository.get().stream()
+                .map(Dragon::age)
+                .reduce(Long::min)
                 .orElse(Long.MAX_VALUE);
     }
 }

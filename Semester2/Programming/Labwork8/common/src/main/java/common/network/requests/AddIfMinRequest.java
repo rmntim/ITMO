@@ -1,13 +1,14 @@
 package common.network.requests;
 
+import common.domain.Dragon;
 import common.user.User;
 import common.utility.CommandName;
 
 public class AddIfMinRequest extends Request {
-    public final Product product;
+    public final Dragon dragon;
 
-    public AddIfMinRequest(Product product, User user) {
+    public AddIfMinRequest(Dragon dragon, User user) {
         super(CommandName.ADD_IF_MIN, user);
-        this.product = product;
+        this.dragon = dragon;
     }
 }

@@ -1,6 +1,8 @@
 package server.repositories;
 
 import common.domain.Coordinates;
+import common.domain.Dragon;
+import common.domain.DragonHead;
 import common.exceptions.BadOwnerException;
 import common.user.User;
 import org.slf4j.Logger;
@@ -11,15 +13,15 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ProductRepository {
+public class DragonRepository {
     private final Logger logger = App.logger;
 
-    private Queue<Product> collection = new PriorityQueue<>();
+    private Set<Dragon> collection = new TreeSet<>();
     private LocalDateTime lastInitTime;
     private LocalDateTime lastSaveTime;
     private final PersistenceManager persistenceManager;
 
-    public ProductRepository(PersistenceManager persistenceManager) {
+    public DragonRepository(PersistenceManager persistenceManager) {
         this.lastInitTime = null;
         this.lastSaveTime = null;
         this.persistenceManager = persistenceManager;
@@ -38,23 +40,23 @@ public class ProductRepository {
     }
 
     public boolean validateAll() {
-        for (var product : new ArrayList<>(get())) {
-            if (!product.validate()) {
-                logger.warn("Product with id={} is invalid.", product.getId());
+        for (var dragon : collection) {
+            if (!dragon.validate()) {
+                logger.warn("Dragon with id={} is invalid.", dragon.id());
                 return false;
             }
-            if (product.getManufacturer() != null) {
-                if (!product.getManufacturer().validate()) {
-                    logger.warn("Manufacturer with id={} is invalid.", product.getId());
+            if (dragon.head() != null) {
+                if (!dragon.head().validate()) {
+                    logger.warn("Head with id={} is invalid.", dragon.id());
                     return false;
                 }
             }
         }
-        logger.info("All products are valid.");
+        logger.info("All dragons are valid.");
         return true;
     }
 
-    public Queue<Product> get() {
+    public Set<Dragon> get() {
         return collection;
     }
 
@@ -74,23 +76,24 @@ public class ProductRepository {
         return collection.size();
     }
 
-    public Product first() {
+    public Dragon first() {
         if (collection.isEmpty()) return null;
         return sorted().get(0);
     }
 
-    public List<Product> sorted() {
+    public List<Dragon> sorted() {
         return new ArrayList<>(collection)
                 .stream()
                 .sorted()
                 .collect(Collectors.toList());
     }
 
-    public Product getById(int id) {
-        for (Product element : collection) {
-            if (element.getId() == id) return element;
-        }
-        return null;
+    public Dragon getById(int id) {
+        return collection
+                .stream()
+                .takeWhile(d -> d.id() != id)
+                .findFirst()
+                .orElse(null);
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
@@ -98,37 +101,37 @@ public class ProductRepository {
         return getById(id) != null;
     }
 
-    public synchronized int add(User user, Product element) {
+    public synchronized int add(User user, Dragon element) {
         var newId = persistenceManager.add(user, element);
         collection.add(element.copy(newId, user.withoutPassword()));
         lastSaveTime = LocalDateTime.now();
-        logger.info("New product added successfully.");
+        logger.info("New dragon added successfully.");
         return newId;
     }
 
-    public synchronized void update(User user, Product element) throws BadOwnerException {
-        var product = getById(element.getId());
+    public synchronized void update(User user, Dragon element) throws BadOwnerException {
+        var product = getById(element.id());
         if (product == null) {
             add(user, element);
-        } else if (product.getCreatorId() == user.id()) {
-            logger.info("Updating product with id={}.", product.getId());
+        } else if (product.creator().id() == user.id()) {
+            logger.info("Updating product with id={}.", product.id());
 
-            var orgId = persistenceManager.update(element);
+            var headId = persistenceManager.update(element);
 
-            if (orgId != -1) element.getManufacturer().setId(orgId);
-            getById(element.getId()).update(element);
+            if (headId != -1) element.head().setId(headId);
+            getById(element.id()).update(element);
             lastSaveTime = LocalDateTime.now();
 
             logger.info("Product added successfully");
         } else {
-            logger.warn("Wrong owner for product with id={}.", product.getId());
+            logger.warn("Wrong owner for dragon with id={}.", product.id());
             throw new BadOwnerException();
         }
     }
 
     public synchronized int remove(User user, int id) throws BadOwnerException {
-        if (getById(id).getCreatorId() != user.id()) {
-            logger.warn("Wrong owner for product with id={}.", id);
+        if (getById(id).creator().id() != user.id()) {
+            logger.warn("Wrong owner for dragon with id={}.", id);
             throw new BadOwnerException();
         }
 
@@ -138,7 +141,7 @@ public class ProductRepository {
             return 0;
         }
 
-        collection.removeIf(product -> product.getId() == id && product.getCreatorId() == user.id());
+        collection.removeIf(d -> d.id() == id && d.creator().id() == user.id());
         lastSaveTime = LocalDateTime.now();
 
         return removedCount;
@@ -147,41 +150,38 @@ public class ProductRepository {
     public synchronized void clear(User user) {
         persistenceManager.clear(user);
 
-        collection.removeIf(product -> product.getCreatorId() == user.id());
+        collection.removeIf(d -> d.creator().id() == user.id());
         lastSaveTime = LocalDateTime.now();
     }
 
     private synchronized void load() {
         logger.info("Loading data");
 
-        collection = new PriorityQueue<>();
-        var daos = persistenceManager.loadProducts();
+        collection = new TreeSet<>();
+        var daos = persistenceManager.loadDragon();
 
-        var products = daos.stream().map((dao) -> {
-            Organization manufacturer = null;
-            if (dao.getManufacturer() != null) {
-                manufacturer = new Organization(
-                        dao.getManufacturer().getId(),
-                        dao.getManufacturer().getName(),
-                        dao.getManufacturer().getEmployeesCount(),
-                        dao.getManufacturer().getType(),
-                        new Address(dao.getManufacturer().getStreet(), dao.getManufacturer().getZipCode())
+        var dragons = daos.stream().map((dao) -> {
+            DragonHead head = null;
+            if (dao.getHead() != null) {
+                head = new DragonHead(
+                        dao.getHead().getEyeCount()
                 );
             }
-            return new Product(
+            return new Dragon(
                     dao.getId(),
                     dao.getName(),
                     new Coordinates(dao.getX(), dao.getY()),
                     dao.getCreationDate(),
-                    dao.getPrice(),
-                    dao.getPartNumber(),
-                    dao.getUnitOfMeasure(),
-                    manufacturer,
+                    dao.getAge(),
+                    dao.getColor(),
+                    dao.getType(),
+                    dao.getCharacter(),
+                    head,
                     new User(dao.getCreator().getId(), dao.getCreator().getName(), "")
             );
         }).toList();
 
-        collection.addAll(products);
+        collection.addAll(dragons);
         lastInitTime = LocalDateTime.now();
 
         logger.info("Data loaded");
@@ -190,10 +190,9 @@ public class ProductRepository {
     @Override
     public String toString() {
         if (collection.isEmpty()) return "Collection is empty!";
-
         var info = new StringJoiner("\n\n");
-        for (Product product : collection) {
-            info.add(product.toString());
+        for (var d : collection) {
+            info.add(d.toString());
         }
         return info.toString();
     }

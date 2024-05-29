@@ -12,7 +12,7 @@ import server.managers.AuthManager;
 import server.managers.CommandManagerBuilder;
 import server.managers.PersistenceManager;
 import server.network.UDPDatagramServer;
-import server.repositories.ProductRepository;
+import server.repositories.DragonRepository;
 import server.utils.HibernateUtil;
 
 import java.net.InetAddress;
@@ -35,7 +35,7 @@ public class App {
             var persistenceManager = new PersistenceManager(sessionFactory);
             var authManager = new AuthManager(sessionFactory, dotenv.get("PEPPER"));
 
-            var repository = new ProductRepository(persistenceManager);
+            var repository = new DragonRepository(persistenceManager);
             var commands = initializeCommands(repository, authManager);
 
             var server = new UDPDatagramServer(InetAddress.getLocalHost(), PORT, new CommandHandler(commands, authManager));
@@ -46,6 +46,8 @@ public class App {
             logger.error("Unknown host", e);
         } catch (ExceptionInInitializerError e) {
             logger.error("Error initializing Hibernate", e);
+        } catch (InterruptedException e) {
+            logger.error("Thread interrupted", e);
         }
     }
 
@@ -63,7 +65,7 @@ public class App {
         return HibernateUtil.getSessionFactory(url, user, password);
     }
 
-    private static Map<String, Command> initializeCommands(ProductRepository repository, AuthManager authManager) {
+    private static Map<String, Command> initializeCommands(DragonRepository repository, AuthManager authManager) {
         return new CommandManagerBuilder()
                 .register(CommandName.REGISTER, new Register(authManager))
                 .register(CommandName.AUTHENTICATE, new Authenticate(authManager))
@@ -73,12 +75,8 @@ public class App {
                 .register(CommandName.UPDATE, new Update(repository))
                 .register(CommandName.REMOVE_BY_ID, new RemoveById(repository))
                 .register(CommandName.CLEAR, new Clear(repository))
-                .register(CommandName.HEAD, new Head(repository))
                 .register(CommandName.ADD_IF_MAX, new AddIfMax(repository))
                 .register(CommandName.ADD_IF_MIN, new AddIfMin(repository))
-                .register(CommandName.SUM_OF_PRICE, new SumOfPrice(repository))
-                .register(CommandName.FILTER_BY_PRICE, new FilterByPrice(repository))
-                .register(CommandName.FILTER_CONTAINS_PART_NUMBER, new FilterContainsPartNumber(repository))
                 .build();
     }
 
