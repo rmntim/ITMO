@@ -129,7 +129,7 @@ public class EditController {
 
         DragonHead head = null;
         if (hasHeadBox.getValue().equals("TRUE")) {
-            head = new DragonHead(Double.parseDouble(headEyeCount.getText()));
+            head = new DragonHead(-1, Double.parseDouble(headEyeCount.getText()));
         }
 
         if (nameField.getText().isEmpty()) {

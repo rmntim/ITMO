@@ -95,7 +95,7 @@ public class PersistenceManager {
 
         try (var session = sessionFactory.openSession()) {
             session.beginTransaction();
-            var query = session.createQuery("DELETE FROM dragons WHERE creator.id = :creator", Void.class);
+            var query = session.createMutationQuery("DELETE FROM dragons WHERE creator.id = :creator");
             query.setParameter("creator", user.id());
             var deletedSize = query.executeUpdate();
             session.getTransaction().commit();
@@ -109,7 +109,7 @@ public class PersistenceManager {
         try (var session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            var query = session.createQuery("DELETE FROM dragons WHERE creator.id = :creator AND id = :id", Void.class);
+            var query = session.createMutationQuery("DELETE FROM dragons WHERE creator.id = :creator AND id = :id");
             query.setParameter("creator", user.id());
             query.setParameter("id", id);
 

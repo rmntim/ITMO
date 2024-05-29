@@ -313,12 +313,12 @@ public class MainController {
     public void addIfMax() {
         editController.clear();
         editController.show();
-        var product = editController.getDragon();
-        if (product != null) {
-            product = product.copy(product.id(), SessionHandler.getCurrentUser());
+        var dragon = editController.getDragon();
+        if (dragon != null) {
+            dragon = dragon.copy(dragon.id(), SessionHandler.getCurrentUser());
 
             try {
-                var response = (AddIfMaxResponse) client.sendAndReceiveCommand(new AddIfMaxRequest(product, SessionHandler.getCurrentUser()));
+                var response = (AddIfMaxResponse) client.sendAndReceiveCommand(new AddIfMaxRequest(dragon, SessionHandler.getCurrentUser()));
                 if (response.getError() != null && !response.getError().isEmpty()) {
                     throw new APIException(response.getError());
                 }
@@ -341,12 +341,12 @@ public class MainController {
     public void addIfMin() {
         editController.clear();
         editController.show();
-        var product = editController.getDragon();
-        if (product != null) {
-            product = product.copy(product.id(), SessionHandler.getCurrentUser());
+        var dragon = editController.getDragon();
+        if (dragon != null) {
+            dragon = dragon.copy(dragon.id(), SessionHandler.getCurrentUser());
 
             try {
-                var response = (AddIfMinResponse) client.sendAndReceiveCommand(new AddIfMinRequest(product, SessionHandler.getCurrentUser()));
+                var response = (AddIfMinResponse) client.sendAndReceiveCommand(new AddIfMinRequest(dragon, SessionHandler.getCurrentUser()));
                 if (response.getError() != null && !response.getError().isEmpty()) {
                     throw new APIException(response.getError());
                 }
@@ -513,6 +513,7 @@ public class MainController {
             updatedDragon = updatedDragon.copy(dragon.id(), SessionHandler.getCurrentUser());
 
             if (dragon.head() != null && updatedDragon.head() != null) {
+                updatedDragon.head().setId(dragon.head().getId());
                 updatedDragon.head().setEyesCount(dragon.head().eyesCount());
             }
 

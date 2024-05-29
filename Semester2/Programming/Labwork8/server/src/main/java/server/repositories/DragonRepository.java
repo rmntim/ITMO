@@ -91,7 +91,7 @@ public class DragonRepository {
     public Dragon getById(int id) {
         return collection
                 .stream()
-                .takeWhile(d -> d.id() != id)
+                .filter(d -> d.id() == id)
                 .findFirst()
                 .orElse(null);
     }
@@ -164,6 +164,7 @@ public class DragonRepository {
             DragonHead head = null;
             if (dao.getHead() != null) {
                 head = new DragonHead(
+                        dao.getHead().getId(),
                         dao.getHead().getEyeCount()
                 );
             }

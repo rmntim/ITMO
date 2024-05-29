@@ -7,12 +7,13 @@ public final class DragonHead implements Serializable {
     private int id;
     private Double eyesCount;
 
-    public DragonHead(Double eyesCount) {
+    public DragonHead(int id, Double eyesCount) {
+        this.id = id;
         this.eyesCount = eyesCount;
     }
 
     public boolean validate() {
-        return eyesCount != null;
+        return eyesCount != null && eyesCount > 0;
     }
 
     public void setEyesCount(double eyesCount) {
