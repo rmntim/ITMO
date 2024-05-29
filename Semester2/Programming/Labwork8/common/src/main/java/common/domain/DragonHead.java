@@ -1,8 +1,9 @@
 package common.domain;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public final class DragonHead {
+public final class DragonHead implements Serializable {
     private int id;
     private Double eyesCount;
 

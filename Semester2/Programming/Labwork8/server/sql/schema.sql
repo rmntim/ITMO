@@ -1,9 +1,5 @@
 BEGIN;
 
-CREATE TYPE color AS ENUM ('GREEN', 'ORANGE', 'BROWN');
-CREATE TYPE dtype AS ENUM ('WATER', 'UNDERGROUND', 'AIR', 'FIRE');
-CREATE TYPE dcharacter AS ENUM ('EVIL', 'CHAOTIC', 'FICKLE');
-
 CREATE TABLE IF NOT EXISTS users
 (
     id              SERIAL PRIMARY KEY,
@@ -27,9 +23,9 @@ CREATE TABLE IF NOT EXISTS dragons
     y             FLOAT       NOT NULL,
     creation_date TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
     age           BIGINT      NOT NULL,
-    color         color       NOT NULL,
-    type          dtype       NOT NULL,
-    character     dcharacter  NOT NULL,
+    color         VARCHAR(15) NOT NULL CHECK (color IN ('GREEN', 'ORANGE', 'BROWN')),
+    type          VARCHAR(15) NOT NULL CHECK (type IN ('WATER', 'UNDERGROUND', 'AIR', 'FIRE')),
+    character     VARCHAR(15) NOT NULL CHECK (character IN ('EVIL', 'CHAOTIC', 'FICKLE')),
     head_id       INT         REFERENCES dragon_heads (id) ON DELETE SET NULL,
     creator_id    INT         NOT NULL REFERENCES users (id) ON DELETE CASCADE
 );

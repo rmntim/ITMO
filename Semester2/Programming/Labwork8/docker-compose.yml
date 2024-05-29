@@ -3,6 +3,7 @@ version: "3"
 services:
   postgres:
     image: postgres
+    command: [ "postgres", "-c", "log_statement=all", "-c", "log_destination=stderr" ]
     environment:
       POSTGRES_DB: "studs"
       POSTGRES_USER: "s409682"

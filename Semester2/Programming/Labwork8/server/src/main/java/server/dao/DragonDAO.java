@@ -17,7 +17,6 @@ public class DragonDAO implements Serializable {
     }
 
     public DragonDAO(Dragon dragon) {
-        this.id = dragon.id();
         this.name = dragon.name();
         this.x = dragon.coordinates().x();
         this.y = dragon.coordinates().y();
@@ -77,7 +76,7 @@ public class DragonDAO implements Serializable {
     private DragonHeadDAO head;
 
     @ManyToOne
-    @JoinColumn(name = "creator_id")
+    @JoinColumn(name = "creator_id", nullable = false)
     private UserDAO creator;
 
     public int getId() {

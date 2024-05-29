@@ -61,7 +61,6 @@ public final class Dragon implements Comparable<Dragon>, Serializable {
     }
 
     public boolean validate() {
-        if (id == null || id <= 0) return false;
         if (name == null || name.isEmpty()) return false;
         if (coordinates == null) return false;
         if (creationDate == null) return false;
