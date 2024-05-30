@@ -16,79 +16,78 @@ import java.nio.channels.DatagramChannel;
 import java.util.Arrays;
 
 public class UDPClient {
-    private final int PACKET_SIZE = 1024;
+  private final int PACKET_SIZE = 1024;
 
-    private final DatagramChannel client;
-    private final InetSocketAddress addr;
+  private final DatagramChannel client;
+  private final InetSocketAddress addr;
 
+  public UDPClient(InetAddress address, int port) throws IOException {
+    this.addr = new InetSocketAddress(address, port);
+    this.client = DatagramChannel.open().bind(null).connect(addr);
+    this.client.configureBlocking(false);
+  }
 
-    public UDPClient(InetAddress address, int port) throws IOException {
-        this.addr = new InetSocketAddress(address, port);
-        this.client = DatagramChannel.open().bind(null).connect(addr);
-        this.client.configureBlocking(false);
+  public Response sendAndReceiveCommand(Request request) throws IOException, ErrorResponseException {
+    var data = SerializationUtils.serialize(request);
+    var responseBytes = sendAndReceiveData(data);
+
+    Response response = SerializationUtils.deserialize(responseBytes);
+    if (response.isErrorResponse()) {
+      throw new ErrorResponseException((ErrorResponse) response);
+    }
+    return response;
+  }
+
+  private void sendData(byte[] data) throws IOException {
+    var DATA_SIZE = PACKET_SIZE - 1;
+    var ret = new byte[(int) Math.ceil(data.length / (double) DATA_SIZE)][DATA_SIZE];
+
+    var start = 0;
+    for (int i = 0; i < ret.length; i++) {
+      ret[i] = Arrays.copyOfRange(data, start, start + DATA_SIZE);
+      start += DATA_SIZE;
     }
 
-    public Response sendAndReceiveCommand(Request request) throws IOException, ErrorResponseException {
-        var data = SerializationUtils.serialize(request);
-        var responseBytes = sendAndReceiveData(data);
-
-        Response response = SerializationUtils.deserialize(responseBytes);
-        if (response.isErrorResponse()) {
-            throw new ErrorResponseException((ErrorResponse) response);
-        }
-        return response;
+    for (int i = 0; i < ret.length; i++) {
+      var chunk = ret[i];
+      if (i == ret.length - 1) {
+        var lastChunk = Bytes.concat(chunk, new byte[] { 1 });
+        client.send(ByteBuffer.wrap(lastChunk), addr);
+      } else {
+        var answer = Bytes.concat(chunk, new byte[] { 0 });
+        client.send(ByteBuffer.wrap(answer), addr);
+      }
     }
 
-    private void sendData(byte[] data) throws IOException {
-        int DATA_SIZE = PACKET_SIZE - 1;
-        byte[][] ret = new byte[(int) Math.ceil(data.length / (double) DATA_SIZE)][DATA_SIZE];
+  }
 
-        int start = 0;
-        for (int i = 0; i < ret.length; i++) {
-            ret[i] = Arrays.copyOfRange(data, start, start + DATA_SIZE);
-            start += DATA_SIZE;
-        }
+  private byte[] receiveData() throws IOException {
+    var received = false;
+    var result = new byte[0];
 
-        for (int i = 0; i < ret.length; i++) {
-            var chunk = ret[i];
-            if (i == ret.length - 1) {
-                var lastChunk = Bytes.concat(chunk, new byte[]{1});
-                client.send(ByteBuffer.wrap(lastChunk), addr);
-            } else {
-                var answer = Bytes.concat(chunk, new byte[]{0});
-                client.send(ByteBuffer.wrap(answer), addr);
-            }
-        }
+    while (!received) {
+      var data = receiveData(PACKET_SIZE);
 
+      if (data[data.length - 1] == 1) {
+        received = true;
+      }
+      result = Bytes.concat(result, Arrays.copyOf(data, data.length - 1));
     }
 
-    private byte[] receiveData() throws IOException {
-        var received = false;
-        var result = new byte[0];
+    return result;
+  }
 
-        while (!received) {
-            var data = receiveData(PACKET_SIZE);
-
-            if (data[data.length - 1] == 1) {
-                received = true;
-            }
-            result = Bytes.concat(result, Arrays.copyOf(data, data.length - 1));
-        }
-
-        return result;
+  private byte[] receiveData(@SuppressWarnings("SameParameterValue") int bufferSize) throws IOException {
+    var buffer = ByteBuffer.allocate(bufferSize);
+    SocketAddress address = null;
+    while (address == null) {
+      address = client.receive(buffer);
     }
+    return buffer.array();
+  }
 
-    private byte[] receiveData(@SuppressWarnings("SameParameterValue") int bufferSize) throws IOException {
-        var buffer = ByteBuffer.allocate(bufferSize);
-        SocketAddress address = null;
-        while (address == null) {
-            address = client.receive(buffer);
-        }
-        return buffer.array();
-    }
-
-    private byte[] sendAndReceiveData(byte[] data) throws IOException {
-        sendData(data);
-        return receiveData();
-    }
+  private byte[] sendAndReceiveData(byte[] data) throws IOException {
+    sendData(data);
+    return receiveData();
+  }
 }
