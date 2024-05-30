@@ -1,0 +1,44 @@
+plugins {
+  id 'java'
+  id 'application'
+  id 'org.openjfx.javafxplugin' version '0.0.13'
+}
+
+repositories {
+  mavenCentral()
+}
+
+mainClassName = 'client.App'
+
+dependencies {
+    implementation project(':common')
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'commons-validator:commons-validator:1.7'
+    implementation 'com.google.guava:guava:31.1-jre'
+}
+
+run {
+    standardInput = System.in
+}
+
+javafx {
+    version = '17.0.11'
+    modules = ['javafx.base', 'javafx.controls', 'javafx.fxml']
+}
+
+jar {
+    manifest.attributes('Main-Class': 'client.App',
+            'Implementation-Title': 'Gradle')
+}
+
+tasks.register('fatJar', Jar) {
+    manifest {
+        attributes 'Main-Class': 'client.App'
+    }
+    archiveClassifier = "all"
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    with jar
+}
