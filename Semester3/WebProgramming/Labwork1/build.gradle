@@ -1,0 +1,26 @@
+plugins {
+    id 'java'
+}
+
+group = 'ru.rmntim.web'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation files('./libs/fastcgi-lib.jar')
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'ru.rmntim.web.Main'
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    archiveFileName = 'labwork1.jar'
+}

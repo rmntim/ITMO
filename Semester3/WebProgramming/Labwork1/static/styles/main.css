@@ -1,0 +1,93 @@
+html {
+    height: 100%; /* Ensure html takes full height */
+}
+
+body {
+    min-height: 100vh; /* Body will be at least the height of the viewport */
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: monospace;
+    background-color: #1e1e1e;
+    color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.navbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1%;
+}
+
+.navbar .fire:hover {
+    color: #FF6961;
+    transition: ease 300ms;
+}
+
+#github {
+    text-decoration: none;
+}
+
+#github:hover {
+    color: gray;
+    transition: ease 300ms;
+}
+
+#info {
+    display: flex;
+    flex-direction: column;
+    font-size: 1rem;
+}
+
+.container {
+    padding: 2%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#data-form fieldset {
+    margin-bottom: 1%;
+}
+
+#result-table {
+    border: 1px solid #444;
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+#result-table th, td {
+    border: 1px solid #555;
+    padding: 10px;
+    text-align: center;
+}
+
+#result-table th {
+    background-color: #333;
+    color: #f0f0f0;
+}
+
+#result-table td {
+    background-color: #2a2a2a;
+}
+
+#copyright {
+    padding: 1%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: .5em;
+}
+
+#error {
+    color: #FF6961;
+    padding: 1%;
+}

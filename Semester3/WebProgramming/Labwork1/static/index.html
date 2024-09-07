@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>First Lab</title>
+    <link rel="stylesheet" href="styles/reset.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <script defer src="index.js"></script>
+</head>
+<body>
+<nav class="navbar">
+    <div id="info">
+        Timoshkin Roman
+        <br/>
+        P3231
+        <br/>
+        <span>v. <span class="fire">666</span></span>
+    </div>
+    <a href="https://github.com/rmntim" target="_blank" id="github">github</a>
+</nav>
+<main class="container">
+    <section>
+        <div id="error" hidden>
+        </div>
+        <form action="/" method="GET" id="data-form">
+            <fieldset id="xs">
+                <legend>Select X:</legend>
+                <label><input type="radio" name="x" value="-3"> -3</label>
+                <label><input type="radio" name="x" value="-2"> -2</label>
+                <label><input type="radio" name="x" value="-1"> -1</label>
+                <label><input type="radio" name="x" value="0"> 0</label>
+                <label><input type="radio" name="x" value="1"> 1</label>
+                <label><input type="radio" name="x" value="2"> 2</label>
+                <label><input type="radio" name="x" value="3"> 3</label>
+                <label><input type="radio" name="x" value="4"> 4</label>
+                <label><input type="radio" name="x" value="5"> 5</label>
+            </fieldset>
+
+            <label for="y">Enter Y:</label>
+            <input type="text" id="y" name="y" required>
+
+            <label for="r">Select R:</label>
+            <select id="r" name="r" required>
+                <option value="1.0">1.0</option>
+                <option value="1.5">1.5</option>
+                <option value="2.0">2.0</option>
+                <option value="2.5">2.5</option>
+                <option value="3.0">3.0</option>
+            </select>
+
+            <button type="submit">Submit</button>
+        </form>
+    </section>
+    <section>
+        <table id="result-table">
+            <tr>
+                <th>x</th>
+                <th>y</th>
+                <th>r</th>
+                <th>Result</th>
+            </tr>
+        </table>
+    </section>
+</main>
+<footer id="copyright">all rights belong to ur mom,&nbsp;
+    <a href="http://www.wtfpl.net/txt/copying/"
+       target="_blank">WTFPL</a>
+    , 2024
+</footer>
+</body>
+</html>

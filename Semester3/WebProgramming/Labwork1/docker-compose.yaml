@@ -1,0 +1,20 @@
+services:
+  fcgi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      backend:
+
+  httpd:
+    image: "httpd:2.4.62"
+    ports:
+      - "8080:80"
+    volumes:
+      - "./httpd.conf:/usr/local/apache2/conf/httpd.conf"
+      - "./static:/var/www"
+    networks:
+      backend:
+
+networks:
+  backend:
