@@ -61,7 +61,7 @@ async function onSubmit(ev) {
     }
 
     const params = new URLSearchParams(formData);
-    const url = "http://localhost:8013/fcgi-bin/app.jar?" + params.toString();
+    const url = "/fcgi-bin/app.jar?" + params.toString();
 
     const response = await fetch(url);
 
