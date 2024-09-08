@@ -77,11 +77,14 @@ async function onSubmit(ev) {
     rowR.textContent = values.r;
 
     if (response.ok) {
-        /** @type {{result: "hit" | "miss"}} */
+        /** @type {{result: boolean}} */
         const result = await response.json();
-        rowResult.textContent = result.result;
+        rowResult.textContent = result.result.toString();
     } else {
+        /** @type {{reason: string}} */
+        const result = await response.json();
         rowResult.textContent = "error";
+        console.error(result);
     }
 }
 
