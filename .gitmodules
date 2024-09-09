@@ -1,3 +1,6 @@
 [submodule "Semester3/ProgrammingLanguages/Assignment1"]
 	path = Semester3/ProgrammingLanguages/Assignment1
 	url = https://gitlab.se.ifmo.ru/rmntim/assignment-1-io-library.git
+[submodule "Semester3/ProgrammingLanguages/Assignment2"]
+	path = Semester3/ProgrammingLanguages/Assignment2
+	url = https://gitlab.se.ifmo.ru/rmntim/assignment-2-dictionary.git
