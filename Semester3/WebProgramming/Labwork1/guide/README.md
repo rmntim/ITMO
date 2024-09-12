@@ -6,7 +6,9 @@
 ## Создание проекта
 
 Создаем Java проект с Gradle на билд системе (Groovy DSL потому что идите наху).
+
 <img src="assets/project.png" width="600" alt="creating project">
+
 Создаем в корне проекта папку `libs/` и кладем в нее нашу библиотеку скачаную
 с [se.ifmo.ru](https://se.ifmo.ru/documents/10180/11512/fastcgi-lib.jar/7493e31c-ee90-6e5b-f315-d8468347755e).
 Открываем `build.gradle` и добавляем в него следующее:
