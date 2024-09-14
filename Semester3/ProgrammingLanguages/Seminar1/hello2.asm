@@ -14,7 +14,7 @@ _start:
     syscall
 
     mov     rax, 1           ; 'write' syscall number
-    mov     rdi, 2           ; stdout descriptor
+    mov     rdi, 2           ; stderr descriptor
     mov     rsi, errmsg      ; string address
     mov     rdx, 15          ; string length in bytes
     syscall
