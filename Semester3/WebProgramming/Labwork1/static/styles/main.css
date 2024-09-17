@@ -10,6 +10,7 @@ body {
 
 body {
     font-family: monospace;
+    font-size: 1rem;
     background-color: #1e1e1e;
     color: #f0f0f0;
     display: flex;
