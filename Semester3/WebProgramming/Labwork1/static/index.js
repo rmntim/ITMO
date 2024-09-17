@@ -1,69 +1,59 @@
 "use strict";
 
-class InvalidValueException extends Error {
-    constructor(message) {
-        super(message);
-        this.name = "InvalidValueException";
+const state = {
+    x: 0,
+    y: 0,
+    r: 1.0,
+};
+
+const error = document.getElementById("error");
+const possibleXs = new Set([-3, -2, -1, 0, 1, 2, 3, 4, 5]);
+const possibleRs = new Set([1.0, 1.5, 2.0, 2.5, 3.0]);
+
+function validateState(state) {
+    if (isNaN(state.x) || !possibleXs.has(state.x)) {
+        error.hidden = false;
+        error.innerText = `x must be in [${[...possibleXs].join(" ,")}]`;
+        throw new Error("Invalid state");
     }
+
+    if (isNaN(state.y) || state.y < -3 || state.y > 5) {
+        error.hidden = false;
+        error.innerText = "y must be in range [-3, 5]";
+        throw new Error("Invalid state");
+    }
+
+    if (isNaN(state.r) || !possibleRs.has(state.r)) {
+        error.hidden = false;
+        error.innerText = `r must be in [${[...possibleRs].join(" ,")}]`;
+        throw new Error("Invalid state");
+    }
+
+    error.hidden = true;
 }
 
-/**
- * @typedef {Object} FormValues
- * @property {string|undefined} x
- * @property {string} y
- * @property {string} r
- */
+Array.from(document.getElementById("xs").children)
+    .filter(c => c.tagName === "INPUT")
+    .forEach(btn => {
+        btn.addEventListener("click", (ev) => {
+            state.x = parseInt(ev.target.value);
+        });
+    });
 
-/** @param values FormValues
- * @throws InvalidValueException If any of the values are not valid
- */
-function validateFormInput(values) {
-    if (values.x === undefined) {
-        throw new InvalidValueException("please select x");
-    }
+document.getElementById("y").addEventListener("change", (ev) => {
+    state.y = parseFloat(ev.target.value);
+});
 
-    if (isNaN(values.y)) {
-        throw new InvalidValueException("invalid y value");
-    }
+document.getElementById("r").addEventListener("change", (ev) => {
+    state.r = parseFloat(ev.target.value);
+});
 
-    const y = parseInt(values.y);
-    if (y < -3 || y > 5) {
-        throw new InvalidValueException("y is out of bounds (allowed range -3..5)")
-    }
-
-    if (isNaN(values.r)) {
-        throw new InvalidValueException("invalid r value")
-    }
-}
-
-/** @type HTMLTableElement */
-const table = document.getElementById("result-table");
-
-/** @type HTMLDivElement */
-const errorDiv = document.getElementById("error");
-
-/** @param {SubmitEvent} ev */
-async function onSubmit(ev) {
+document.getElementById("data-form").addEventListener("submit", async function (ev) {
     ev.preventDefault();
 
-    const formData = new FormData(this);
-    /** @type FormValues */
-    const values = Object.fromEntries(formData);
+    validateState(state);
 
-    try {
-        validateFormInput(values);
-        errorDiv.hidden = true;
-    } catch (e) {
-        this.reset();
-        errorDiv.hidden = false;
-        errorDiv.textContent = e.message;
-        return;
-    }
-
-    const params = new URLSearchParams(formData);
-    const url = "/fcgi-bin/app.jar?" + params.toString();
-
-    const response = await fetch(url);
+    const table = document.getElementById("result-table");
 
     const newRow = table.insertRow(-1);
 
@@ -72,23 +62,21 @@ async function onSubmit(ev) {
     const rowR = newRow.insertCell(2);
     const rowResult = newRow.insertCell(3);
 
-    rowX.textContent = values.x;
-    rowY.textContent = values.y;
-    rowR.textContent = values.r;
+    rowX.innerText = state.x;
+    rowY.innerText = state.y;
+    rowR.innerText = state.r;
+
+    const params = new URLSearchParams(state);
+
+    const response = await fetch("/fcgi-bin/app.jar?" + params.toString());
 
     if (response.ok) {
-        /** @type {{result: boolean}} */
         const result = await response.json();
         rowResult.textContent = result.result.toString();
-    } else {
-        /** @type {{reason: string}} */
+    } else if (response.status === 400) {
         const result = await response.json();
+        rowResult.textContent = `error: ${result.reason}`;
+    } else {
         rowResult.textContent = "error";
-        console.error(result);
     }
-}
-
-
-/** @type HTMLFormElement */
-const form = document.getElementById("data-form");
-form.addEventListener("submit", onSubmit);
+});
