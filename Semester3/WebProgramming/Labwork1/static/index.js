@@ -38,6 +38,7 @@ let selectedBtn = null;
 Array.from(document.getElementById("xs").children)
     .filter(c => c.tagName === "INPUT")
     .forEach(btn => {
+        btn.style.border = "";
         btn.addEventListener("click", function (ev) {
             if (selectedBtn !== null) {
                 selectedBtn.style.border = "";
