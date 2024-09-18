@@ -23,8 +23,6 @@
 </nav>
 <main class="container">
     <section class="input-section">
-        <div id="error" hidden>
-        </div>
         <form action="/" method="GET" id="data-form">
             <fieldset id="xs">
                 <legend>Select X:</legend>
@@ -53,6 +51,8 @@
 
             <button type="submit">Submit</button>
         </form>
+        <div id="error" hidden>
+        </div>
     </section>
     <section class="results-section">
         <canvas id="graph" width="300" height="300"></canvas>
