@@ -66,6 +66,10 @@ body {
     align-items: center;
 }
 
+button .selected {
+    border: #FF6961 1px solid;
+}
+
 #data-form fieldset {
     margin-bottom: 1%;
 }
