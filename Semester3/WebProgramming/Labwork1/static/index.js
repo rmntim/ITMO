@@ -93,6 +93,9 @@ document.getElementById("data-form").addEventListener("submit", async function (
         results.result = "error"
     }
 
+    const prevResults = JSON.parse(localStorage.getItem("results") || "[]");
+    localStorage.setItem("results", JSON.stringify([...prevResults, results]));
+
     rowX.innerText = results.x.toString();
     rowY.innerText = results.y.toString();
     rowR.innerText = results.r.toString();
