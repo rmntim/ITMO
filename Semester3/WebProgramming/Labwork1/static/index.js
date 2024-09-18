@@ -40,7 +40,7 @@ Array.from(document.getElementById("xs").children)
     .forEach(btn => {
         btn.addEventListener("click", function (ev) {
             if (selectedBtn !== null) {
-                selectedBtn.style.border = "none";
+                selectedBtn.style.border = "";
             }
             selectedBtn = btn;
             state.x = parseInt(ev.target.value);
