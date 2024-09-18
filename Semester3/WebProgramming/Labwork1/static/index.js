@@ -40,11 +40,11 @@ Array.from(document.getElementById("xs").children)
     .forEach(btn => {
         btn.addEventListener("click", function (ev) {
             if (selectedBtn !== null) {
-                selectedBtn.classList.remove("selected");
+                selectedBtn.style.border = "none";
             }
             selectedBtn = btn;
             state.x = parseInt(ev.target.value);
-            selectedBtn.classList.add("selected");
+            selectedBtn.style.border = "#FF6961 1px solid";
         });
     });
 
