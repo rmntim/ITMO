@@ -2,8 +2,10 @@ package ru.rmntim.web;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 class Params {
     private final int x;
@@ -22,13 +24,16 @@ class Params {
     }
 
     private static Map<String, String> splitQuery(String query) {
-        var queryPairs = new HashMap<String, String>();
-        var pairs = query.split("&");
-        for (var pair : pairs) {
-            var idx = pair.indexOf("=");
-            queryPairs.put(URLDecoder.decode(pair.substring(0, idx), StandardCharsets.UTF_8), URLDecoder.decode(pair.substring(idx + 1), StandardCharsets.UTF_8));
-        }
-        return queryPairs;
+        return Arrays.stream(query.split("&"))
+                .map(pair -> pair.split("="))
+                .collect(
+                        Collectors.toMap(
+                                pairParts -> URLDecoder.decode(pairParts[0], StandardCharsets.UTF_8),
+                                pairParts -> URLDecoder.decode(pairParts[1], StandardCharsets.UTF_8),
+                                (a, b) -> b,
+                                HashMap::new
+                        )
+                );
     }
 
 
