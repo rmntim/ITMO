@@ -64,29 +64,41 @@ document.getElementById("data-form").addEventListener("submit", async function (
     const rowExecTime = newRow.insertCell(4);
     const rowResult = newRow.insertCell(5);
 
-    rowX.innerText = state.x;
-    rowY.innerText = state.y;
-    rowR.innerText = state.r;
-
     const params = new URLSearchParams(state);
 
     const response = await fetch("/fcgi-bin/app.jar?" + params.toString());
 
+    const results = {
+        x: state.x,
+        y: state.y,
+        r: state.r,
+        execTime: "",
+        time: "",
+        result: false,
+    };
+
     if (response.ok) {
         const result = await response.json();
-        rowTime.textContent = new Date(result.now).toLocaleString();
-        rowExecTime.textContent = result.time;
-        rowResult.textContent = result.result.toString();
+        results.time = new Date(result.now).toLocaleString();
+        results.execTime = `${result.time} ms`;
+        results.result = result.result.toString();
     } else if (response.status === 400) {
         const result = await response.json();
-        rowTime.textContent = new Date(result.now).toLocaleString();
-        rowExecTime.textContent = "N/A";
-        rowResult.textContent = `error: ${result.reason}`;
+        results.time = new Date(result.now).toLocaleString();
+        results.execTime = "N/A";
+        results.result = `error: ${result.reason}`;
     } else {
-        rowTime.textContent = "N/A";
-        rowExecTime.textContent = "N/A";
-        rowResult.textContent = "error";
+        results.time = "N/A";
+        results.execTime = "N/A";
+        results.result = "error"
     }
+
+    rowX.innerText = results.x.toString();
+    rowY.innerText = results.y.toString();
+    rowR.innerText = results.r.toString();
+    rowTime.innerText = results.time;
+    rowExecTime.innerText = results.execTime;
+    rowResult.innerText = results.result;
 });
 
 const canvas = document.getElementById('graph');
