@@ -60,9 +60,9 @@ document.getElementById("data-form").addEventListener("submit", async function (
     const rowX = newRow.insertCell(0);
     const rowY = newRow.insertCell(1);
     const rowR = newRow.insertCell(2);
-    const rowResult = newRow.insertCell(3);
-    const rowTime = newRow.insertCell(4);
-    const rowExecTime = newRow.insertCell(5);
+    const rowTime = newRow.insertCell(3);
+    const rowExecTime = newRow.insertCell(4);
+    const rowResult = newRow.insertCell(5);
 
     rowX.innerText = state.x;
     rowY.innerText = state.y;
