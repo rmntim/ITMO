@@ -3,6 +3,9 @@ package ru.rmntim.web;
 import com.fastcgi.FCGIInterface;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 public class Main {
     private static final String HTTP_RESPONSE = """
@@ -21,11 +24,14 @@ public class Main {
             """;
     private static final String RESULT_JSON = """
             {
+                "time": "%s",
+                "now": "%s",
                 "result": %b
             }
             """;
     private static final String ERROR_JSON = """
             {
+                "now": "%s",
                 "reason": "%s"
             }
             """;
@@ -38,13 +44,15 @@ public class Main {
                 var queryParams = System.getProperties().getProperty("QUERY_STRING");
                 var params = new Params(queryParams);
 
+                var startTime = Instant.now();
                 var result = calculate(params.getX(), params.getY(), params.getR());
+                var endTime = Instant.now();
 
-                var json = String.format(RESULT_JSON, result);
+                var json = String.format(RESULT_JSON, LocalDateTime.now(), ChronoUnit.SECONDS.between(startTime, endTime), result);
                 var response = String.format(HTTP_RESPONSE, json.getBytes(StandardCharsets.UTF_8).length + 2, json);
                 System.out.println(response);
             } catch (ValidationException e) {
-                var json = String.format(ERROR_JSON, e.getMessage());
+                var json = String.format(ERROR_JSON, LocalDateTime.now(), e.getMessage());
                 var response = String.format(HTTP_ERROR, json.getBytes(StandardCharsets.UTF_8).length + 2, json);
                 System.out.println(response);
             }

@@ -22,7 +22,7 @@
     <a href="https://github.com/rmntim" target="_blank" id="github">github</a>
 </nav>
 <main class="container">
-    <section>
+    <section class="input-section">
         <div id="error" hidden>
         </div>
         <form action="/" method="GET" id="data-form">
@@ -54,14 +54,16 @@
             <button type="submit">Submit</button>
         </form>
     </section>
-    <section class="results">
+    <section class="results-section">
         <canvas id="graph" width="300" height="300"></canvas>
         <table id="result-table">
             <tr>
                 <th>x</th>
                 <th>y</th>
                 <th>r</th>
-                <th>Result</th>
+                <th>time</th>
+                <th>execution time</th>
+                <th>result</th>
             </tr>
         </table>
     </section>

@@ -61,6 +61,8 @@ document.getElementById("data-form").addEventListener("submit", async function (
     const rowY = newRow.insertCell(1);
     const rowR = newRow.insertCell(2);
     const rowResult = newRow.insertCell(3);
+    const rowTime = newRow.insertCell(4);
+    const rowExecTime = newRow.insertCell(5);
 
     rowX.innerText = state.x;
     rowY.innerText = state.y;
@@ -72,11 +74,17 @@ document.getElementById("data-form").addEventListener("submit", async function (
 
     if (response.ok) {
         const result = await response.json();
+        rowTime.textContent = new Date(result.now).toLocaleString();
+        rowExecTime.textContent = result.time;
         rowResult.textContent = result.result.toString();
     } else if (response.status === 400) {
         const result = await response.json();
+        rowTime.textContent = new Date(result.now).toLocaleString();
+        rowExecTime.textContent = "N/A";
         rowResult.textContent = `error: ${result.reason}`;
     } else {
+        rowTime.textContent = "N/A";
+        rowExecTime.textContent = "N/A";
         rowResult.textContent = "error";
     }
 });

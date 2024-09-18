@@ -49,8 +49,20 @@ body {
 .container {
     padding: 2%;
     display: flex;
+    flex: 1;
     flex-direction: row;
     justify-content: space-between;
+    height: 100vh;
+}
+
+.input-section {
+    padding-top: 33vh;
+}
+
+.results-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
 }
 
