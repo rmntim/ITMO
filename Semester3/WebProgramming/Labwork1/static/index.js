@@ -79,7 +79,7 @@ document.getElementById("data-form").addEventListener("submit", async function (
     if (response.ok) {
         const result = await response.json();
         results.time = new Date(result.now).toLocaleString();
-        results.execTime = `${result.time} ms`;
+        results.execTime = `${result.time} ns`;
         results.result = result.result.toString();
     } else if (response.status === 400) {
         const result = await response.json();

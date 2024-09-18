@@ -48,7 +48,7 @@ public class Main {
                 var result = calculate(params.getX(), params.getY(), params.getR());
                 var endTime = Instant.now();
 
-                var json = String.format(RESULT_JSON, ChronoUnit.MILLIS.between(startTime, endTime), LocalDateTime.now(), result);
+                var json = String.format(RESULT_JSON, ChronoUnit.NANOS.between(startTime, endTime), LocalDateTime.now(), result);
                 var response = String.format(HTTP_RESPONSE, json.getBytes(StandardCharsets.UTF_8).length + 2, json);
                 System.out.println(response);
             } catch (ValidationException e) {
