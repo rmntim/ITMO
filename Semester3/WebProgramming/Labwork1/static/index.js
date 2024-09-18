@@ -6,6 +6,7 @@ const state = {
     r: 1.0,
 };
 
+const table = document.getElementById("result-table");
 const error = document.getElementById("error");
 const possibleXs = new Set([-3, -2, -1, 0, 1, 2, 3, 4, 5]);
 const possibleRs = new Set([1.0, 1.5, 2.0, 2.5, 3.0]);
@@ -52,8 +53,6 @@ document.getElementById("data-form").addEventListener("submit", async function (
     ev.preventDefault();
 
     validateState(state);
-
-    const table = document.getElementById("result-table");
 
     const newRow = table.insertRow(-1);
 
@@ -102,6 +101,28 @@ document.getElementById("data-form").addEventListener("submit", async function (
     rowTime.innerText = results.time;
     rowExecTime.innerText = results.execTime;
     rowResult.innerText = results.result;
+});
+
+const prevResults = JSON.parse(localStorage.getItem("results") || "[]");
+
+prevResults.forEach(result => {
+    const table = document.getElementById("result-table");
+
+    const newRow = table.insertRow(-1);
+
+    const rowX = newRow.insertCell(0);
+    const rowY = newRow.insertCell(1);
+    const rowR = newRow.insertCell(2);
+    const rowTime = newRow.insertCell(3);
+    const rowExecTime = newRow.insertCell(4);
+    const rowResult = newRow.insertCell(5);
+
+    rowX.innerText = result.x.toString();
+    rowY.innerText = result.y.toString();
+    rowR.innerText = result.r.toString();
+    rowTime.innerText = result.time;
+    rowExecTime.innerText = result.execTime;
+    rowResult.innerText = result.result;
 });
 
 const canvas = document.getElementById('graph');
