@@ -11,7 +11,7 @@ const error = document.getElementById("error");
 const possibleXs = new Set([-3, -2, -1, 0, 1, 2, 3, 4, 5]);
 const possibleRs = new Set([1.0, 1.5, 2.0, 2.5, 3.0]);
 
-function validateState(state) {
+const validateState = (state) => {
     if (isNaN(state.x) || !possibleXs.has(state.x)) {
         error.hidden = false;
         error.innerText = `x must be in [${[...possibleXs].join(" ,")}]`;

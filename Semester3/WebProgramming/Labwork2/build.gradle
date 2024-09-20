@@ -1,0 +1,26 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group 'ru.rmntim.web'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = '17'
+targetCompatibility = '17'
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+dependencies {
+    compileOnly('jakarta.validation:jakarta.validation-api:3.1.0')
+    compileOnly('jakarta.enterprise:jakarta.enterprise.cdi-api:4.1.0')
+    compileOnly('jakarta.json.bind:jakarta.json.bind-api:3.0.1')
+    compileOnly('jakarta.servlet:jakarta.servlet-api:6.1.0')
+    compileOnly('jakarta.ejb:jakarta.ejb-api:4.0.1')
+}
