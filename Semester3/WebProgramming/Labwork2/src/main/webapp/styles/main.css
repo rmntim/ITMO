@@ -115,9 +115,13 @@ body {
     display: flex;
     flex: 1;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     height: 100vh;
+}
+
+.results {
+    margin: auto;
 }
 
 #data-form fieldset {
@@ -154,7 +158,8 @@ body {
     font-size: .5em;
 }
 
-#error {
+.error {
+    margin: auto;
     color: #FF6961;
     padding: 1%;
 }

@@ -1,4 +1,4 @@
-package ru.rmntim.web.labwork2.services;
+package ru.rmntim.web.labwork2.controllers;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

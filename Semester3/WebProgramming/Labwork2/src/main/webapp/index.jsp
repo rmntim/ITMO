@@ -1,5 +1,3 @@
-<%@ page import="ru.rmntim.web.labwork2.repository.PointRepository" %>
-<%@ page import="ru.rmntim.web.labwork2.models.Point" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!doctype html>
 <html lang="en">
@@ -25,36 +23,41 @@
     <a href="https://github.com/rmntim" target="_blank" id="github">github</a>
 </nav>
 <main class="container">
-    <form action="${pageContext.request.contextPath}/controller" method="post" id="data-form">
-        <fieldset id="xs">
-            <legend>Select X:</legend>
-            <label><input type="checkbox" name="x" onclick="return validateXs();" value="-2">-2</label>
-            <label><input type="checkbox" name="x" onclick="return validateXs();" value="-1.5">-1.5</label>
-            <label><input type="checkbox" name="x" onclick="return validateXs();" value="-1">-1</label>
-            <label><input type="checkbox" name="x" onclick="return validateXs();" value="-0.5">-0.5</label>
-            <label><input type="checkbox" name="x" onclick="return validateXs();" value="0">0</label>
-            <label><input type="checkbox" name="x" onclick="return validateXs();" value="0.5">0.5</label>
-            <label><input type="checkbox" name="x" onclick="return validateXs();" value="1">1</label>
-            <label><input type="checkbox" name="x" onclick="return validateXs();" value="1.5">1.5</label>
-            <label><input type="checkbox" name="x" onclick="return validateXs();" value="2">2</label>
-        </fieldset>
+    <section>
+        <form action="${pageContext.request.contextPath}/controller" method="post" id="data-form">
+            <fieldset id="xs">
+                <legend>Select X:</legend>
+                <label><input type="checkbox" name="x" onclick="return validateXs();" value="-2">-2</label>
+                <label><input type="checkbox" name="x" onclick="return validateXs();" value="-1.5">-1.5</label>
+                <label><input type="checkbox" name="x" onclick="return validateXs();" value="-1">-1</label>
+                <label><input type="checkbox" name="x" onclick="return validateXs();" value="-0.5">-0.5</label>
+                <label><input type="checkbox" name="x" onclick="return validateXs();" value="0">0</label>
+                <label><input type="checkbox" name="x" onclick="return validateXs();" value="0.5">0.5</label>
+                <label><input type="checkbox" name="x" onclick="return validateXs();" value="1">1</label>
+                <label><input type="checkbox" name="x" onclick="return validateXs();" value="1.5">1.5</label>
+                <label><input type="checkbox" name="x" onclick="return validateXs();" value="2">2</label>
+            </fieldset>
 
-        <label for="y">Enter Y:</label>
-        <input type="number" id="y" name="y" required>
+            <label for="y">Enter Y:</label>
+            <input type="number" id="y" name="y" required>
 
-        <label for="rs">Select R:</label>
-        <fieldset id="rs">
-            <label><input type="radio" name="r" value="1">1</label>
-            <label><input type="radio" name="r" value="1.5">1.5</label>
-            <label><input type="radio" name="r" value="2">2</label>
-            <label><input type="radio" name="r" value="2.5">2.5</label>
-            <label><input type="radio" name="r" value="3">3</label>
-        </fieldset>
+            <label for="rs">Select R:</label>
+            <fieldset id="rs">
+                <label><input type="radio" name="r" value="1">1</label>
+                <label><input type="radio" name="r" value="1.5">1.5</label>
+                <label><input type="radio" name="r" value="2">2</label>
+                <label><input type="radio" name="r" value="2.5">2.5</label>
+                <label><input type="radio" name="r" value="3">3</label>
+            </fieldset>
 
-        <button type="submit">Submit</button>
-    </form>
-    <div id="error" hidden>
-    </div>
+            <button type="submit">Submit</button>
+        </form>
+        <div id="error" hidden>
+        </div>
+    </section>
+    <section>
+        <canvas id="graph" style="background-color: red"></canvas>
+    </section>
 </main>
 <footer id="copyright">all rights belong to ur mom,&nbsp;
     <a href="http://www.wtfpl.net/txt/copying/"

@@ -1,12 +1,10 @@
 package ru.rmntim.web.labwork2.controllers;
 
-import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import ru.rmntim.web.labwork2.models.ControllerError;
 
 import java.io.IOException;
 import java.util.Set;
@@ -26,57 +24,55 @@ public class ControllerServlet extends HttpServlet {
             .boxed().collect(Collectors.toSet());
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         processRequest(request, response);
     }
 
-    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        var x = request.getParameter("x");
-        var y = request.getParameter("y");
-        var r = request.getParameter("r");
-
-        if (x == null || y == null || r == null) {
-            errorResponse(response, String.format(ERROR_MSG, "x, y, and r are required"));
-            return;
-        }
-
-        if (x.isEmpty() || y.isEmpty() || r.isEmpty()) {
-            errorResponse(response, String.format(ERROR_MSG, "x, y, and r must not be empty"));
-            return;
-        }
-
+    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         try {
+            var x = request.getParameter("x");
+            var y = request.getParameter("y");
+            var r = request.getParameter("r");
+
+            if (x == null || y == null || r == null) {
+                request.setAttribute("error", String.format(ERROR_MSG, "x, y, and r are required"));
+                request.getRequestDispatcher("./error.jsp").forward(request, response);
+                return;
+            }
+
+            if (x.isEmpty() || y.isEmpty() || r.isEmpty()) {
+                request.setAttribute("error", String.format(ERROR_MSG, "x, y, and r must not be empty"));
+                request.getRequestDispatcher("./error.jsp").forward(request, response);
+                return;
+            }
+
             var dx = Double.parseDouble(x);
             var dy = Double.parseDouble(y);
             var dr = Double.parseDouble(r);
 
             if (!ALLOWED_X.contains(dx)) {
-                errorResponse(response, String.format(ERROR_MSG, "x must be in " + ALLOWED_X));
+                request.setAttribute("error", String.format(ERROR_MSG, "x must be in " + ALLOWED_X));
+                request.getRequestDispatcher("./error.jsp").forward(request, response);
                 return;
             }
 
             if (!ALLOWED_R.contains(dr)) {
-                errorResponse(response, String.format(ERROR_MSG, "r must be in " + ALLOWED_R));
+                request.setAttribute("error", String.format(ERROR_MSG, "r must be in " + ALLOWED_R));
+                request.getRequestDispatcher("./error.jsp").forward(request, response);
                 return;
             }
 
             if (dy < -5 || dy > 5) {
-                errorResponse(response, String.format(ERROR_MSG, "y must be in [-5, 5]"));
+                request.setAttribute("error", String.format(ERROR_MSG, "y must be in [-5, 5]"));
+                request.getRequestDispatcher("./error.jsp").forward(request, response);
                 return;
             }
 
             request.getRequestDispatcher("./calculate").forward(request, response);
-        } catch (NumberFormatException | NullPointerException | ServletException e) {
-            errorResponse(response, e.toString());
+        } catch (NumberFormatException | NullPointerException e) {
+            request.setAttribute("error", e.toString());
+            request.getRequestDispatcher("./error.jsp").forward(request, response);
         }
     }
 
-    private void errorResponse(HttpServletResponse response, String error) throws IOException {
-        var errorObj = new ControllerError(error);
-        var jsonb = JsonbBuilder.create();
-
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        response.setContentType("application/json");
-        response.getWriter().write(jsonb.toJson(errorObj));
-    }
 }
