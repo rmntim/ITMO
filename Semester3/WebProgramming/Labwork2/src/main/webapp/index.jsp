@@ -23,19 +23,22 @@
     <a href="https://github.com/rmntim" target="_blank" id="github">github</a>
 </nav>
 <main class="container">
-    <section>
+    <section class="input-section">
+        <div id="error" hidden>
+        </div>
+
         <form action="${pageContext.request.contextPath}/controller" method="post" id="data-form">
             <fieldset id="xs">
                 <legend>Select X:</legend>
-                <label><input type="checkbox" name="x" onclick="return validateXs();" value="-2">-2</label>
-                <label><input type="checkbox" name="x" onclick="return validateXs();" value="-1.5">-1.5</label>
-                <label><input type="checkbox" name="x" onclick="return validateXs();" value="-1">-1</label>
-                <label><input type="checkbox" name="x" onclick="return validateXs();" value="-0.5">-0.5</label>
-                <label><input type="checkbox" name="x" onclick="return validateXs();" value="0">0</label>
-                <label><input type="checkbox" name="x" onclick="return validateXs();" value="0.5">0.5</label>
-                <label><input type="checkbox" name="x" onclick="return validateXs();" value="1">1</label>
-                <label><input type="checkbox" name="x" onclick="return validateXs();" value="1.5">1.5</label>
-                <label><input type="checkbox" name="x" onclick="return validateXs();" value="2">2</label>
+                <label><input type="checkbox" name="x" onclick="return checkX();" value="-2">-2</label>
+                <label><input type="checkbox" name="x" onclick="return checkX();" value="-1.5">-1.5</label>
+                <label><input type="checkbox" name="x" onclick="return checkX();" value="-1">-1</label>
+                <label><input type="checkbox" name="x" onclick="return checkX();" value="-0.5">-0.5</label>
+                <label><input type="checkbox" name="x" onclick="return checkX();" value="0">0</label>
+                <label><input type="checkbox" name="x" onclick="return checkX();" value="0.5">0.5</label>
+                <label><input type="checkbox" name="x" onclick="return checkX();" value="1">1</label>
+                <label><input type="checkbox" name="x" onclick="return checkX();" value="1.5">1.5</label>
+                <label><input type="checkbox" name="x" onclick="return checkX();" value="2">2</label>
             </fieldset>
 
             <label for="y">Enter Y:</label>
@@ -52,8 +55,6 @@
 
             <button type="submit">Submit</button>
         </form>
-        <div id="error" hidden>
-        </div>
     </section>
     <section>
         <canvas id="graph" style="background-color: red"></canvas>
