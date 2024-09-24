@@ -46,7 +46,7 @@
 
             <label for="rs">Select R:</label>
             <fieldset id="rs">
-                <label><input type="radio" name="r" value="1">1</label>
+                <label><input type="radio" name="r" value="1" checked>1</label>
                 <label><input type="radio" name="r" value="1.5">1.5</label>
                 <label><input type="radio" name="r" value="2">2</label>
                 <label><input type="radio" name="r" value="2.5">2.5</label>
@@ -57,7 +57,7 @@
         </form>
     </section>
     <section>
-        <canvas id="graph" style="background-color: red"></canvas>
+        <canvas id="graph" width="400" height="400"></canvas>
     </section>
 </main>
 <footer id="copyright">all rights belong to ur mom,&nbsp;
