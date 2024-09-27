@@ -44,12 +44,9 @@ function submit(ev) {
         validateInput(values);
     } catch (e) {
         errorDiv.hidden = false;
-        errorDiv.textContent = e.message;
+        errorDiv.innerText = e.message;
         return;
     }
-
-    errorDiv.hidden = true;
-    errorDiv.textContent = "";
 
     this.submit(ev);
 }
@@ -113,10 +110,17 @@ function initCanvas() {
         const x = event.clientX - rect.left - canvas.width / 2;
         const y = canvas.height / 2 - (event.clientY - rect.top);
 
-        const xCoord = roundHalf(Math.round(x * (getR() / (canvas.width / 4))) / 100);
-        const yCoord = roundHalf(Math.round(y * (getR() / (canvas.height / 4))) / 100);
+        try {
+            const xCoord = roundHalf(Math.round(x * (getR() / (canvas.width / 4))) / 100);
+            const yCoord = roundHalf(Math.round(y * (getR() / (canvas.height / 4))) / 100);
 
-        console.log(`Clicked coordinates: (${xCoord}, ${yCoord})`);
+            console.log(`Clicked coordinates: (${xCoord}, ${yCoord})`);
+        } catch (e) {
+            /** @type {HTMLDivElement} */
+            const errorDiv = document.getElementById("error");
+            errorDiv.hidden = false;
+            errorDiv.innerText = e.message;
+        }
     });
 
     drawShape(ctx, canvas);
@@ -128,7 +132,7 @@ function initCanvas() {
  * @param canvas {HTMLCanvasElement}
  */
 function drawShape(ctx, canvas) {
-    const R = getR();
+    const R = 100;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 

@@ -60,6 +60,9 @@
             %>
             </tbody>
         </table>
+        <div id="recall">
+            <a href="index.jsp">go back</a>
+        </div>
     </section>
 </main>
 <footer id="copyright">all rights belong to ur mom,&nbsp;

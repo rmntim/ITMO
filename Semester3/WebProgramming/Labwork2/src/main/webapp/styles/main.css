@@ -130,6 +130,10 @@ body {
 
 .results {
     margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 #data-form fieldset {
@@ -166,7 +170,7 @@ body {
     font-size: .5em;
 }
 
-.error {
+#error {
     margin: auto;
     color: #FF6961;
     padding: 1%;

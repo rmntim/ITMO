@@ -46,7 +46,7 @@
 
             <label for="rs">Select R:</label>
             <fieldset id="rs">
-                <label><input type="radio" name="r" value="1" checked>1</label>
+                <label><input type="radio" name="r" value="1">1</label>
                 <label><input type="radio" name="r" value="1.5">1.5</label>
                 <label><input type="radio" name="r" value="2">2</label>
                 <label><input type="radio" name="r" value="2.5">2.5</label>
