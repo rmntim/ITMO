@@ -9,7 +9,9 @@
     <title>First Lab</title>
     <link rel="stylesheet" href="styles/reset.css">
     <link rel="stylesheet" href="styles/main.css">
-    <script src="index.js" defer></script>
+    <script src="scripts/index.js" defer></script>
+    <script src="scripts/canvas.js" defer></script>
+    <script src="scripts/utils.js" defer></script>
 </head>
 <body>
 <nav class="navbar">
@@ -28,8 +30,8 @@
         </div>
 
         <form action="${pageContext.request.contextPath}/controller" method="post" id="data-form">
+            <label for="xs">Select X:</label>
             <fieldset id="xs">
-                <legend>Select X:</legend>
                 <label><input type="checkbox" name="x" onclick="return checkX();" value="-2">-2</label>
                 <label><input type="checkbox" name="x" onclick="return checkX();" value="-1.5">-1.5</label>
                 <label><input type="checkbox" name="x" onclick="return checkX();" value="-1">-1</label>
