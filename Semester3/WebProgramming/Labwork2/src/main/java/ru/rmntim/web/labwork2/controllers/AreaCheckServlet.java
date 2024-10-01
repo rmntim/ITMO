@@ -17,7 +17,8 @@ public class AreaCheckServlet extends HttpServlet {
         processRequest(request, response);
     }
 
-    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    private void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
         try {
             var x = Double.parseDouble(request.getParameter("x"));
             var y = Double.parseDouble(request.getParameter("y"));

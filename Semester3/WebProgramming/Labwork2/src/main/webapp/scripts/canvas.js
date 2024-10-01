@@ -14,8 +14,12 @@ function initCanvas() {
 
         try {
             const r = getR();
-            const x = roundHalf(Math.round(xDom * (r / (canvas.width / 4))) / 100);
-            const y = roundHalf(Math.round(yDom * (r / (canvas.height / 4))) / 100);
+            const x = roundHalf(
+                Math.round(xDom * (r / (canvas.width / 4))) / 100
+            );
+            const y = roundHalf(
+                Math.round(yDom * (r / (canvas.height / 4))) / 100
+            );
             sendPoint(x, y, r);
         } catch (e) {
             /** @type {HTMLDivElement} */
@@ -71,7 +75,7 @@ function drawShape(ctx, canvas) {
     ctx.translate(canvas.width / 2, canvas.height / 2);
     ctx.scale(1, -1);
 
-    ctx.fillStyle = 'rgb(51 153 255)'
+    ctx.fillStyle = "rgb(51 153 255)";
     ctx.beginPath();
 
     // Top left triangle

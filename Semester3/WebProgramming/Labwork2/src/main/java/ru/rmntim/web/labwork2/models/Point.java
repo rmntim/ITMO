@@ -5,7 +5,6 @@ public record Point(double x, double y, double r, boolean isInside) {
         this(x, y, r, isInside(x, y, r));
     }
 
-    @SuppressWarnings("RedundantIfStatement")
     private static boolean isInside(double x, double y, double r) {
         if (x > 0 && y > 0) {
             return false;

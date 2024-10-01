@@ -24,11 +24,13 @@ public class ControllerServlet extends HttpServlet {
             .boxed().collect(Collectors.toSet());
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
         processRequest(request, response);
     }
 
-    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    private void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
         try {
             var x = request.getParameter("x");
             var y = request.getParameter("y");
