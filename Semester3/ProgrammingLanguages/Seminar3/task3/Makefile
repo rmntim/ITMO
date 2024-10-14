@@ -1,5 +1,5 @@
 AS=nasm
-ASFLAGS= -felf64
+ASFLAGS=-felf64
 LD=ld
 
 all: main
