@@ -13,3 +13,12 @@
 [submodule "Semester3/WebProgramming/Labwork4-front"]
 	path = Semester3/WebProgramming/Labwork4-front
 	url = git@github.com:rmntim/web-lab4-front.git
+[submodule "Semester3/WebProgramming/Labwork3"]
+	path = Semester3/WebProgramming/Labwork3
+	url = git@github.com:rmntim/web-lab3.git
+[submodule "Semester3/WebProgramming/Labwork4-back"]
+	path = Semester3/WebProgramming/Labwork4-back
+	url = git@github.com:rmntim/web-lab4-back.git
+[submodule "Semester3/ProgrammingLanguages/Assignment3"]
+	path = Semester3/ProgrammingLanguages/Assignment3
+	url = https://gitlab.se.ifmo.ru/rmntim/assignment-3-image-transform.git
