@@ -1,0 +1,5 @@
+CompileFlags:
+  Add:
+    - -Wall
+    - -std=c17
+    - -pedantic
