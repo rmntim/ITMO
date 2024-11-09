@@ -98,6 +98,37 @@ void print(FILE *f, struct AST *ast) {
     fprintf(f, "<NULL>");
 }
 
+void error(const char *s) {
+  fprintf(stderr, "%s", s);
+  abort();
+}
+
+void ast_free(struct AST *ast) {
+  switch (ast->type) {
+  case AST_BINOP:
+    if (ast->as_binop.left != NULL) {
+      ast_free(ast->as_binop.left);
+    }
+    if (ast->as_binop.right != NULL) {
+      ast_free(ast->as_binop.right);
+    }
+    break;
+  case AST_UNOP:
+    if (ast->as_unop.operand != NULL) {
+      ast_free(ast->as_unop.operand);
+    }
+    break;
+  case AST_LIT:
+    break;
+  default:
+    error("oh no");
+    return;
+  }
+
+  free(ast);
+  return;
+}
+
 int main(void) {
   struct AST *ast1 = add(lit(999), lit(728));
   struct AST *ast2 = add(lit(4), mul(lit(2), lit(9)));
@@ -105,11 +136,14 @@ int main(void) {
 
   print(stdout, ast1);
   fprintf(stdout, "\n");
+  ast_free(ast1);
 
   print(stdout, ast2);
   fprintf(stdout, "\n");
+  ast_free(ast2);
 
   print(stdout, ast3);
   fprintf(stdout, "\n");
+  ast_free(ast3);
   return 0;
 }
