@@ -7,9 +7,6 @@
 [submodule "Semester3/WebProgramming/Labwork2"]
 	path = Semester3/WebProgramming/Labwork2
 	url = git@github.com:rmntim/web-lab2.git
-[submodule "Semester3/CFT/Labwork1"]
-	path = Semester3/CFT/Labwork1
-	url = git@github.com:rmntim/mandelbruh.git
 [submodule "Semester3/WebProgramming/Labwork3"]
 	path = Semester3/WebProgramming/Labwork3
 	url = git@github.com:rmntim/web-lab3.git
