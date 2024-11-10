@@ -14,5 +14,5 @@
 	path = Semester3/ProgrammingLanguages/Assignment3
 	url = https://gitlab.se.ifmo.ru/rmntim/assignment-3-image-transform.git
 [submodule "Semester3/CFT/Labwork1-"]
-	path = Semester3/CFT/Labwork1-
+	path = Semester3/CFT/Labwork1
 	url = git@github.com:rmntim/cft-lab1.git
