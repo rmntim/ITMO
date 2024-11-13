@@ -16,3 +16,6 @@
 [submodule "Semester3/CFT/Labwork1"]
 	path = Semester3/CFT/Labwork1
 	url = git@github.com:rmntim/cft-lab1.git
+[submodule "Semester3/WebProgramming/Labwork4-back"]
+	path = Semester3/WebProgramming/Labwork4-back
+	url = git@github.com:rmntim/web-lab4-backend.git
