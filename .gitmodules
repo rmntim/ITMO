@@ -19,3 +19,6 @@
 [submodule "Semester3/WebProgramming/Labwork4-front"]
 	path = Semester3/WebProgramming/Labwork4-front
 	url = git@github.com:rmntim/web-lab4-front.git
+[submodule "Semester3/WebProgramming/Labwork4-back"]
+	path = Semester3/WebProgramming/Labwork4-back
+	url = git@github.com:rmntim/web-lab4-back.git
