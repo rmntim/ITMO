@@ -44,12 +44,12 @@ struct maybe_int64 vector_get(const struct vector *v, size_t index) {
   return (struct maybe_int64){.valid = true, .value = v->data[index]};
 }
 
-void vector_set(struct vector *v, size_t index, int64_t value) {
+bool vector_set(struct vector *v, size_t index, int64_t value) {
   if (index >= v->size) {
-    fprintf(stderr, "Index out of bounds\n");
-    exit(EXIT_FAILURE);
+    return false;
   }
   v->data[index] = value;
+  return true;
 }
 
 void vector_push_back(struct vector *v, int64_t value) {

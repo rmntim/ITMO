@@ -95,10 +95,11 @@ void block_free(struct block_id bid) {
   while (i < HEAP_BLOCKS &&
          (bid.heap->status[i] == BLK_FIRST || bid.heap->status[i] == BLK_CONT ||
           bid.heap->status[i] == BLK_LAST || bid.heap->status[i] == BLK_ONE)) {
-    bid.heap->status[i] = BLK_FREE;
     if (bid.heap->status[i] == BLK_LAST || bid.heap->status[i] == BLK_ONE) {
+      bid.heap->status[i] = BLK_FREE;
       break;
     }
+    bid.heap->status[i] = BLK_FREE;
     i++;
   }
 }
@@ -141,10 +142,22 @@ int main(void) {
   struct block_id id2 = block_allocate(&global_heap, 3);
   heap_debug_info(&global_heap, stdout);
 
+  struct block_id id3 = block_allocate(&global_heap, 2);
+  heap_debug_info(&global_heap, stdout);
+
+  struct block_id id4 = block_allocate(&global_heap, 16);
+  heap_debug_info(&global_heap, stdout);
+
   block_free(id1);
   heap_debug_info(&global_heap, stdout);
 
   block_free(id2);
+  heap_debug_info(&global_heap, stdout);
+
+  block_free(id3);
+  heap_debug_info(&global_heap, stdout);
+
+  block_free(id4);
   heap_debug_info(&global_heap, stdout);
 
   return 0;
