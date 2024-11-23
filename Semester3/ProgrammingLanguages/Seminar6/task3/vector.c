@@ -37,12 +37,11 @@ size_t vector_size(const struct vector *v) { return v->size; }
 
 size_t vector_capacity(const struct vector *v) { return v->capacity; }
 
-int64_t vector_get(const struct vector *v, size_t index) {
+struct maybe_int64 vector_get(const struct vector *v, size_t index) {
   if (index >= v->size) {
-    fprintf(stderr, "Index out of bounds\n");
-    exit(EXIT_FAILURE);
+    return (struct maybe_int64){.valid = false};
   }
-  return v->data[index];
+  return (struct maybe_int64){.valid = true, .value = v->data[index]};
 }
 
 void vector_set(struct vector *v, size_t index, int64_t value) {
