@@ -25,3 +25,6 @@
 [submodule "Semester3/ProgrammingLanguages/Assignment4"]
 	path = Semester3/ProgrammingLanguages/Assignment4
 	url = https://gitlab.se.ifmo.ru/rmntim/assignment-4-memory-allocator.git
+[submodule "Semester4/AaDS"]
+	path = Semester4/AaDS
+	url = git@github.com:rmntim/algocont.git
