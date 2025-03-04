@@ -1,0 +1,18 @@
+limit: 100
+memory_size: 256
+input_streams:
+  0x80: [5]
+  0x84: []
+reports:
+  - name: "Step-by-Step Log"
+    slice: all
+    view: |
+      "{pc:hex}: {instruction}"
+  - name: "Final Output Check"
+    slice: last
+    view: |
+      numio[0x80]: {io:0x80:dec}
+      numio[0x84]: {io:0x84:dec}
+    assert: |
+      numio[0x80]: [] >>> []
+      numio[0x84]: [] >>> [6]
