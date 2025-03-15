@@ -1,7 +1,7 @@
     .data
 
-input_addr:      .word  0xA0
-output_addr:     .word  0xA4
+input_addr:      .word  0x80
+output_addr:     .word  0x84
 
     .text
 _start:
