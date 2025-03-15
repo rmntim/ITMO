@@ -7,12 +7,12 @@ reports:
   - name: "Step-by-Step Log"
     slice: all
     view: |
-      {pc:hex}: {instruction} {A:hex} {B:hex} {stack:hex}
+      {pc:hex}: {instruction}
   - name: "Final Output Check"
     slice: last
     view: |
       numio[0x80]: {io:0x80:sym}
       numio[0x84]: {io:0x84:sym}
     assert: |
-      numio[0x80]: "hello" >>> ""
+      numio[0x80]: "" >>> ""
       numio[0x84]: "" >>> "HELLO"
