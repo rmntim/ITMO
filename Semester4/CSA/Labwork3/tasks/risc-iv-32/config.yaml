@@ -1,0 +1,19 @@
+limit: 200
+memory_size: 0x100
+input_streams:
+  0xA0: [305419896]
+  0xA4: []
+reports:
+  - name: step-by-step
+    slice: all
+    view: |
+      {A0} {T0} {T1} {T2} {T3}
+      {pc}:	{instruction}	{pc:label}
+  - name: result
+    slice: last
+    view: |
+      numio[0xA0]: {io:0xA0:dec}
+      numio[0xA4]: {io:0xA4:dec}
+    assert: |
+      numio[0xA0]: [] >>> []
+      numio[0xA4]: [] >>> [2018915346]
