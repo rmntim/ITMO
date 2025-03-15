@@ -1,18 +1,58 @@
-limit: 100
-memory_size: 256
+# result: https://wrench.edu.swampbuds.me/result/9879f302-d274-4091-a91e-f872815b1f27
+name: assert upper_case_pstr('12345678901234567890123456789012\n3') == ([-858993460], '\n3')
+limit: 2000
+memory_size: 0x1000
 input_streams:
-  0x80: [5, 104, 101, 108, 108, 111]
+  0x80:
+    [
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      48,
+      49,
+      50,
+      10,
+      51,
+    ]
   0x84: []
 reports:
-  - name: "Step-by-Step Log"
-    slice: all
-    view: |
-      {pc:hex}: {instruction}
-  - name: "Final Output Check"
+  - name: Check results
     slice: last
+    filter:
+      - state
     view: |
-      numio[0x80]: {io:0x80:sym}
-      numio[0x84]: {io:0x84:sym}
+      numio[0x80]: {io:0x80:dec}
+      numio[0x84]: {io:0x84:dec}
+      symio[0x80]: {io:0x80:sym}
+      symio[0x84]: {io:0x84:sym}
     assert: |
-      numio[0x80]: "" >>> ""
-      numio[0x84]: "" >>> "HELLO"
+      numio[0x80]: [10,51] >>> []
+      numio[0x84]: [] >>> [-858993460]
+      symio[0x80]: "\n3" >>> ""
+      symio[0x84]: "" >>> "?"
