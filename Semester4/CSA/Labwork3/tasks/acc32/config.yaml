@@ -1,13 +1,15 @@
-limit: 100
-memory_size: 256
+# result: https://wrench.edu.swampbuds.me/result/abcf94b0-d3a6-43dc-b25a-37ec0aa46ebf
+limit: 2000
+memory_size: 0x1000
 input_streams:
-  0x80: [5]
+  0x80: [90000]
   0x84: []
 reports:
   - name: "Step-by-Step Log"
     slice: all
     view: |
-      "{pc:hex}: {instruction}"
+      ACC: {Acc:dec}
+      {pc:hex}: {instruction}
   - name: "Final Output Check"
     slice: last
     view: |
@@ -15,4 +17,4 @@ reports:
       numio[0x84]: {io:0x84:dec}
     assert: |
       numio[0x80]: [] >>> []
-      numio[0x84]: [] >>> [6]
+      numio[0x84]: [] >>> [2025045000]
