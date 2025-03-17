@@ -14,6 +14,12 @@ _start:
     @p input_addr b!         \ b = input_addr
     lit buf a!               \ a = buf
     upcase
+
+    @p output_addr b!        \ b = output_addr
+    lit len a!               \ a = len
+    @+ lit 255 and           \ a = buf, stack = len&0xff
+
+    print_rofl
     halt
 
 upcase:
@@ -42,15 +48,14 @@ err:
     halt
 end:
     drop
-    @p output_addr b!
-    lit len a!
-    @+ lit 255 and
-end_while:
-    dup if end_end
+    ;
+
+print_rofl:
+    dup if end_print
     lit -1 +
     @+ lit 255 and
     !b
-    end_while ;
-end_end:
+    print_rofl ;
+end_print:
     drop
     ;

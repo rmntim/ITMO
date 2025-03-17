@@ -1,4 +1,4 @@
-# result: https://wrench.edu.swampbuds.me/result/5dbad34f-7eeb-4028-8104-2b2ef6f81a4b
+# result: https://wrench.edu.swampbuds.me/result/0c432031-0e23-43c2-9d77-07f907c300fd
 name: assert upper_case_pstr('12345678901234567890123456789012\n3') == ([-858993460], '\n3')
 limit: 2000
 memory_size: 0x1000
