@@ -25,9 +25,8 @@ _start:
 upcase:
     @b lit 255 and dup       \ stack = char&0xff, char&0xff
     lit -10 + if end         \ if char&0xff-10 == '\n' goto end
-                             \ stack = char&0xff
     dup lit -97 +            \ stack = char&0xff, char&0xff-97
-    -if do_upcase               \ if char&0xff-97 >= 0 goto do_upcase
+    -if do_upcase            \ if char&0xff-97 >= 0 goto do_upcase
     out ;                    \ else goto out
 do_upcase:
     lit -32 +                \ stack = char-32
@@ -40,7 +39,7 @@ out:
     !p len                   \ stack = len+1
     lit 255 and              \ stack = len+1&0xff
     lit -32 + if err         \ if len+1-32 == 0 goto end
-    upcase ;                  \ goto while
+    upcase ;                 \ goto while
 err:
     @p bullshit
     @p output_addr b!
