@@ -13,15 +13,17 @@ bullshit:        .word  0xCCCCCCCC
 _start:
     @p input_addr b!         \ b = input_addr
     lit buf a!               \ a = buf
+    upcase
+    halt
 
-while:
+upcase:
     @b lit 255 and dup       \ stack = char&0xff, char&0xff
     lit -10 + if end         \ if char&0xff-10 == '\n' goto end
                              \ stack = char&0xff
     dup lit -97 +            \ stack = char&0xff, char&0xff-97
-    -if upcase               \ if char&0xff-97 >= 0 goto upcase
+    -if do_upcase               \ if char&0xff-97 >= 0 goto do_upcase
     out ;                    \ else goto out
-upcase:
+do_upcase:
     lit -32 +                \ stack = char-32
 out:
     @p mask +                \ stack = masked
@@ -32,7 +34,7 @@ out:
     !p len                   \ stack = len+1
     lit 255 and              \ stack = len+1&0xff
     lit -32 + if err         \ if len+1-32 == 0 goto end
-    while ;                  \ goto while
+    upcase ;                  \ goto while
 err:
     @p bullshit
     @p output_addr b!
@@ -51,4 +53,4 @@ end_while:
     end_while ;
 end_end:
     drop
-    halt
+    ;
