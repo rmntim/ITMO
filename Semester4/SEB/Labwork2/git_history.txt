@@ -1,0 +1,254 @@
+git init
+git branch -m branch1
+git add .
+git commit -m r0
+git checkout -b branch2
+git add .
+git commit -m r1
+git checkout -b branch3
+git add .
+git commit -m r2
+git checkout -b branch4
+git commit -m r3 --allow-empty
+git checkout -b branch5
+git commit -m r4 --allow-empty
+git checkout -b branch6
+git add .
+git commit -m r5
+git merge branch5
+git checkout branch4
+git add .
+git commit -m r6
+git checkout -b branch7
+git add .
+git commit -m r7
+git checkout -b branch8
+git commit -m r8
+git checkout -b branch9
+git commit -m r9 --allow-empty
+git checkout -b branch10
+git commit -m r10 --allow-empty
+git checkout -b branch11
+git commit -m r11 --allow-empty
+git checkout branch2
+git add .
+git commit -m r12
+git checkout -b branch12
+git add .
+git commit -m r13
+git checkout -b branch13
+git commit -m r14 --allow-empty
+git checkout -b branch14
+git commit -m r15 --allow-empty
+git checkout -b branch15
+git add .
+git commit -m r16
+git merge branch14
+git checkout branch3
+git add .
+git commit -m r17
+git checkout -b branch16
+git add .
+git commit -m r18
+git checkout -b branch17
+git commit -m r19 --allow-empty
+git checkout -b branch18
+git commit -m r20 --allow-empty
+git checkout branch15
+git add .
+git commit -m r21
+git checkout branch12
+git add .
+git commit -m r22
+git checkout branch6
+git add .
+git commit -m r23
+git checkout -b branch19
+git add .
+git commit -m r24
+git checkout branch2
+git add .
+git commit -m r25
+git checkout -b branch20
+git add .
+git commit -m r26
+git checkout branch15
+git add .
+git commit -m r27
+git checkout -b branch21
+git add .
+git commit -m r28
+git merge branch15
+git checkout -b branch22
+git add .
+git commit -m r29
+git checkout -b branch23
+git commit -m r30 --allow-empty
+git checkout branch6
+git add .
+git commit -m r31
+git checkout branch23
+git add .
+git commit -m r32
+git checkout -b branch24
+git add .
+git commit -m r33
+git checkout branch8
+git merge branch24
+git checkout -b branch25
+git commit -m r35 --allow-empty
+git checkout branch9
+git add .
+git commit -m r36
+git checkout branch3
+git merge branch9
+git checkout branch12
+git add .
+git commit -m r38
+git checkout branch25
+git add .
+git commit -m r39
+git checkout branch1
+git merge branch25 --no-ff
+git checkout branch23
+git add .
+git commit -m r41
+git checkout branch20
+git add .
+git commit -m r42
+git checkout branch4
+git merge branch20 --no-ff
+git checkout branch23
+git add .
+git commit -m r44
+git checkout branch17
+git merge branch23 --no-ff
+git checkout --theirs .
+git add .
+git merge --continue
+git checkout branch11
+git merge branch17 --no-ff
+git add .
+git commit -m r47
+git checkout branch16
+git add .
+git commit -m r48
+git add .
+git commit -m r49
+git checkout branch21
+git add .
+git commit -m r50
+git checkout branch16
+git merge branch21 --no-ff
+git checkout --theirs .
+git add .
+git merge --continue
+git checkout branch4
+git add .
+git commit -m r52
+git checkout branch13
+git add .
+git commit -m r53
+git checkout branch19
+git merge branch13 --no-ff
+git checkout -b branch26
+git commit -m r55 --allow-empty
+git checkout branch2
+git add .
+git commit -m r56
+git add .
+git commit -m r57
+git checkout branch22
+git add .
+git commit -m r58
+git checkout branch2
+git merge branch22 --no-ff
+git checkout --theirs .
+git add .
+git merge --continue
+git checkout branch6
+git merge branch2 --no-ff
+git checkout branch3
+git add .
+git commit -m r61
+git checkout -b branch27
+git add .
+git commit -m r62
+git checkout branch11
+git add .
+git commit -m r63
+git checkout branch7
+git add .
+git commit -m r64
+git checkout branch4
+git add .
+git commit -m r65
+git checkout branch27
+git add .
+git commit -m r66
+git checkout branch11
+git merge branch27 --no-ff
+git checkout branch7
+git add .
+git commit -m r68
+git add .
+git commit -m r69
+git checkout branch16
+git add .
+git commit -m r70
+git checkout branch4
+git merge branch16 --no-ff
+git checkout --ours .
+git add .
+git merge --continue
+git add .
+git commit -m r72
+git checkout branch10
+git add .
+git commit -m r73
+git checkout branch8
+git add .
+git commit -m r74
+git checkout branch26
+git merge branch8 --no-ff
+git checkout branch3
+git merge branch26 --no-ff
+git checkout --ours .
+git add .
+git merge --continue
+git checkout branch11
+git merge branch3 --no-ff
+git checkout branch10
+git merge branch11 --no-ff
+git checkout --theirs .
+git add .
+git merge --continue
+git checkout branch12
+git merge branch10 --no-ff
+git checkout --theirs .
+git add .
+git merge --continue
+git checkout branch7
+git merge branch12 --no-ff
+git checkout --theirs .
+git add .
+git merge --continue
+git checkout branch6
+git merge branch12 --no-ff
+git checkout --theirs .
+git add .
+git merge --continue
+git checkout branch19
+git merge branch6 --no-ff
+git checkout branch18
+git merge branch19 --no-ff
+git checkout branch4
+git merge branch18 --no-ff
+git checkout --theirs .
+git add .
+git merge --continue
+git checkout branch1
+git merge branch4 --no-ff
+git checkout --theirs .
+git add .
+git merge --continue
