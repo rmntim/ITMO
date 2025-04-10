@@ -1,393 +1,762 @@
 #!/bin/bash
-set -e  # Прерывание при ошибке
+set -e
 
-# ====================
-# Группа 1: Инициализация репозитория
-# ====================
-git init                              # Инициализируем новый репозиторий
-git branch -m branch1                 # Переименовываем ветку по умолчанию в branch1
-git add .                             # Добавляем все файлы
-git commit -m "r0"                    # Первый коммит (r0) на ветке branch1
+# Path to the directory containing commit*.zip files
+CMTS="../commits"
 
-# ====================
-# Группа 2: Создание первых веток от branch1
-# ====================
-git checkout -b branch2               # Создание ветки branch2 (от branch1)
+# Create a new Git repository (using “main” as the trunk)
+mkdir repo && cd repo
+git init -b main
+
+##########################
+# r0 – initial commit on main (trunk)
+##########################
+echo "############# r0 #############"
+# Unpack commit0 and commit into main with author red
+rm -rf * 
+unzip -o "$CMTS/commit0.zip" -d .
 git add .
-git commit -m "r1"                    # Коммит r1 в branch2
+git commit -m "r0" --author="red <red@example.com>"
 
-git checkout -b branch3               # Создание ветки branch3 (от branch1)
+##########################
+# r1 – create branch b-r1 from main, remove all files and commit commit1 with blue
+##########################
+echo "############# r1 #############"
+git checkout -b b-r1 main
+# Remove every file from the working directory (simulate svn rm *)
+git rm -r --ignore-unmatch .
+rm -rf *
+unzip -o "$CMTS/commit1.zip" -d .
 git add .
-git commit -m "r2"                    # Коммит r2 в branch3
+git commit -m "r1" --author="blue <blue@example.com>"
 
-git checkout -b branch4               # Создание ветки branch4 из branch3
-git commit -m "r3" --allow-empty       # Пустой коммит r3 в branch4
-
-git checkout -b branch5               # Создание ветки branch5 от branch4
-git commit -m "r4" --allow-empty       # Пустой коммит r4 в branch5
-
-git checkout -b branch6               # Создание ветки branch6
+##########################
+# r2 – branch b-r2 from b-r1 and commit commit2 with blue
+##########################
+echo "############# r2 #############"
+git checkout -b b-r2 b-r1
+unzip -o "$CMTS/commit2.zip" -d .
 git add .
-git commit -m "r5"                    # Коммит r5 в branch6
+git commit -m "r2" --author="blue <blue@example.com>"
 
-git merge branch5                     # Слияние branch5 в branch6
-
-# ====================
-# Группа 3: Развитие функционала (branch4, branch7, branch8, branch9, branch10, branch11)
-# ====================
-git checkout branch4
+##########################
+# r3 – branch b-r3 from b-r2 and commit commit3 with red
+##########################
+echo "############# r3 #############"
+git checkout -b b-r3 b-r2
+unzip -o "$CMTS/commit3.zip" -d .
 git add .
-git commit -m "r6"                    # Коммит r6 в branch4
+git commit -m "r3" --author="red <red@example.com>"
 
-git checkout -b branch7               # Создание branch7 от branch4
+##########################
+# r4 – branch b-r4 from b-r3 and commit commit4 with red
+##########################
+echo "############# r4 #############"
+git checkout -b b-r4 b-r3
+unzip -o "$CMTS/commit4.zip" -d .
 git add .
-git commit -m "r7"                    # Коммит r7 в branch7
+git commit -m "r4" --author="red <red@example.com>"
 
-git checkout -b branch8               # Создание branch8 (на основе branch7)
-git commit -m "r8"                    # Коммит r8 в branch8
-
-git checkout -b branch9               # Создание branch9 (на основе branch8)
-git commit -m "r9" --allow-empty       # Пустой коммит r9 в branch9
-
-git checkout -b branch10              # Создание branch10 (на основе branch9)
-git commit -m "r10" --allow-empty      # Пустой коммит r10 в branch10
-
-git checkout -b branch11              # Создание branch11 (на основе branch10)
-git commit -m "r11" --allow-empty      # Пустой коммит r11 в branch11
-
-# ====================
-# Группа 4: Ветвление от branch2: создание branch12, branch13, branch14, branch15 и слияния
-# ====================
-git checkout branch2
+##########################
+# r5 – branch b-r5 from b-r4 and commit commit5 with blue,
+#      then merge b-r4 into b-r5
+##########################
+echo "############# r5 #############"
+git checkout -b b-r5 b-r4
+unzip -o "$CMTS/commit5.zip" -d .
 git add .
-git commit -m "r12"                   # Коммит r12 в branch2
+git commit -m "r5" --author="blue <blue@example.com>"
+# Merge b-r4 into b-r5
+git merge b-r4 --no-ff -m "Merge b-r4 into b-r5"
 
-git checkout -b branch12             # Создание branch12 от branch2
+##########################
+# r6 – switch back to b-r3 and commit commit6 with red
+##########################
+echo "############# r6 #############"
+git checkout b-r3
+unzip -o "$CMTS/commit6.zip" -d .
 git add .
-git commit -m "r13"                   # Коммит r13 в branch12
+git commit -m "r6" --author="red <red@example.com>"
 
-git checkout -b branch13             # Создание branch13 (от branch12)
-git commit -m "r14" --allow-empty      # Пустой коммит r14 в branch13
-
-git checkout -b branch14             # Создание branch14
-git commit -m "r15" --allow-empty      # Пустой коммит r15 в branch14
-
-git checkout -b branch15             # Создание branch15
+##########################
+# r7 – branch b-r7 from b-r3 and commit commit7 with blue
+##########################
+echo "############# r7 #############"
+git checkout -b b-r7 b-r3
+unzip -o "$CMTS/commit7.zip" -d .
 git add .
-git commit -m "r16"                   # Коммит r16 в branch15
+git commit -m "r7" --author="blue <blue@example.com>"
 
-git merge branch14                   # Слияние branch14 в branch15 (без fast-forward)
-
-# ====================
-# Группа 5: Ветвление от branch3: создание branch16, branch17, branch18
-# ====================
-git checkout branch3
+##########################
+# r8 – branch b-r8 from b-r7 and commit commit8 with red
+##########################
+echo "############# r8 #############"
+git checkout -b b-r8 b-r7
+unzip -o "$CMTS/commit8.zip" -d .
 git add .
-git commit -m "r17"                   # Коммит r17 в branch3
+git commit -m "r8" --author="red <red@example.com>"
 
-git checkout -b branch16             # Создание branch16 от branch3
+##########################
+# r9 – branch b-r9 from b-r8 and commit commit9 with blue
+##########################
+echo "############# r9 #############"
+git checkout -b b-r9 b-r8
+unzip -o "$CMTS/commit9.zip" -d .
 git add .
-git commit -m "r18"                   # Коммит r18 в branch16
+git commit -m "r9" --author="blue <blue@example.com>"
 
-git checkout -b branch17             # Создание branch17 от branch16
-git commit -m "r19" --allow-empty      # Пустой коммит r19 в branch17
-
-git checkout -b branch18             # Создание branch18 от branch17
-git commit -m "r20" --allow-empty      # Пустой коммит r20 в branch18
-
-# ====================
-# Группа 6: Дополнительные изменения: branch15, branch12, branch6, branch19, branch20, branch21
-# ====================
-git checkout branch15
+##########################
+# r10 – branch b-r10 from b-r9 and commit commit10 with blue
+##########################
+echo "############# r10 #############"
+git checkout -b b-r10 b-r9
+unzip -o "$CMTS/commit10.zip" -d .
 git add .
-git commit -m "r21"                   # Коммит r21 в branch15
+git commit -m "r10" --author="blue <blue@example.com>"
 
-git checkout branch12
+##########################
+# r11 – branch b-r11 from b-r10 and commit commit11 with red
+##########################
+echo "############# r11 #############"
+git checkout -b b-r11 b-r10
+unzip -o "$CMTS/commit11.zip" -d .
 git add .
-git commit -m "r22"                   # Коммит r22 в branch12
+git commit -m "r11" --author="red <red@example.com>"
 
-git checkout branch6
+##########################
+# r12 – switch to b-r1 and commit commit12 with blue
+##########################
+echo "############# r12 #############"
+git checkout b-r1
+unzip -o "$CMTS/commit12.zip" -d .
 git add .
-git commit -m "r23"                   # Коммит r23 в branch6
+git commit -m "r12" --author="blue <blue@example.com>"
 
-git checkout -b branch19             # Создание branch19 от branch6
+##########################
+# r13 – branch b-r13 from b-r1 and commit commit13 with blue
+##########################
+echo "############# r13 #############"
+git checkout -b b-r13 b-r1
+unzip -o "$CMTS/commit13.zip" -d .
 git add .
-git commit -m "r24"                   # Коммит r24 в branch19
+git commit -m "r13" --author="blue <blue@example.com>"
 
-git checkout branch2
+##########################
+# r14 – branch b-r14 from b-r13 and commit commit14 with blue
+##########################
+echo "############# r14 #############"
+git checkout -b b-r14 b-r13
+unzip -o "$CMTS/commit14.zip" -d .
 git add .
-git commit -m "r25"                   # Коммит r25 в branch2
+git commit -m "r14" --author="blue <blue@example.com>"
 
-git checkout -b branch20             # Создание branch20 от branch2
+##########################
+# r15 – branch b-r15 from b-r14 and commit commit15 with red
+##########################
+echo "############# r15 #############"
+git checkout -b b-r15 b-r14
+unzip -o "$CMTS/commit15.zip" -d .
 git add .
-git commit -m "r26"                   # Коммит r26 в branch20
+git commit -m "r15" --author="red <red@example.com>"
 
-git checkout branch15
+##########################
+# r16 – branch b-r16 from b-r15 and commit commit16 with blue,
+#      then merge b-r15 into b-r16
+##########################
+echo "############# r16 #############"
+git checkout -b b-r16 b-r15
+unzip -o "$CMTS/commit16.zip" -d .
 git add .
-git commit -m "r27"                   # Коммит r27 в branch15
+git commit -m "r16" --author="blue <blue@example.com>"
+git merge b-r15 --no-ff -m "Merge b-r15 into b-r16"
 
-git checkout -b branch21             # Создание branch21 от branch15
+##########################
+# r17 – switch to b-r2 and commit commit17 with blue
+##########################
+echo "############# r17 #############"
+git checkout b-r2
+unzip -o "$CMTS/commit17.zip" -d .
 git add .
-git commit -m "r28"                   # Коммит r28 в branch21
+git commit -m "r17" --author="blue <blue@example.com>"
 
-git merge branch15                   # Слияние branch15 в branch21 (без fast-forward)
-
-# ====================
-# Группа 7: Работа с ветками branch22, branch23, branch24 и merge с branch8
-# ====================
-git checkout -b branch22             # Создание branch22 от branch21
+##########################
+# r18 – branch b-r18 from b-r2 and commit commit18 with red
+##########################
+echo "############# r18 #############"
+git checkout -b b-r18 b-r2
+unzip -o "$CMTS/commit18.zip" -d .
 git add .
-git commit -m "r29"                   # Коммит r29 в branch22
+git commit -m "r18" --author="red <red@example.com>"
 
-git checkout -b branch23             # Создание branch23 от branch22
-git commit -m "r30" --allow-empty      # Пустой коммит r30 в branch23
-
-git checkout branch6
+##########################
+# r19 – branch b-r19 from b-r18 and commit commit19 with blue
+##########################
+echo "############# r19 #############"
+git checkout -b b-r19 b-r18
+unzip -o "$CMTS/commit19.zip" -d .
 git add .
-git commit -m "r31"                   # Коммит r31 в branch6
+git commit -m "r19" --author="blue <blue@example.com>"
 
-git checkout branch23
+##########################
+# r20 – branch b-r20 from b-r19 and commit commit20 with red
+##########################
+echo "############# r20 #############"
+git checkout -b b-r20 b-r19
+unzip -o "$CMTS/commit20.zip" -d .
 git add .
-git commit -m "r32"                   # Коммит r32 в branch23
+git commit -m "r20" --author="red <red@example.com>"
 
-git checkout -b branch24             # Создание branch24 от branch23
+##########################
+# r21 – switch to b-r16 and commit commit21 with blue
+##########################
+echo "############# r21 #############"
+git checkout b-r16
+unzip -o "$CMTS/commit21.zip" -d .
 git add .
-git commit -m "r33"                   # Коммит r33 в branch24
+git commit -m "r21" --author="blue <blue@example.com>"
 
-git checkout branch8
-git merge branch24                   # Слияние branch24 в branch8
-
-# ====================
-# Группа 8: Доработки в branch25, branch9 и объединение в branch1
-# ====================
-git checkout -b branch25             # Создание branch25 от branch8
-git commit -m "r35" --allow-empty      # Пустой коммит r35 в branch25
-
-git checkout branch9
+##########################
+# r22 – switch to b-r13 and commit commit22 with blue
+##########################
+echo "############# r22 #############"
+git checkout b-r13
+unzip -o "$CMTS/commit22.zip" -d .
 git add .
-git commit -m "r36"                   # Коммит r36 в branch9
+git commit -m "r22" --author="blue <blue@example.com>"
 
-git checkout branch3
-git merge branch9                   # Слияние branch9 в branch3
-
-git checkout branch12
+##########################
+# r23 – switch to b-r5 and commit commit23 with blue
+##########################
+echo "############# r23 #############"
+git checkout b-r5
+unzip -o "$CMTS/commit23.zip" -d .
 git add .
-git commit -m "r38"                   # Коммит r38 в branch12
+git commit -m "r23" --author="blue <blue@example.com>"
 
-git checkout branch25
+##########################
+# r24 – branch b-r24 from b-r5 and commit commit24 with red
+##########################
+echo "############# r24 #############"
+git checkout -b b-r24 b-r5
+unzip -o "$CMTS/commit24.zip" -d .
 git add .
-git commit -m "r39"                   # Коммит r39 в branch25
+git commit -m "r24" --author="red <red@example.com>"
 
-git checkout branch1
-git merge branch25 --no-ff           # Слияние branch25 в branch1 (без fast-forward)
-
-# ====================
-# Группа 9: Слияния branch23, branch20, branch4, с интеграцией через branch17 и branch11
-# ====================
-git checkout branch23
+##########################
+# r25 – switch to b-r1 and commit commit25 with blue
+##########################
+echo "############# r25 #############"
+git checkout b-r1
+unzip -o "$CMTS/commit25.zip" -d .
 git add .
-git commit -m "r41"                   # Коммит r41 в branch23
+git commit -m "r25" --author="blue <blue@example.com>"
 
-git checkout branch20
+##########################
+# r26 – branch b-r26 from b-r1 and commit commit26 with blue
+##########################
+echo "############# r26 #############"
+git checkout -b b-r26 b-r1
+unzip -o "$CMTS/commit26.zip" -d .
 git add .
-git commit -m "r42"                   # Коммит r42 в branch20
+git commit -m "r26" --author="blue <blue@example.com>"
 
-git checkout branch4
-git merge branch20 --no-ff           # Слияние branch20 в branch4
-
-git checkout branch23
+##########################
+# r27 – switch to b-r16 and commit commit27 with blue
+##########################
+echo "############# r27 #############"
+git checkout b-r16
+unzip -o "$CMTS/commit27.zip" -d .
 git add .
-git commit -m "r44"                   # Коммит r44 в branch23
+git commit -m "r27" --author="blue <blue@example.com>"
 
-git checkout branch17
-git merge branch23 --no-ff           # Слияние branch23 в branch17
-
-# Разрешение конфликта: выбираем изменения из сливаемой ветки ("theirs")
-git checkout --theirs .
+##########################
+# r28 – branch b-r28 from b-r16 and commit commit28 with red,
+#      then merge b-r16 into b-r28
+##########################
+echo "############# r28 #############"
+git checkout -b b-r28 b-r16
+unzip -o "$CMTS/commit28.zip" -d .
 git add .
-git merge --continue                # Завершаем слияние
+git commit -m "r28" --author="red <red@example.com>"
+git merge b-r16 --no-ff -m "Merge b-r16 into b-r28"
 
-git checkout branch11
-git merge branch17 --no-ff           # Слияние branch17 в branch11
+##########################
+# r29 – branch b-r29 from b-r28 and commit commit29 with red
+##########################
+echo "############# r29 #############"
+git checkout -b b-r29 b-r28
+unzip -o "$CMTS/commit29.zip" -d .
 git add .
-git commit -m "r47"                   # Коммит r47 в branch11
+git commit -m "r29" --author="red <red@example.com>"
 
-# ====================
-# Группа 10: Последовательные коммиты и слияния в branch16 и branch21
-# ====================
-git checkout branch16
+##########################
+# r30 – branch b-r30 from b-r29 and commit commit30 with red
+##########################
+echo "############# r30 #############"
+git checkout -b b-r30 b-r29
+unzip -o "$CMTS/commit30.zip" -d .
 git add .
-git commit -m "r48"                   # Коммит r48 в branch16
+git commit -m "r30" --author="red <red@example.com>"
+
+##########################
+# r31 – switch to b-r5 and commit commit31 with blue
+##########################
+echo "############# r31 #############"
+git checkout b-r5
+unzip -o "$CMTS/commit31.zip" -d .
 git add .
-git commit -m "r49"                   # Дополнительный коммит r49 в branch16
+git commit -m "r31" --author="blue <blue@example.com>"
 
-git checkout branch21
+##########################
+# r32 – switch to b-r30 and commit commit32 with red
+##########################
+echo "############# r32 #############"
+git checkout b-r30
+unzip -o "$CMTS/commit32.zip" -d .
 git add .
-git commit -m "r50"                   # Коммит r50 в branch21
+git commit -m "r32" --author="red <red@example.com>"
 
-git checkout branch16
-git merge branch21 --no-ff           # Слияние branch21 в branch16
-git checkout --theirs .
+##########################
+# r33 – branch b-r33 from b-r30 and commit commit33 with red
+##########################
+echo "############# r33 #############"
+git checkout -b b-r33 b-r30
+unzip -o "$CMTS/commit33.zip" -d .
 git add .
-git merge --continue                # Завершаем слияние
+git commit -m "r33" --author="red <red@example.com>"
 
-# ====================
-# Группа 11: Слияние branch13 в branch19 и создание branch26
-# ====================
-git checkout branch4
+##########################
+# r34 – switch to b-r8 and commit commit34 with red
+##########################
+echo "############# r34 #############"
+git checkout b-r8
+unzip -o "$CMTS/commit34.zip" -d .
 git add .
-git commit -m "r52"                   # Коммит r52 в branch4
+git commit -m "r34" --author="red <red@example.com>"
 
-git checkout branch13
+##########################
+# r35 – branch b-r35 from b-r8, merge in b-r33, then commit commit35 with red
+##########################
+echo "############# r35 #############"
+git checkout -b b-r35 b-r8
+git merge b-r33 --no-ff -m "Merge b-r33 into b-r35"
+unzip -o "$CMTS/commit35.zip" -d .
 git add .
-git commit -m "r53"                   # Коммит r53 в branch13
+git commit -m "r35" --author="red <red@example.com>"
 
-git checkout branch19
-git merge branch13 --no-ff           # Слияние branch13 в branch19
-
-git checkout -b branch26             # Создание branch26 от branch19
-git commit -m "r55" --allow-empty      # Пустой коммит r55 в branch26
-
-# ====================
-# Группа 12: Доработки в branch2 и branch22, слияние branch22 в branch2
-# ====================
-git checkout branch2
+##########################
+# r36 – switch to b-r9 and commit commit36 with blue
+##########################
+echo "############# r36 #############"
+git checkout b-r9
+unzip -o "$CMTS/commit36.zip" -d .
 git add .
-git commit -m "r56"                   # Коммит r56 в branch2
+git commit -m "r36" --author="blue <blue@example.com>"
+
+##########################
+# r37 – switch to b-r2 and merge in b-r9, then commit (simulate merge commit)
+##########################
+echo "############# r37 #############"
+git checkout b-r2
+git merge b-r9 --no-ff -m "r37" --author="blue <blue@example.com>"
+
+##########################
+# r38 – switch to b-r13 and commit commit38 with blue
+##########################
+echo "############# r38 #############"
+git checkout b-r13
+unzip -o "$CMTS/commit38.zip" -d .
 git add .
-git commit -m "r57"                   # Коммит r57 в branch2
+git commit -m "r38" --author="blue <blue@example.com>"
 
-git checkout branch22
+##########################
+# r39 – switch to b-r35 and commit commit39 with red
+##########################
+echo "############# r39 #############"
+git checkout b-r35
+unzip -o "$CMTS/commit39.zip" -d .
 git add .
-git commit -m "r58"                   # Коммит r58 в branch22
+git commit -m "r39" --author="red <red@example.com>"
 
-git checkout branch2
-git merge branch22 --no-ff           # Слияние branch22 в branch2
-git checkout --theirs .
+##########################
+# r40 – switch to main, merge in b-r35, then commit commit40 with red
+##########################
+echo "############# r40 #############"
+git checkout main
+git merge b-r35 --no-ff -m "Merge b-r35 into main" \
+  --author="red <red@example.com>"
+unzip -o "$CMTS/commit40.zip" -d .
 git add .
-git merge --continue                # Завершаем слияние
+git commit -m "r40" --author="red <red@example.com>"
 
-# ====================
-# Группа 13: Объединение branch2 в branch6 и создание branch27
-# ====================
-git checkout branch6
-git merge branch2 --no-ff            # Слияние branch2 в branch6
-
-git checkout branch3
+##########################
+# r41 – switch to b-r30 and commit commit41 with red
+##########################
+echo "############# r41 #############"
+git checkout b-r30
+unzip -o "$CMTS/commit41.zip" -d .
 git add .
-git commit -m "r61"                   # Коммит r61 в branch3
+git commit -m "r41" --author="red <red@example.com>"
 
-git checkout -b branch27             # Создание branch27 от branch3
+##########################
+# r42 – switch to b-r26 and commit commit42 with blue
+##########################
+echo "############# r42 #############"
+git checkout b-r26
+unzip -o "$CMTS/commit42.zip" -d .
 git add .
-git commit -m "r62"                   # Коммит r62 в branch27
+git commit -m "r42" --author="blue <blue@example.com>"
 
-git checkout branch11
+##########################
+# r43 – switch to b-r3, merge in b-r26, then commit with red
+##########################
+echo "############# r43 #############"
+git checkout b-r3
+git merge b-r26 --no-ff -m "r43" --author="red <red@example.com>"
+
+##########################
+# r44 – switch to b-r30 and commit commit44 with red
+##########################
+echo "############# r44 #############"
+git checkout b-r30
+unzip -o "$CMTS/commit44.zip" -d .
 git add .
-git commit -m "r63"                   # Коммит r63 в branch11
+git commit -m "r44" --author="red <red@example.com>"
 
-git checkout branch7
+##########################
+# r45 – switch to b-r19, merge in b-r30, then commit with red
+##########################
+echo "############# r45 #############"
+git checkout b-r19
+git merge b-r30 --no-ff -m "r45" --author="red <red@example.com>"
+
+##########################
+# r46 – switch to b-r11, merge in b-r19, then commit with red
+##########################
+echo "############# r46 #############"
+git checkout b-r11
+git merge b-r19 --no-ff -m "r46" --author="red <red@example.com>"
+
+##########################
+# r47 – (remaining on b-r11) commit commit47 with red
+##########################
+echo "############# r47 #############"
+unzip -o "$CMTS/commit47.zip" -d .
 git add .
-git commit -m "r64"                   # Коммит r64 в branch7
+git commit -m "r47" --author="red <red@example.com>"
 
-git checkout branch4
+##########################
+# r48 – switch to b-r18 and commit commit48 with red
+##########################
+echo "############# r48 #############"
+git checkout b-r18
+unzip -o "$CMTS/commit48.zip" -d .
 git add .
-git commit -m "r65"                   # Коммит r65 в branch4
+git commit -m "r48" --author="red <red@example.com>"
 
-git checkout branch27
+##########################
+# r49 – still on b-r18, commit commit49 with red
+##########################
+echo "############# r49 #############"
+unzip -o "$CMTS/commit49.zip" -d .
 git add .
-git commit -m "r66"                   # Коммит r66 в branch27
+git commit -m "r49" --author="red <red@example.com>"
 
-git checkout branch11
-git merge branch27 --no-ff           # Слияние branch27 в branch11
-
-git checkout branch7
+##########################
+# r50 – switch to b-r28 and commit commit50 with red
+##########################
+echo "############# r50 #############"
+git checkout b-r28
+unzip -o "$CMTS/commit50.zip" -d .
 git add .
-git commit -m "r68"                   # Коммит r68 в branch7
+git commit -m "r50" --author="red <red@example.com>"
+
+##########################
+# r51 – switch to b-r18, merge in b-r28, then commit with red
+##########################
+echo "############# r51 #############"
+git checkout b-r18
+git merge b-r28 --no-ff -m "r51" --author="red <red@example.com>"
+
+##########################
+# r52 – switch to b-r3 and commit commit52 with red
+##########################
+echo "############# r52 #############"
+git checkout b-r3
+unzip -o "$CMTS/commit52.zip" -d .
 git add .
-git commit -m "r69"                   # Дополнительный коммит r69 в branch7
+git commit -m "r52" --author="red <red@example.com>"
 
-# ====================
-# Группа 14: Слияние branch16 в branch4 с выбором "ours"
-# ====================
-git checkout branch16
+##########################
+# r53 – switch to b-r14 and commit commit53 with blue
+##########################
+echo "############# r53 #############"
+git checkout b-r14
+unzip -o "$CMTS/commit53.zip" -d .
 git add .
-git commit -m "r70"                   # Коммит r70 в branch16
+git commit -m "r53" --author="blue <blue@example.com>"
 
-git checkout branch4
-git merge branch16 --no-ff           # Слияние branch16 в branch4
-git checkout --ours .               # При конфликте выбираем наши изменения ("ours")
+##########################
+# r54 – switch to b-r24 and commit commit54 with red
+##########################
+echo "############# r54 #############"
+git checkout b-r24
+unzip -o "$CMTS/commit54.zip" -d .
 git add .
-git merge --continue                # Завершаем слияние
+git commit -m "r54" --author="red <red@example.com>"
+
+##########################
+# r55 – branch b-r55 from b-r24 and commit commit55 with blue
+##########################
+echo "############# r55 #############"
+git checkout -b b-r55 b-r24
+unzip -o "$CMTS/commit55.zip" -d .
 git add .
-git commit -m "r72"                   # Финальный коммит r72 в branch4
+git commit -m "r55" --author="blue <blue@example.com>"
 
-# ====================
-# Группа 15: Доработки в branch10 и branch8, слияние branch8 в branch26
-# ====================
-git checkout branch10
+##########################
+# r56 – switch to b-r1 and commit commit56 with blue
+##########################
+echo "############# r56 #############"
+git checkout b-r1
+unzip -o "$CMTS/commit56.zip" -d .
 git add .
-git commit -m "r73"                   # Коммит r73 в branch10
+git commit -m "r56" --author="blue <blue@example.com>"
 
-git checkout branch8
+##########################
+# r57 – (still on b-r1) commit commit57 with blue
+##########################
+echo "############# r57 #############"
+unzip -o "$CMTS/commit57.zip" -d .
 git add .
-git commit -m "r74"                   # Коммит r74 в branch8
+git commit -m "r57" --author="blue <blue@example.com>"
 
-git checkout branch26
-git merge branch8 --no-ff            # Слияние branch8 в branch26
-
-# ====================
-# Группа 16: Последовательные слияния с разрешением конфликтов
-# ====================
-git checkout branch3
-git merge branch26 --no-ff           # Слияние branch26 в branch3
-git checkout --ours .               # При конфликте выбираем "ours"
+##########################
+# r58 – switch to b-r29 and commit commit58 with red
+##########################
+echo "############# r58 #############"
+git checkout b-r29
+unzip -o "$CMTS/commit58.zip" -d .
 git add .
-git merge --continue                # Завершаем слияние
+git commit -m "r58" --author="red <red@example.com>"
 
-git checkout branch11
-git merge branch3 --no-ff            # Слияние branch3 в branch11
+##########################
+# r59 – switch to b-r1, merge in b-r29, then commit with blue
+##########################
+echo "############# r59 #############"
+git checkout b-r1
+git merge b-r29 --no-ff -m "r59" --author="blue <blue@example.com>"
 
-git checkout branch10
-git merge branch11 --no-ff           # Слияние branch11 в branch10
-git checkout --theirs .             # При конфликте выбираем "theirs"
+##########################
+# r60 – switch to b-r5, merge in b-r1, then commit with blue
+##########################
+echo "############# r60 #############"
+git checkout b-r5
+git merge b-r1 --no-ff -m "r60" --author="blue <blue@example.com>"
+
+##########################
+# r61 – switch to b-r2 and commit commit61 with blue
+##########################
+echo "############# r61 #############"
+git checkout b-r2
+unzip -o "$CMTS/commit61.zip" -d .
 git add .
-git merge --continue                # Завершаем слияние
+git commit -m "r61" --author="blue <blue@example.com>"
 
-git checkout branch12
-git merge branch10 --no-ff           # Слияние branch10 в branch12
-git checkout --theirs .
+##########################
+# r62 – branch b-r62 from b-r2 and commit commit62 with blue
+##########################
+echo "############# r62 #############"
+git checkout -b b-r62 b-r2
+unzip -o "$CMTS/commit62.zip" -d .
 git add .
-git merge --continue                # Завершаем слияние
+git commit -m "r62" --author="blue <blue@example.com>"
 
-git checkout branch7
-git merge branch12 --no-ff           # Слияние branch12 в branch7
-git checkout --theirs .
+##########################
+# r63 – switch to b-r11 and commit commit63 with red
+##########################
+echo "############# r63 #############"
+git checkout b-r11
+unzip -o "$CMTS/commit63.zip" -d .
 git add .
-git merge --continue                # Завершаем слияние
+git commit -m "r63" --author="red <red@example.com>"
 
-git checkout branch6
-git merge branch12 --no-ff           # Слияние branch12 в branch6
-git checkout --theirs .
+##########################
+# r64 – switch to b-r7 and commit commit64 with blue
+##########################
+echo "############# r64 #############"
+git checkout b-r7
+unzip -o "$CMTS/commit64.zip" -d .
 git add .
-git merge --continue                # Завершаем слияние
+git commit -m "r64" --author="blue <blue@example.com>"
 
-# ====================
-# Группа 17: Финальные объединения
-# ====================
-git checkout branch19
-git merge branch6 --no-ff            # Слияние branch6 в branch19
-
-git checkout branch18
-git merge branch19 --no-ff           # Слияние branch19 в branch18
-
-git checkout branch4
-git merge branch18 --no-ff           # Слияние branch18 в branch4
-git checkout --theirs .             # При конфликте выбираем "theirs"
+##########################
+# r65 – switch to b-r3 and commit commit65 with red
+##########################
+echo "############# r65 #############"
+git checkout b-r3
+unzip -o "$CMTS/commit65.zip" -d .
 git add .
-git merge --continue                # Завершаем слияние
+git commit -m "r65" --author="red <red@example.com>"
 
-git checkout branch1
-git merge branch4 --no-ff            # Слияние branch4 в branch1
-git checkout --theirs .             # При конфликте выбираем "theirs"
+##########################
+# r66 – switch to b-r62 and commit commit66 with blue
+##########################
+echo "############# r66 #############"
+git checkout b-r62
+unzip -o "$CMTS/commit66.zip" -d .
 git add .
-git merge --continue                # Завершаем слияние
+git commit -m "r66" --author="blue <blue@example.com>"
+
+##########################
+# r67 – switch to b-r11, merge in b-r62, then commit with red
+##########################
+echo "############# r67 #############"
+git checkout b-r11
+git merge b-r62 --no-ff -m "r67" --author="red <red@example.com>"
+
+##########################
+# r68 – switch to b-r7 and commit commit68 with blue
+##########################
+echo "############# r68 #############"
+git checkout b-r7
+unzip -o "$CMTS/commit68.zip" -d .
+git add .
+git commit -m "r68" --author="blue <blue@example.com>"
+
+##########################
+# r69 – (still on current branch) commit commit69 with blue
+##########################
+echo "############# r69 #############"
+unzip -o "$CMTS/commit69.zip" -d .
+git add .
+git commit -m "r69" --author="blue <blue@example.com>"
+
+##########################
+# r70 – switch to b-r18 and commit commit70 with red
+##########################
+echo "############# r70 #############"
+git checkout b-r18
+unzip -o "$CMTS/commit70.zip" -d .
+git add .
+git commit -m "r70" --author="red <red@example.com>"
+
+##########################
+# r71 – switch to b-r3, merge in b-r18 and resolve conflict for eqkVEXsynE.PhR,
+#      then commit with red
+##########################
+echo "############# r71 #############"
+git checkout b-r3
+# Start merge without auto committing to simulate conflict resolution
+git merge b-r18 --no-commit --no-ff -m "r71" \
+  --author="red <red@example.com>" || true
+# (Assume a conflict arose in eqkVEXsynE.PhR; resolve it by taking our version)
+git checkout --ours eqkVEXsynE.PhR
+git add eqkVEXsynE.PhR
+# Now finish the merge commit
+git commit -m "r71" --author="red <red@example.com>"
+
+##########################
+# r72 – commit commit72 with red
+##########################
+echo "############# r72 #############"
+unzip -o "$CMTS/commit72.zip" -d .
+git add .
+git commit -m "r72" --author="red <red@example.com>"
+
+##########################
+# r73 – switch to b-r10 and commit commit73 with blue
+##########################
+echo "############# r73 #############"
+git checkout b-r10
+unzip -o "$CMTS/commit73.zip" -d .
+git add .
+git commit -m "r73" --author="blue <blue@example.com>"
+
+##########################
+# r74 – switch to b-r18 and commit commit74 with red
+##########################
+echo "############# r74 #############"
+git checkout b-r18
+unzip -o "$CMTS/commit74.zip" -d .
+git add .
+git commit -m "r74" --author="red <red@example.com>"
+
+##########################
+# r75 – switch to b-r55, merge in b-r18, then commit with blue
+##########################
+echo "############# r75 #############"
+git checkout b-r55
+git merge b-r18 --no-ff -m "r75" --author="blue <blue@example.com>"
+
+##########################
+# r76 – switch to b-r2, merge in b-r55, then commit with blue
+##########################
+echo "############# r76 #############"
+git checkout b-r2
+git merge b-r55 --no-ff -m "r76" --author="blue <blue@example.com>"
+
+##########################
+# r77 – switch to b-r11, merge in b-r2, then commit with red
+##########################
+echo "############# r77 #############"
+git checkout b-r11
+git merge b-r2 --no-ff -m "r77" --author="red <red@example.com>"
+
+##########################
+# r78 – switch to b-r10, merge in b-r77, then commit with blue
+##########################
+echo "############# r78 #############"
+git checkout b-r10
+git merge b-r77 --no-ff -m "r78" --author="blue <blue@example.com>"
+
+##########################
+# r79 – switch to b-r13, merge in b-r10, then commit with blue
+##########################
+echo "############# r79 #############"
+git checkout b-r13
+git merge b-r10 --no-ff -m "r79" --author="blue <blue@example.com>"
+
+##########################
+# r80 – switch to b-r7, merge in b-r13, then commit with blue
+##########################
+echo "############# r80 #############"
+git checkout b-r7
+git merge b-r13 --no-ff -m "r80" --author="blue <blue@example.com>"
+
+##########################
+# r81 – switch to b-r5, merge in b-r7, then commit with blue
+##########################
+echo "############# r81 #############"
+git checkout b-r5
+git merge b-r7 --no-ff -m "r81" --author="blue <blue@example.com>"
+
+##########################
+# r82 – switch to b-r24, merge in b-r5, then commit with red
+##########################
+echo "############# r82 #############"
+git checkout b-r24
+git merge b-r5 --no-ff -m "r82" --author="red <red@example.com>"
+
+##########################
+# r83 – switch to b-r20, merge in b-r24, then commit with red
+##########################
+echo "############# r83 #############"
+git checkout b-r20
+git merge b-r24 --no-ff -m "r83" --author="red <red@example.com>"
+
+##########################
+# r84 – switch to b-r3, merge in b-r20, then commit with red
+##########################
+echo "############# r84 #############"
+git checkout b-r3
+git merge b-r20 --no-ff -m "r84" --author="red <red@example.com>"
+
+##########################
+# r85 – switch to main, merge in b-r3, then commit with red
+##########################
+echo "############# r85 #############"
+git checkout main
+git merge b-r3 --no-ff -m "r85" --author="red <red@example.com>"
+
+echo "All revisions have been processed in Git."
