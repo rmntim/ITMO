@@ -2,7 +2,7 @@
 set -e
 
 # Path to the directory containing commit*.zip files
-CMTS="../commits"
+CMTS="$(realpath commits)"
 
 # Create a new Git repository (using “main” as the trunk)
 mkdir repo && cd repo
