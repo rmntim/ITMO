@@ -131,28 +131,28 @@ func colorNamesString(names []string) string {
 }
 
 func drawVelocityVector(c *MovingCircle, color rl.Color) {
-	// Draw velocity vector from center of ball
-	scale := float32(64) // Adjust for visibility
-	endX := c.Pos.X + c.Vel.X*scale
-	endY := c.Pos.Y + c.Vel.Y*scale
-	rl.DrawLineEx(
-		rl.NewVector2(c.Pos.X, c.Pos.Y),
-		rl.NewVector2(endX, endY),
-		2,
-		color,
-	)
-
-	// Draw angle text (relative to y axis)
-	// atan2 returns angle from x axis, so subtract from 90 deg (pi/2) to get from y axis
-	angleRad := math.Atan2(float64(c.Vel.Y), float64(c.Vel.X))
-	angleFromY := (math.Pi/2 - angleRad) * 180 / math.Pi
-	angleFromY = math.Ceil(angleFromY)
-	angleStr := strconv.FormatFloat(angleFromY, 'f', 1, 64) + "°"
-
-	// Place text a bit away from the end of the vector
-	textX := endX + 8
-	textY := endY + 8
-	rl.DrawText(angleStr, int32(textX), int32(textY), 16, color)
+	// // Draw velocity vector from center of ball
+	// scale := float32(64) // Adjust for visibility
+	// endX := c.Pos.X + c.Vel.X*scale
+	// endY := c.Pos.Y + c.Vel.Y*scale
+	// rl.DrawLineEx(
+	// 	rl.NewVector2(c.Pos.X, c.Pos.Y),
+	// 	rl.NewVector2(endX, endY),
+	// 	2,
+	// 	color,
+	// )
+	//
+	// // Draw angle text (relative to y axis)
+	// // atan2 returns angle from x axis, so subtract from 90 deg (pi/2) to get from y axis
+	// angleRad := math.Atan2(float64(c.Vel.Y), float64(c.Vel.X))
+	// angleFromY := (math.Pi/2 - angleRad) * 180 / math.Pi
+	// angleFromY = math.Ceil(angleFromY)
+	// angleStr := strconv.FormatFloat(angleFromY, 'f', 1, 64) + "°"
+	//
+	// // Place text a bit away from the end of the vector
+	// textX := endX + 8
+	// textY := endY + 8
+	// rl.DrawText(angleStr, int32(textX), int32(textY), 16, color)
 }
 
 // --- Helper functions for main loop ---
@@ -238,16 +238,6 @@ func main() {
 	colorNames := []string{"Gold", "Beige", "Red", "Blue", "Green", "Purple"}
 	colorList := []rl.Color{rl.Gold, rl.Beige, rl.Red, rl.Blue, rl.Green, rl.Purple}
 
-	mass := float32(20.0)
-
-	r := radiusFromMass(mass)
-	b := r * float32(math.Sqrt(2))
-
-	balls := []*MovingCircle{
-		NewMovingCircle(100, 300, mass, 2, 0, rl.Gold),             // moving ball
-		NewMovingCircle(400, 300+float32(b), mass, 0, 0, rl.Beige), // stationary ball, offset by b
-	}
-
 	var focused int32
 
 	// Layout
@@ -287,6 +277,8 @@ func main() {
 	rectColorExpanded := rl.NewRectangle(colorX, inputY+inputH, colorW, dropdownExpandedHeight)
 
 	rects := []rl.Rectangle{rectX, rectY, rectM, rectVX, rectVY, rectColor}
+
+	balls := createClosePackedBalls(formHeight, colorList)
 
 	for !rl.WindowShouldClose() {
 		mouse := rl.GetMousePosition()
@@ -340,4 +332,44 @@ func main() {
 		updateBalls(balls, formHeight)
 	}
 
+}
+
+func createClosePackedBalls(formHeight float32, colorList []rl.Color) []*MovingCircle {
+	balls := []*MovingCircle{}
+
+	ballMass := float32(1.0)
+	radius := radiusFromMass(ballMass)
+	spacing := radius * 2
+
+	horizontalOffset := spacing
+	verticalOffset := spacing * float32(math.Sqrt(3)) / 2
+
+	rows := 5
+	cols := 7
+
+	startX := (Width-float32(cols)*horizontalOffset)/2 + radius
+	startY := formHeight + 50
+
+	for row := range rows {
+		for col := range cols {
+			rowOffset := float32(0)
+			if row%2 == 1 {
+				rowOffset = spacing / 2
+			}
+
+			x := startX + float32(col)*horizontalOffset + rowOffset
+			y := startY + float32(row)*verticalOffset
+
+			if x >= radius && x <= Width-radius && y >= formHeight+radius && y <= Height-radius {
+				colorIndex := (row + col) % 6
+				ball := NewMovingCircle(x, y, ballMass, 0, 0, colorList[colorIndex])
+				balls = append(balls, ball)
+			}
+		}
+	}
+
+	movingBall := NewMovingCircle(Width/2, 100, 5.0, 0, 10.0, rl.White)
+	balls = append(balls, movingBall)
+
+	return balls
 }
