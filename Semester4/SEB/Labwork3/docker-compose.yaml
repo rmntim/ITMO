@@ -1,0 +1,48 @@
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - backend
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  backend:
+    build: .
+    env_file: .env
+    ports:
+      - "8081:8080"
+    depends_on:
+      - postgres
+    networks:
+      - backend
+      - infra
+
+  frontend:
+    build: ../Labwork4-front
+    networks:
+      - infra
+
+  app:
+    image: nginx:1.27.3
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - infra
+
+volumes:
+  pg_data:
+
+networks:
+  backend:
+  infra:

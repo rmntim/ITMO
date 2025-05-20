@@ -1,0 +1,266 @@
+openapi: 3.0.0
+
+info:
+  title: Point API
+  version: 1.0.0
+
+paths:
+  /points:
+    get:
+      tags:
+        - Points
+      summary: Retrieve all points
+      responses:
+        "200":
+          description: A list of points
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PointDTO"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+    post:
+      tags:
+        - Points
+      summary: Add a new point for the authenticated user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PointDTO"
+      responses:
+        "200":
+          description: The created point
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PointDTO"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+    delete:
+      tags:
+        - Points
+      summary: Delete all points for the authenticated user
+      responses:
+        "200":
+          description: All points deleted successfully
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+    patch:
+      tags:
+        - Points
+      summary: Delete a specific point for the authenticated user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PointDTO"
+      responses:
+        "200":
+          description: Point deleted successfully
+        "404":
+          description: User or point not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+  /points/self:
+    get:
+      tags:
+        - Points
+      summary: Retrieve points for the authenticated user
+      responses:
+        "200":
+          description: A list of user-specific points
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PointDTO"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+  /auth/signup:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserDTO"
+      responses:
+        "200":
+          description: User registered successfully
+        "409":
+          description: User already exists or invalid email
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Authenticate a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SimpleUserDTO"
+      responses:
+        "200":
+          description: User authenticated successfully
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: Logout the current user
+      responses:
+        "200":
+          description: User logged out successfully
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+  /users:
+    patch:
+      tags:
+        - Users
+      summary: Update user information
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInfoDTO"
+      responses:
+        "200":
+          description: User information updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserInfoDTO"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+
+components:
+  schemas:
+    PointDTO:
+      type: object
+      properties:
+        x:
+          type: number
+        y:
+          type: number
+        r:
+          type: number
+        result:
+          type: boolean
+        userId:
+          type: number
+    ErrorDTO:
+      type: object
+      properties:
+        message:
+          type: string
+    UserDTO:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        email:
+          type: string
+    SimpleUserDTO:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    UserInfoDTO:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
