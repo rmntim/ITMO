@@ -28,3 +28,6 @@
 [submodule "Semester4/AaDS"]
 	path = Semester4/AaDS
 	url = git@github.com:rmntim/algocont.git
+[submodule "Semester4/SEB/Labwork3"]
+	path = Semester4/SEB/Labwork3
+	url = git@github.com:rmntim/web-lab4-back.git
