@@ -31,3 +31,6 @@
 [submodule "Semester4/SEB/Labwork3"]
 	path = Semester4/SEB/Labwork3
 	url = git@github.com:rmntim/web-lab4-back.git
+[submodule "Semester4/SEB/Labwork4"]
+	path = Semester4/SEB/Labwork4
+	url = git@github.com:rmntim/seb-lab4.git
