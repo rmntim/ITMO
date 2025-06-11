@@ -1,4 +1,4 @@
-limit: 200
+limit: 2000
 memory_size: 0x90
 input_streams:
   0x80: [6]
@@ -16,4 +16,4 @@ reports:
       numio[0x84]: {io:0x84:dec}
     assert: |
       numio[0x80]: [] >>> []
-      numio[0x84]: [] >>> [3]
+      numio[0x84]: [] >>> [1610612736]
