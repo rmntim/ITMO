@@ -1,14 +1,9 @@
 limit: 2000
-memory_size: 0x90
+memory_size: 0x1000
 input_streams:
   0x80: [6]
   0x84: []
 reports:
-  - name: step-by-step
-    slice: all
-    view: |
-      {SR:bin}
-      {pc}:	{instruction} {pc:label}
   - name: result
     slice: last
     view: |
