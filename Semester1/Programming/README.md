@@ -1,1 +1,0 @@
-# [Оценки](https://docs.google.com/spreadsheets/d/1dMRvYwRp3Lhy6IT5mbjdaplId9xB99b_9NijSpF7iJI/edit#gid=1755429515)

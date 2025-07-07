@@ -8,11 +8,12 @@
 |-----------------------------------------|
 
 ---
-# Содержание
 
-## Курс 1
+## Содержание
 
-### Семестр 1
+### Курс 1
+
+#### Семестр 1
 
 * [ОПД](Semester1/BasicsOfProfessionalActivity)
 
@@ -26,7 +27,7 @@
 
 * [Линейная алгебра](Semester1/LinearAlgebra)
 
-### Семестр 2
+#### Семестр 2
 
 * [ОПД](Semester2/BasicsOfProfessionalActivity)
 
@@ -39,3 +40,25 @@
 * [БЖД](Semester2/Lifesafety)
 
 * [Программирование](Semester2/Programming)
+
+#### Семестр 3
+
+* [Языки программирования](Semester3/ProgrammingLanguages)
+
+* [Веб программирование](Semester3/WebProgramming)
+
+#### Семестр 4
+
+* [Алгоритмы и структуры данных](Semester4/AaDS)
+
+* [Вычислительная математика](Semester4/CompMath)
+
+* [Архитектура компьютера](Semester4/CSA)
+
+* [Методы оптимизации](Semester4/OM)
+
+* [Основы физических процессов](Semester4/Physics)
+
+* [Основы программной инженерии](Semester4/SEB)
+
+* [Математическая статистика](Semester4/Statistics)
