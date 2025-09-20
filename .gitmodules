@@ -40,9 +40,3 @@
 [submodule "Semester5/OS"]
 	path = Semester5/OS
 	url = git@github.com:rmntim/xv6-itmo.git
-[submodule "Semester5/FP/Labwork0"]
-	path = Semester5/FP/Labwork0
-	url = ssh://git@gitlab.se.ifmo.ru:4815/rmntim/functional-programming-0.git
-[submodule "Semester5/FP/Labwork1"]
-	path = Semester5/FP/Labwork1
-	url = ssh://git@gitlab.se.ifmo.ru:4815/rmntim/functional-programming-1.git
