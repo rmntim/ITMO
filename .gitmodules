@@ -40,3 +40,9 @@
 [submodule "Semester5/OS-new"]
 	path = Semester5/OS-new
 	url = git@github.com:rdydygin/itmo-os.git
+[submodule "Semester5/CircuitDesign/typst-docs-template"]
+	path = Semester5/CircuitDesign/typst-docs-template
+	url = https://github.com/e1turin/typst-docs-template/
+[submodule "Semester5/CircuitDesign/fec_saylinx_project_example"]
+	path = Semester5/CircuitDesign/fec_saylinx_project_example
+	url = https://gitlab.se.ifmo.ru/JustRevolt/fec_saylinx_project_example.git
