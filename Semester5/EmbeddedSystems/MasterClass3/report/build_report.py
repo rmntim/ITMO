@@ -14,39 +14,46 @@ fontfile='/System/Library/Fonts/Supplemental/Arial.ttf'
 boldfile='/System/Library/Fonts/Supplemental/Arial Bold.ttf'
 def font(size,bold=False):return ImageFont.truetype(boldfile if bold else fontfile,size)
 def text(draw,xy,s,size=25,bold=False):draw.multiline_text(xy,s,font=font(size,bold),fill='black',anchor='mm',align='center',spacing=4)
-def sequence(name,height,labels,arrows):
- im=Image.new('RGB',(1120,height),'white');d=ImageDraw.Draw(im)
- xs=[110+900*i/(len(labels)-1) for i in range(len(labels))]
- for x,label in zip(xs,labels):
-  d.rectangle((x-85,12,x+85,98),fill='#f3f3f3',outline='black',width=2)
-  text(d,(x,55),label,22,True)
-  for y in range(110,height-25,18):d.line((x,y,x,y+9),fill='#909090',width=1)
+SOFTWARE='#D9EAF7'; HARDWARE='#FCE4CC'
+def sequence(name,height,labels,hardware,arrows):
+ im=Image.new('RGB',(1400,height),'white');d=ImageDraw.Draw(im)
+ xs=[110+1180*i/(len(labels)-1) for i in range(len(labels))]
+ for i,(x,label) in enumerate(zip(xs,labels)):
+  d.rectangle((x-90,12,x+90,124),fill=HARDWARE if i in hardware else SOFTWARE,outline='black',width=2)
+  text(d,(x,67),label,23,True)
+  for y in range(135,height-80,18):d.line((x,y,x,y+9),fill='#909090',width=1)
  for y,a,b,label in arrows:
   x1,x2=xs[a],xs[b]
   if a==b:
-   d.line((x1,y,x1+45,y,x1+45,y+22,x1,y+22),fill='black',width=2)
+   d.line((x1,y,x1+35,y,x1+35,y+22,x1,y+22),fill='black',width=2)
    d.polygon([(x1,y+22),(x1+12,y+16),(x1+12,y+28)],fill='black')
-   d.multiline_text((x1-12 if a==len(xs)-1 else x1+58,y-12),label,font=font(23),fill='black',spacing=3,anchor='ra' if a==len(xs)-1 else 'la')
+   d.multiline_text((x1-12 if a==len(xs)-1 else x1+45,y-12),label,font=font(23),fill='black',spacing=3,anchor='ra' if a==len(xs)-1 else 'la')
   else:
    d.line((x1,y,x2,y),fill='black',width=2)
    sign=1 if x2>x1 else -1
    d.polygon([(x2,y),(x2-sign*12,y-6),(x2-sign*12,y+6)],fill='black')
-   lines=label.count('\n')+1
-   text(d,((x1+x2)/2,y-14-lines*12),label,23)
+   lines=label.count('\n')+1; center=((x1+x2)/2,y-14-lines*12)
+   if label.startswith('Очередь'):
+    box=d.multiline_textbbox(center,label,font=font(23),anchor='mm',align='center',spacing=4)
+    d.rectangle((box[0]-8,box[1]-4,box[2]+8,box[3]+4),fill=SOFTWARE)
+   text(d,center,label,23)
+ for x,color,label in [(110,SOFTWARE,'Программные сущности'),(780,HARDWARE,'Аппаратные сущности')]:
+  d.rectangle((x,height-52,x+32,height-24),fill=color,outline='black')
+  d.text((x+45,height-52),label,font=font(23),fill='black')
  im.save(ASSETS/name)
-sequence('sequence_init.png',1080,['main\nCortex M4','HAL TIM1/2\nI2C1 GPIO','FreeRTOS\nSysTick','OLED\n128 x 64'],[
- (180,0,1,'HAL_Init и HSI 16 МГц'),(265,0,1,'GPIO I2C1 и Buzzer_Init\nTIM2_CH1 PA5'),
- (355,0,3,'oled_Init: команды и пустой кадр'),(455,0,2,'commands frames sounds\nСоздать i2c_mutex'),
- (555,0,2,'Создать Input Game Display Sound'),(655,0,2,'osKernelStart'),
- (755,2,2,'Game: длина 3\nрежим PAUSE'),(865,2,3,'Display: поле счёт и змейка\n8 страниц по 128 байт'),
- (970,1,1,'TIM1: HAL 1 мс'),(970,2,2,'SysTick: ОС 1 мс')])
-sequence('sequence_loop.png',1500,['Input\nприоритет 4','i2c_mutex\nI2C1','I2C1\nPCA и OLED','Game\nприоритет 3','Display\nприоритет 2','Sound\nTIM2 PA5'],[
- (180,0,1,'Take'),(260,0,2,'PCA9538: опрос 4 строк'),(340,0,1,'Give'),
- (440,0,3,'commands: новое нажатие'),(540,3,3,'Команда и шаг'),
- (640,3,4,'frames: копия игры'),(740,3,5,'sounds: событие'),
- (840,5,5,'PWM и vTaskDelay'),(950,4,1,'Take'),
- (1050,4,2,'OLED: страница 128 байт'),(1150,4,1,'Give'),
- (1260,4,4,'Задержка 1 мс')])
+sequence('sequence_init.png',1080,['main\nфункция','TIM1 TIM2\nI2C1 GPIO\nSysTick','FreeRTOS\nОС','OLED\nдисплей'],{1,3},[
+ (190,0,1,'HAL_Init и HSI 16 МГц'),(280,0,1,'GPIO I2C1 и Buzzer_Init\nTIM2_CH1 PA5'),
+ (370,0,3,'oled_Init: команды и пустой кадр'),(470,0,2,'Очереди commands frames sounds\nМьютекс i2c_mutex'),
+ (570,0,2,'Задачи Input Game Display Sound'),(660,0,2,'osKernelStart'),
+ (755,2,2,'Game: длина 3\nрежим PAUSE'),(865,2,3,'Display: начальный кадр\n8 страниц по 128 байт'),
+ (970,1,2,'SysTick: такт ОС 1 мс')])
+sequence('sequence_loop.png',1500,['Input\nзадача\nприоритет 4','i2c_mutex\nмьютекс','I2C1\nPCA9538\nOLED','Game\nзадача\nприоритет 3','Display\nзадача\nприоритет 2','Sound\nзадача\nприоритет 2','TIM2_CH1\nPA5\nзуммер'],{2,6},[
+ (190,0,1,'Take'),(280,0,2,'PCA9538: опрос 4 строк'),(370,0,1,'Give'),
+ (470,0,3,'Очередь commands: нажатие'),(570,3,3,'Команда\nи шаг'),
+ (670,3,4,'Очередь frames:\nкопия игры'),(790,3,5,'Очередь sounds: событие'),
+ (900,5,6,'PWM: частота ноты'),(1000,4,1,'Take'),
+ (1100,4,2,'OLED: страница 128 байт'),(1200,4,1,'Give'),
+ (1320,4,4,'Задержка 1 мс')])
 for name,title in [('start','Начальное состояние'),('growth','Рост после поедания еды'),('pause','Пауза во время игры'),('loss','Столкновение со стеной')]:
  src=Image.open(ASSETS/(name+'.pgm')).convert('RGB').resize((768,384),Image.Resampling.NEAREST)
  im=Image.new('RGB',(850,510),'white');d=ImageDraw.Draw(im)
@@ -66,11 +73,11 @@ texts={
 36:'Использовать три очереди и один общий мьютекс для шины I2C1.',
 37:'Реализовать рост, счет, ускорение, паузу, перезапуск и обработку столкновений.',
 39:'В HAL адреса заданы со сдвигом: 0xE2 для PCA9538 и 0x78 для OLED. Настройка строк повторяет SDK_Keyboard. SysTick обеспечивает такты FreeRTOS, а TIM1 — миллисекундный счетчик HAL. TIM2_CH1 на PA5 управляет зуммером по примеру SDK_Buzzer; USART1 сохранен.',
-42:'На рисунках показаны запуск приложения и взаимодействие задач с периферией. Очереди передают команды и копии состояния, мьютекс защищает I2C1. Input и Display обращаются к одной сущности i2c_mutex. Sound получает звуковые события; приоритеты указаны в шкале FreeRTOS.',
+42:'Голубым показаны программные сущности, оранжевым — аппаратные. Input, Game, Display и Sound — задачи FreeRTOS; i2c_mutex — мьютекс. commands, frames и sounds — очереди, подписанные на стрелках обмена. main — функция, FreeRTOS — ОС.',
 44:'Рисунок 1 — Инициализация периферии и запуск задач FreeRTOS',
 45:'До старта ОС main настраивает периферию и OLED. После osKernelStart задача Game создает змейку и включает паузу, а Display показывает начальное состояние. TIM1 и SysTick используют раздельные временные базы.',
 49:'Рисунок 2 — Опрос клавиатуры передача команд и обновление OLED',
-50:'Мьютекс i2c_mutex защищает обмен Input и Display по I2C1. Game передает кадры в frames и события в sounds. Sound управляет TIM2 без обращения к I2C1. Display повторяет обмен для восьми страниц.',
+50:'Очередь commands передает команды из Input в Game; frames — копию игры из Game в Display; sounds — события из Game в Sound. Input и Display используют i2c_mutex для обмена по I2C1. Задача Sound управляет аппаратным TIM2_CH1 на PA5.',
 54:'После сброса HAL_Init настраивает HAL и временную базу TIM1. SystemClock_Config выбирает HSI 16 МГц. Затем настраиваются GPIO, USART1 и I2C1 на PB8 и PB9 со скоростью 100 кГц. Драйвер OLED передает команды инициализации и очищает экран.',
 55:'MX_FREERTOS_Init создает четыре задачи, три очереди и один мьютекс. Input имеет приоритет AboveNormal, Game — Normal, Display и Sound — BelowNormal. SysTick задает такт ОС 1 мс. Input и Game используют vTaskDelayUntil с периодом 10 мс; задачи ожидания не занимают процессор.',
 57:'Задача Input вызывает keyboard_read и последовательно проверяет четыре строки. Перед каждой строкой записываются POLARITY_INVERSION, OUTPUT_PORT и CONFIG, как в SDK_Keyboard. Маски 0xFE, 0xFD, 0xFB и 0xF7 выбирают строку, переводимую в низкий уровень; остальные строки остаются входами.',
